@@ -1,0 +1,24 @@
+<Project>
+  <PropertyGroup>
+    <!-- Pick your backend here -->
+    <Backend>SFML</Backend>
+  </PropertyGroup>
+
+  <Choose>
+    <When Condition="'$(Backend)' == 'SFML'">
+      <ItemDefinitionGroup>
+        <ClCompile>
+          <PreprocessorDefinitions>SFMLBackend=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+        </ClCompile>
+      </ItemDefinitionGroup>
+    </When>
+
+    <When Condition="'$(Backend)' == 'DX12'">
+      <ItemDefinitionGroup>
+        <ClCompile>
+          <PreprocessorDefinitions>DX12BackEnd=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+        </ClCompile>
+      </ItemDefinitionGroup>
+    </When>
+  </Choose>
+</Project>

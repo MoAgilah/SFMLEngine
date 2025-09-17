@@ -24,7 +24,44 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Code\Collisions\SFGrid.cpp" />
+    <ClCompile Include="Code\Collisions\SFTile.cpp" />
+    <ClCompile Include="Code\Core\SFFramework.cpp" />
+    <ClCompile Include="Code\Drawables\SFShape.cpp" />
+    <ClCompile Include="Code\Drawables\SFSprite.cpp" />
+    <ClCompile Include="Code\Drawables\SFText.cpp" />
+    <ClCompile Include="Code\Renderer\SFCamera.cpp" />
+    <ClCompile Include="Code\Renderer\SFRenderer.cpp" />
+    <ClCompile Include="Code\Renderer\SFWindow.cpp" />
+    <ClCompile Include="Code\UI\SFMenu.cpp" />
+    <ClCompile Include="Code\UI\SFMenuCursor.cpp" />
+    <ClCompile Include="Code\UI\SFMenuItem.cpp" />
+    <ClCompile Include="Code\UI\SFPaginatedMenu.cpp" />
+    <ClCompile Include="Code\Utilities\ActiveTypes.cpp" />
+    <ClCompile Include="Code\Utilities\SFColour.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Code\Collisions\SFGrid.h" />
+    <ClInclude Include="Code\Collisions\SFTile.h" />
+    <ClInclude Include="Code\Core\SFFramework.h" />
+    <ClInclude Include="Code\Drawables\SFDrawables.h" />
+    <ClInclude Include="Code\Drawables\SFShape.h" />
+    <ClInclude Include="Code\Drawables\SFSprite.h" />
+    <ClInclude Include="Code\Drawables\SFText.h" />
+    <ClInclude Include="Code\Input\SFKeyConverter.h" />
+    <ClInclude Include="Code\Renderer\SFCamera.h" />
+    <ClInclude Include="Code\Renderer\SFRenderer.h" />
+    <ClInclude Include="Code\Renderer\SFWindow.h" />
+    <ClInclude Include="Code\Resources\SFFont.h" />
+    <ClInclude Include="Code\Resources\SFMusic.h" />
+    <ClInclude Include="Code\Resources\SFShader.h" />
+    <ClInclude Include="Code\Resources\SFSound.h" />
+    <ClInclude Include="Code\Resources\SFTexture.h" />
+    <ClInclude Include="Code\UI\SFMenu.h" />
+    <ClInclude Include="Code\UI\SFMenuCursor.h" />
+    <ClInclude Include="Code\UI\SFMenuItem.h" />
+    <ClInclude Include="Code\UI\SFPaginatedMenu.h" />
+    <ClInclude Include="Code\Utilities\ActiveTypes.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -120,7 +157,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile />
-      <AdditionalIncludeDirectories>$(SolutionDir)EngineInterface\Code</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)EngineInterface\Code;$(ProjectDir)Code\</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -129,8 +166,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>EngineInterface.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\$(Configuration);$(ProjectDir)lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>EngineInterface.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -145,7 +182,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
-      <AdditionalIncludeDirectories>$(SolutionDir)EngineInterface\Code</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)EngineInterface\Code;$(ProjectDir)Code\</AdditionalIncludeDirectories>
       <PrecompiledHeaderOutputFile />
     </ClCompile>
     <Link>
@@ -154,8 +191,8 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalLibraryDirectories>$(SolutionDir)x64\$(Configuration)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>EngineInterface.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\$(Configuration);$(ProjectDir)lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>EngineInterface.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
