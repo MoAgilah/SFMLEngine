@@ -24,7 +24,7 @@ void SFSprite::SetTexture(const std::string& texId)
 
 	SetScale(GameConstants::Scale);
 	auto texSize = GetTextureSize();
-	SetOrigin(Vector2f(texSize.x, texSize.y) * 0.5f);
+	SetOrigin(Vector2f(static_cast<float>(texSize.x), static_cast<float>(texSize.y)) * 0.5f);
 }
 
 void SFSprite::Update(float dt)
@@ -102,7 +102,7 @@ void SFAnimatedSprite::Update(float dt)
 Vector2f SFAnimatedSprite::GetSize()
 {
 	auto size = GetFrameSize();
-	return Vector2f(size.x,size.y);
+	return Vector2f(static_cast<float>(size.x), static_cast<float>(size.y));
 }
 
 void SFAnimatedSprite::SetFrameSize(const Vector2u& size, int currentFrame, int currentAnim)
@@ -113,7 +113,7 @@ void SFAnimatedSprite::SetFrameSize(const Vector2u& size, int currentFrame, int 
 	int top = currentAnim * size.y;
 
 	SetTextureRect({left, top, static_cast<int>(size.x), static_cast<int>(size.y)});
-	SetOrigin(Vector2f(size.x, size.y) * 0.5f);
+	SetOrigin(Vector2f(static_cast<float>(size.x), static_cast<float>(size.y)) * 0.5f);
 }
 
 void SFAnimatedSprite::ChangeAnim(int animNum)

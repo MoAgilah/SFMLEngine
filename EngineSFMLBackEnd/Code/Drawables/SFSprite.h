@@ -34,7 +34,7 @@ private:
 struct Range
 {
 	int m_current = 0;
-	int m_max;
+	int m_max = 0;
 };
 
 class SFAnimatedSprite : public SFSprite

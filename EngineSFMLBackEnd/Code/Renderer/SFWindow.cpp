@@ -7,7 +7,7 @@
 bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
 {
 	m_window = std::make_shared<sf::RenderWindow>();
-	m_window->create(sf::VideoMode(sf::Vector2u(screemDims.x,screemDims.y)), title);
+	m_window->create(sf::VideoMode(sf::Vector2u(static_cast<int>(screemDims.x), static_cast<int>(screemDims.y))), title);
 	m_window->setFramerateLimit(static_cast<int>(GameConstants::FPS));
 	return m_window->isOpen();
 }
