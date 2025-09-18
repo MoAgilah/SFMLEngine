@@ -5,7 +5,10 @@
 #include <Utilities/Line.h>
 #include <Utilities/Vector.h>
 #include <Engine/Interface/Drawables/IShape.h>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Transformable.hpp>
 
 template<typename TShape>
 class SFShape : public SFDrawables<TShape>, public IShape, public IMoveable

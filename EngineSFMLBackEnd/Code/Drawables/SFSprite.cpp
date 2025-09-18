@@ -3,6 +3,9 @@
 #include "Resources/SFTexture.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Rect.hpp>
 
 SFSprite::SFSprite(const std::string& texId)
 {
@@ -46,6 +49,16 @@ void SFSprite::Move(const Vector2f& mov)
 {
 	for (auto spr : this->GetDrawables())
 		spr->move(mov);
+}
+
+Vector2u SFSprite::GetTextureSize() const
+{
+	return this->GetPrimaryDrawableAs<sf::Sprite>()->getTexture().getSize();
+}
+
+void SFSprite::SetTextureRect(const IntRect& rect)
+{
+	this->GetPrimaryDrawableAs<sf::Sprite>()->setTextureRect(rect);
 }
 
 SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float framesPerSec, bool symmetrical, float animSpeed)

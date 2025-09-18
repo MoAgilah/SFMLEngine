@@ -27,9 +27,11 @@
     <ClCompile Include="Code\Collisions\SFGrid.cpp" />
     <ClCompile Include="Code\Collisions\SFTile.cpp" />
     <ClCompile Include="Code\Core\SFFramework.cpp" />
+    <ClCompile Include="Code\Drawables\SFDrawables.cpp" />
     <ClCompile Include="Code\Drawables\SFShape.cpp" />
     <ClCompile Include="Code\Drawables\SFSprite.cpp" />
     <ClCompile Include="Code\Drawables\SFText.cpp" />
+    <ClCompile Include="Code\Input\SFKeyConverter.cpp" />
     <ClCompile Include="Code\Renderer\SFCamera.cpp" />
     <ClCompile Include="Code\Renderer\SFRenderer.cpp" />
     <ClCompile Include="Code\Renderer\SFWindow.cpp" />

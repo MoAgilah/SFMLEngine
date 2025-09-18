@@ -55,6 +55,9 @@
     <Filter Include="Header Files\Utilities">
       <UniqueIdentifier>{ced7ca20-0504-49c1-af93-1877fc5e5c6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Input">
+      <UniqueIdentifier>{fc309432-17c9-4c0e-b89b-026fafdf37c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Collisions\SFGrid.cpp">
@@ -101,6 +104,12 @@
     </ClCompile>
     <ClCompile Include="Code\Utilities\ActiveTypes.cpp">
       <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Drawables\SFDrawables.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Input\SFKeyConverter.cpp">
+      <Filter>Source Files\Input</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

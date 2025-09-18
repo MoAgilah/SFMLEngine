@@ -5,6 +5,7 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Collisions/BoundingCircle.h>
 #include <Engine/Collisions/BoundingCapsule.h>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 SFTile::SFTile()
 	: ITile(std::make_shared<BoundingBox<SFRect>>(), nullptr, nullptr)
@@ -31,11 +32,9 @@ void SFTile::Render(IRenderer* renderer)
 
 	if (m_type == Types::LCRN || m_type == Types::RCRN)
 	{
-		auto* sfRenderer = dynamic_cast<SFRenderer*>(renderer);
-		if (!sfRenderer)
-			return;
+		auto* window = static_cast<sf::RenderWindow*>(
+			renderer->GetWindow()->GetNativeHandle());
 
-		sf::RenderWindow* window = static_cast<sf::RenderWindow*>(sfRenderer->GetWindow()->GetNativeHandle());
 		if (window)
 		{
 			sf::Vertex line[2];

@@ -4,10 +4,11 @@
 #include <Engine/Interface/UI/IText.h>
 #include <Engine/Core/Timer.h>
 #include <Utilities/Vector.h>
-#include <SFML/Graphics.hpp>
 #include <string>
 #include <optional>
 #include <functional>
+
+namespace sf { class Text; class Shader; }
 
 class SFText : public SFDrawables<sf::Text>, public IText
 {
@@ -23,17 +24,17 @@ public:
 
 	Vector2f GetSize() override;
 
-	unsigned int GetCharSize() override { return this->GetPrimaryDrawableAs<sf::Text>()->getCharacterSize(); }
-	void SetCharSize(unsigned int charSize) override { this->GetPrimaryDrawableAs<sf::Text>()->setCharacterSize(charSize); }
+	unsigned int GetCharSize() override;
+	void SetCharSize(unsigned int charSize) override;
 
-	Colour GetOutlineColour() override { return this->GetPrimaryDrawableAs<sf::Text>()->getOutlineColor(); }
-	void SetOutlineColour(const Colour& colour) override { this->GetPrimaryDrawableAs<sf::Text>()->setOutlineColor(colour); }
+	Colour GetOutlineColour() override;
+	void SetOutlineColour(const Colour& colour) override;
 
-	Colour GetFillColour() override { return this->GetPrimaryDrawableAs<sf::Text>()->getFillColor(); }
-	void SetFillColour(const Colour& colour) override { this->GetPrimaryDrawableAs<sf::Text>()->setFillColor(colour); }
+	Colour GetFillColour() override;
+	void SetFillColour(const Colour& colour) override;
 
-	float GetOutlineThickness() override { return this->GetPrimaryDrawableAs<sf::Text>()->getOutlineThickness(); }
-	void SetOutlineThickness(float thickness) override { this->GetPrimaryDrawableAs<sf::Text>()->setOutlineThickness(thickness); }
+	float GetOutlineThickness() override;
+	void SetOutlineThickness(float thickness) override;
 
 	void ResetOutlineColour() { SetOutlineColour(m_config.m_colour); }
 

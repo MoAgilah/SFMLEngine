@@ -2,7 +2,7 @@
 
 #include <SFML/Window/Keyboard.hpp>
 
-KeyCode SFKeyConverter::Convert(sf::Keyboard::Key key) const
+KeyCode Convert(sf::Keyboard::Key key)
 {
     switch (key) {
     case sf::Keyboard::Key::A: return KeyCode::A;
@@ -119,4 +119,10 @@ KeyCode SFKeyConverter::Convert(sf::Keyboard::Key key) const
     default:
         return KeyCode::Unknown;
     }
+}
+
+KeyCode SFKeyConverter::ConvertFromPlatform(int platformCode) const
+{
+    const auto key = static_cast<sf::Keyboard::Key>(platformCode);
+    return Convert(key);
 }

@@ -2,6 +2,7 @@
 
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <SFML/Graphics.hpp>
 
 
 bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
@@ -27,11 +28,13 @@ void SFWindow::PollEvents()
 				if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
 					Close();
 
-				GameManager::Get()->GetInputManager()->ProcessPlatformKeyPress(const_cast<sf::Keyboard::Key*>(&keyPressed->code));
+				GameManager::Get()->GetInputManager()->ProcessPlatformKeyPress(
+					static_cast<int>(keyPressed->code));
 			}
 			else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>())
 			{
-				GameManager::Get()->GetInputManager()->ProcessPlatformKeyRelease(const_cast<sf::Keyboard::Key*>(&keyReleased->code));
+				GameManager::Get()->GetInputManager()->ProcessPlatformKeyRelease(
+					static_cast<int>(keyReleased->code));
 			}
 		}
 	}
@@ -53,9 +56,4 @@ void SFWindow::Close()
 void* SFWindow::GetNativeHandle()
 {
 	return static_cast<void*>(m_window.get());
-}
-
-sf::RenderWindow* SFWindow::GetWindow()
-{
-	return m_window.get();
 }

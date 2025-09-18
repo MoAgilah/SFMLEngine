@@ -2,8 +2,9 @@
 
 #include "SFDrawables.h"
 #include <Engine/Interface/Drawables/ISprite.h>
-#include <SFML/Graphics.hpp>
 #include <string>
+
+namespace sf { class Sprite; }
 
 class SFSprite : public SFDrawables<sf::Sprite>, public ISprite
 {
@@ -23,8 +24,8 @@ public:
 	void Move(float x, float y) override;
 	void Move(const Vector2f& mov) override;
 
-	Vector2u GetTextureSize() const override { return this->GetPrimaryDrawableAs<sf::Sprite>()->getTexture().getSize(); }
-	void SetTextureRect(const IntRect& rect) override { this->GetPrimaryDrawableAs<sf::Sprite>()->setTextureRect(rect); }
+	Vector2u GetTextureSize() const override;
+	void SetTextureRect(const IntRect& rect) override;
 
 private:
 

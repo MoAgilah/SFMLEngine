@@ -1,6 +1,5 @@
 #pragma once
 
-#include "../Renderer/SFRenderer.h"
 #include <Engine/Interface/Drawables/IDrawable.h>
 #include <memory>
 
@@ -11,70 +10,22 @@ public:
     virtual ~SFDrawables() = default;
 
     // Render only the primary drawable for base case
-    void Render(IRenderer* renderer) override
-    {
-        auto* sfRenderer = dynamic_cast<SFRenderer*>(renderer);
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        if (!sfRenderer || !drawable)
-            return;
-
-        sf::RenderWindow* window = static_cast<sf::RenderWindow*>(sfRenderer->GetWindow()->GetNativeHandle());
-        if (window)
-        {
-            window->draw(*drawable);
-        }
-    }
+    void Render(IRenderer* renderer) override;
 
     // Now these all work on the primary
-    void SetPosition(const Vector2f& pos) override
-    {
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        if (drawable) drawable->setPosition(pos);
-    }
+    void SetPosition(const Vector2f& pos) override;
 
-    Vector2f GetPosition() override
-    {
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        return drawable ? Vector2f(drawable->getPosition()) : Vector2f();
-    }
+    Vector2f GetPosition() override;
 
-    void SetScale(const Vector2f& scl) override
-    {
-        m_scale = scl;
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        if (drawable) drawable->setScale(scl);
-    }
+    void SetScale(const Vector2f& scl) override;
 
-    Vector2f GetScale() override
-    {
-        return m_scale;
-    }
+    Vector2f GetScale() override;
 
-    Vector2f GetOrigin() override
-    {
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        return drawable ? Vector2f(drawable->getOrigin()) : Vector2f();
-    }
+    Vector2f GetOrigin() override;
 
-    void SetOrigin(const Vector2f& ori) override
-    {
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        if (drawable) drawable->setOrigin(ori);
-    }
+    void SetOrigin(const Vector2f& ori) override;
 
-    Vector2f GetSize() override
-    {
-        auto* drawable = this->GetPrimaryDrawableAs<T>();
-        if (drawable)
-        {
-            auto bounds = drawable->getGlobalBounds();
-            return bounds.size;
-        }
-        return Vector2f();
-    }
+    Vector2f GetSize() override;
 
-    void SetSize(const Vector2f& size) override
-    {
-        // Implement if needed for specific shape types
-    }
+    void SetSize(const Vector2f& size) override;
 };

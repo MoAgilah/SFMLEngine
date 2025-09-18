@@ -3,6 +3,10 @@
 #include "../Resources/SFFont.h"
 #include "../Resources/SFShader.h"
 #include <Engine/Core/GameManager.h>
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Shader.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
 SFText::SFText(const TextConfig& config)
 	: IText(config)
@@ -53,8 +57,69 @@ void SFText::Reset(const std::string& text, std::optional<TextConfig> config)
 
 Vector2f SFText::GetSize()
 {
-	auto bounds = this->GetPrimaryDrawableAs<sf::Text>()->getLocalBounds();
-	return Vector2f(bounds.size.x, bounds.size.y);
+	if (auto* txt = this->GetPrimaryDrawable())
+	{
+		auto bounds = txt->getLocalBounds();
+		return Vector2f(bounds.size);
+	}
+
+	return {};
+}
+
+unsigned int SFText::GetCharSize()
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		txt->getCharacterSize();
+
+	return {};
+}
+
+void SFText::SetCharSize(unsigned int charSize)
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		txt->setCharacterSize(charSize);
+}
+
+Colour SFText::GetOutlineColour()
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		return txt->getOutlineColor();
+
+	return {};
+}
+
+void SFText::SetOutlineColour(const Colour& colour)
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		return txt->setOutlineColor(colour);
+}
+
+Colour SFText::GetFillColour()
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		return txt->getFillColor();
+
+	return {};
+}
+
+void SFText::SetFillColour(const Colour& colour)
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		return txt->setFillColor(colour);
+}
+
+float SFText::GetOutlineThickness()
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		return txt->getOutlineThickness();
+
+	return {};
+}
+
+void SFText::SetOutlineThickness(float thickness)
+{
+	if (auto* txt = this->GetPrimaryDrawable())
+		return txt->setOutlineThickness(thickness);
 }
 
 void SFText::Init()
@@ -203,7 +268,11 @@ void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
 	{
 		auto* sfWindow = static_cast<sf::RenderWindow*>(windowHandle->GetNativeHandle());
 		if (sfWindow)
-			sfWindow->draw(*this->GetPrimaryDrawableAs<sf::Text>(), m_textShader);
+		{
+			sf::RenderStates states;
+			states.shader = m_textShader;
+			sfWindow->draw(*this->GetPrimaryDrawable(), states);
+		}
 	}
 }
 

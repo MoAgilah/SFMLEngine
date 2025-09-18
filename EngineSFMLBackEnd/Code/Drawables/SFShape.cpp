@@ -1,6 +1,7 @@
 #include "SFShape.h"
 
 #include <Engine/Core/Constants.h>
+#include <SFML/Graphics/RenderWindow.hpp>
 #include <numbers>
 
 SFTriangle::SFTriangle()
