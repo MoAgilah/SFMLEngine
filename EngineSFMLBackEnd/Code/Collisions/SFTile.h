@@ -2,13 +2,13 @@
 
 #include <Engine/Interface/Collisions/ITile.h>
 #include <Utilities/Vector.h>
-#include <SFML/Graphics.hpp>
+#include <string>
 
 class SFTile : public ITile
 {
 public:
 	SFTile();
-	SFTile(int gX, int gY, sf::Font* font);
+	SFTile(int gX, int gY, const std::string& fontName);
 	~SFTile() = default;
 
 	void Render(IRenderer* renderer) override;

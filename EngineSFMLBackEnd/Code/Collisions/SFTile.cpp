@@ -10,8 +10,8 @@ SFTile::SFTile()
 	: ITile(std::make_shared<BoundingBox<SFRect>>(), nullptr, nullptr)
 {}
 
-SFTile::SFTile(int gX, int gY, sf::Font* font)
-	: ITile(std::make_shared<BoundingBox<SFRect>>(), std::make_shared<SFText>(), nullptr)
+SFTile::SFTile(int gX, int gY, const std::string& fontName)
+	: ITile(std::make_shared<BoundingBox<SFRect>>(), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
 {}
 
 void SFTile::Render(IRenderer* renderer)
