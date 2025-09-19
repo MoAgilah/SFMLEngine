@@ -35,6 +35,11 @@
     <ClCompile Include="Code\Renderer\SFCamera.cpp" />
     <ClCompile Include="Code\Renderer\SFRenderer.cpp" />
     <ClCompile Include="Code\Renderer\SFWindow.cpp" />
+    <ClCompile Include="Code\Resources\SFFont.cpp" />
+    <ClCompile Include="Code\Resources\SFMusic.cpp" />
+    <ClCompile Include="Code\Resources\SFShader.cpp" />
+    <ClCompile Include="Code\Resources\SFSound.cpp" />
+    <ClCompile Include="Code\Resources\SFTexture.cpp" />
     <ClCompile Include="Code\UI\SFMenu.cpp" />
     <ClCompile Include="Code\UI\SFMenuCursor.cpp" />
     <ClCompile Include="Code\UI\SFMenuItem.cpp" />

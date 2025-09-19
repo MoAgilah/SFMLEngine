@@ -1,19 +1,25 @@
 #pragma once
 
 #include <Engine/Interface/Resources/ITexture.h>
-#include <SFML/Graphics.hpp>
 #include <memory>
+#include <string>
+
+// Forward declare to avoid pulling SFML headers into this header
+namespace sf { class Texture; }
 
 class SFTexture : public ITexture
 {
 public:
-	bool LoadFromFile(const std::string& filepath) override
-	{
-        return m_texture.loadFromFile(filepath);
-	}
+    SFTexture();
+    ~SFTexture() override;
 
-    sf::Texture& GetNativeTexture() { return m_texture; }
+    bool LoadFromFile(const std::string& filepath) override;
+
+    // Escape hatch: only visible where you include SFTexture.h
+    sf::Texture& GetNativeTexture();
+    const sf::Texture& GetNativeTexture() const;
 
 private:
-    sf::Texture m_texture;
+
+    std::unique_ptr<sf::Texture> m_texture;
 };

@@ -1,49 +1,33 @@
 #pragma once
 
 #include <Engine/Interface/Resources/IShader.h>
-#include <SFML/Graphics.hpp>
 #include <filesystem>
 #include <memory>
+#include <optional>
+#include <string>
 
 namespace fs = std::filesystem;
+
+// Forward declare sf::Shader to avoid pulling SFML headers here
+namespace sf { class Shader; }
 
 class SFShader : public IShader
 {
 public:
-    bool LoadFromFile(const std::string& filepath) override
-    {
-        fs::path entry = fs::path(filepath);
-        auto type = GetNativeShaderType(ShaderTypeFromExtension(entry.extension().string().substr(1)));
-        if (!type)
-            return false;
+    SFShader();
+    ~SFShader() override;
 
-        return m_shader.loadFromFile(filepath, *type);
-    }
+    bool LoadFromFile(const std::string& filepath) override;
 
-    sf::Shader& GetNativeShader() { return m_shader; }
+    // Escape hatch: only leaks SFML where you *explicitly* include this header.
+    sf::Shader& GetNativeShader();
+    const sf::Shader& GetNativeShader() const;
 
 private:
+    // Helper that maps engine ShaderType -> sf::Shader::Type
+    std::optional<int> GetNativeShaderType(std::optional<ShaderType> shaderType);
 
-    std::optional<sf::Shader::Type> GetNativeShaderType(std::optional<ShaderType> shaderType)
-    {
-        if (shaderType)
-        {
-            switch (shaderType.value())
-            {
-            case ShaderType::Vertex:
-                return sf::Shader::Type::Vertex;
-                break;
-            case ShaderType::Fragment:
-                return sf::Shader::Type::Fragment;
-                break;
-            case ShaderType::Geometry:
-                return sf::Shader::Type::Geometry;
-                break;
-            }
-        }
-
-        return std::nullopt;
-    }
-
-    sf::Shader m_shader;
+private:
+    // Keep your original name
+    std::unique_ptr<sf::Shader> m_shader;
 };

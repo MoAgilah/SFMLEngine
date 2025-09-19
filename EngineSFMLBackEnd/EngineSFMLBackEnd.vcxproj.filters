@@ -58,6 +58,9 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{fc309432-17c9-4c0e-b89b-026fafdf37c2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Resources">
+      <UniqueIdentifier>{334290db-aee5-4998-b927-470ad903deee}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Collisions\SFGrid.cpp">
@@ -110,6 +113,21 @@
     </ClCompile>
     <ClCompile Include="Code\Input\SFKeyConverter.cpp">
       <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Resources\SFFont.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Resources\SFMusic.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Resources\SFShader.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Resources\SFSound.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Resources\SFTexture.cpp">
+      <Filter>Source Files\Resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
