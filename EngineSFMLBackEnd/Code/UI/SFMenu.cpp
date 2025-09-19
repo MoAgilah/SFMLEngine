@@ -1,7 +1,7 @@
 #include "SFMenu.h"
 
-#include "SFMenuItem.h"
 #include "SFMenuCursor.h"
+#include "SFMenuItem.h"
 #include "../Drawables/SFShape.h"
 #include "../Drawables/SFSprite.h"
 #include "../Drawables/SFText.h"

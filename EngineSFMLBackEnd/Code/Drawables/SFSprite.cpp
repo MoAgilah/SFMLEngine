@@ -3,9 +3,9 @@
 #include "Resources/SFTexture.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Rect.hpp>
 
 SFSprite::SFSprite(const std::string& texId)
 {
@@ -38,6 +38,11 @@ void SFSprite::Update(float dt)
 void SFSprite::Render(IRenderer* renderer)
 {
 	SFDrawables<sf::Sprite>::Render(renderer);
+}
+
+sf::Sprite* SFSprite::GetSprite()
+{
+	return this->GetPrimaryDrawableAs<sf::Sprite>();
 }
 
 void SFSprite::Move(float x, float y)

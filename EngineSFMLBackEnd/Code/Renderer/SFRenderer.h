@@ -16,6 +16,7 @@ public:
     void Present() override;
 
 private:
+
     // Cache the native handle (type-erased) to avoid calling GetNativeHandle() every frame
     void* m_nativeWindow = nullptr;
 };

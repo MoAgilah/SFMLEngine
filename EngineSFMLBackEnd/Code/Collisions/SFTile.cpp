@@ -1,10 +1,10 @@
 #include "SFTile.h"
 
-#include "../Drawables/SFText.h"
 #include "../Drawables/SFShape.h"
+#include "../Drawables/SFText.h"
 #include <Engine/Collisions/BoundingBox.h>
-#include <Engine/Collisions/BoundingCircle.h>
 #include <Engine/Collisions/BoundingCapsule.h>
+#include <Engine/Collisions/BoundingCircle.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 SFTile::SFTile()

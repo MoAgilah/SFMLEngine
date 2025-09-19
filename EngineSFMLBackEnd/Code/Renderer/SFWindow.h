@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Engine/Interface/Renderer/IWindow.h>
 #include <Utilities/Vector.h>
 #include <memory>

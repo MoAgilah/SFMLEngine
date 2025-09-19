@@ -1,8 +1,98 @@
 #include "SFShape.h"
 
 #include <Engine/Core/Constants.h>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/ConvexShape.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Transformable.hpp>
 #include <numbers>
+
+template<typename TShape>
+void SFShape<TShape>::Move(float x, float y)
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->move(Vector2f(x, y));
+}
+
+template<typename TShape>
+void SFShape<TShape>::Move(const Vector2f& vel)
+{
+    Move(vel.x, vel.y);
+}
+
+template<typename TShape>
+Colour SFShape<TShape>::GetFillColour()
+{
+    if (auto s = this->GetPrimaryDrawable())
+        return s->getFillColor();
+
+    return {};
+}
+
+template<typename TShape>
+void SFShape<TShape>::SetFillColour(const Colour& col)
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->setFillColor(col);
+}
+
+template<typename TShape>
+Colour SFShape<TShape>::GetOutlineColour()
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->getOutlineColor();
+
+    return {};
+}
+
+template<typename TShape>
+void SFShape<TShape>::SetOutlineColour(const Colour& col)
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->setOutlineColor(col);
+}
+
+template<typename TShape>
+float SFShape<TShape>::GetOutlineThickness()
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->getOutlineThickness();
+
+    return {};
+}
+
+template<typename TShape>
+void SFShape<TShape>::SetOutlineThickness(float scale)
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->setOutlineThickness(scale);
+}
+
+template<typename TShape>
+void SFShape<TShape>::SetRotation(float rotationDegrees)
+{
+    if (auto s = this->GetPrimaryDrawable())
+        s->setRotation(sf::degrees(rotationDegrees));
+}
+
+/*
+
+void Move(float x, float y) override { this->GetPrimaryDrawableAs<TShape>()->move(Vector2f(x, y)); }
+    void Move(const Vector2f& vel) override { this->Move(vel.x, vel.y); }
+
+    Colour GetFillColour() override { return this->GetPrimaryDrawableAs<TShape>()->getFillColor(); }
+    void SetFillColour(const Colour& col) override { this->GetPrimaryDrawableAs<TShape>()->setFillColor(col); }
+
+    Colour GetOutlineColour() override { return this->GetPrimaryDrawableAs<TShape>()->getOutlineColor(); }
+    void SetOutlineColour(const Colour& col) override { this->GetPrimaryDrawableAs<TShape>()->setOutlineColor(col); }
+
+    float GetOutlineThickness() override { return this->GetPrimaryDrawableAs<TShape>()->getOutlineThickness(); }
+    void SetOutlineThickness(float scale) override { this->GetPrimaryDrawableAs<TShape>()->setOutlineThickness(scale); }
+
+    void SetRotation(float rotation) override { this->GetPrimaryDrawableAs<TShape>()->setRotation(sf::degrees(rotation)); }
+
+*/
 
 SFTriangle::SFTriangle()
 {
@@ -33,6 +123,11 @@ void SFTriangle::Render(IRenderer* renderer)
 void SFTriangle::Reset(const std::array<Vector2f, 3>& points)
 {
     SetPoints(points);
+}
+
+sf::ConvexShape* SFTriangle::GetTriangle()
+{
+    return this->GetPrimaryDrawableAs<sf::ConvexShape>();
 }
 
 Vector2f SFTriangle::GetPoint(int idx)
@@ -95,6 +190,21 @@ void SFRect::Reset(const Vector2f& size)
 	SetOrigin(size * 0.5f);
 }
 
+sf::RectangleShape* SFRect::GetRect()
+{
+    return this->GetPrimaryDrawableAs<sf::RectangleShape>();
+}
+
+Vector2f SFRect::GetSize()
+{
+    return GetRect()->getSize();
+}
+
+void SFRect::SetSize(const Vector2f& size)
+{
+    GetRect()->setSize(size);
+}
+
 SFCircle::SFCircle()
 {
 	SetDrawable(std::make_shared<sf::CircleShape>());
@@ -126,6 +236,21 @@ void SFCircle::Reset(float radius)
 {
 	SetRadius(radius);
 	SetOrigin(Vector2f(radius, radius));
+}
+
+sf::CircleShape* SFCircle::GetCircle()
+{
+    return this->GetPrimaryDrawableAs<sf::CircleShape>();
+}
+
+float SFCircle::GetRadius()
+{
+    return GetCircle()->getRadius();
+}
+
+void SFCircle::SetRadius(float radius)
+{
+    GetCircle()->setRadius(radius);
 }
 
 namespace
@@ -285,4 +410,9 @@ void SFCapsule::Move(float x, float y)
     GetBody()->move(Vector2f(x, y));
     GetEndCap1()->move(Vector2f(x, y));
     GetEndCap2()->move(Vector2f(x, y));
+}
+
+void SFCapsule::SetSize(const Vector2f& size)
+{
+    GetBody()->setSize(size);
 }

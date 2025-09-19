@@ -19,7 +19,7 @@ public:
 	void Update(float dt) override;
 	void Render(IRenderer* renderer) override;
 
-	sf::Sprite* GetSprite() { return this->GetPrimaryDrawableAs<sf::Sprite>(); }
+	sf::Sprite* GetSprite();
 
 	void Move(float x, float y) override;
 	void Move(const Vector2f& mov) override;

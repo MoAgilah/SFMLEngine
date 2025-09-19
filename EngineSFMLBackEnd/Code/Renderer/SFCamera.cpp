@@ -1,10 +1,10 @@
 #include "SFCamera.h"
 
 #include "../Drawables/SFShape.h"
-#include <Engine/Core/Constants.h>
 #include <Engine/Collisions/BoundingBox.h>
-#include <SFML/Graphics/View.hpp>
+#include <Engine/Core/Constants.h>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/View.hpp>
 
 SFCamera::SFCamera()
 {

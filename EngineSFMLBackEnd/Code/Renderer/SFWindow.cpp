@@ -4,7 +4,6 @@
 #include <Engine/Core/GameManager.h>
 #include <SFML/Graphics.hpp>
 
-
 bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
 {
 	m_window = std::make_shared<sf::RenderWindow>();

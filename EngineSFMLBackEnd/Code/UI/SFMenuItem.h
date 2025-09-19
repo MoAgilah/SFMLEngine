@@ -1,7 +1,7 @@
 #pragma once
 
-#include "../Drawables/SFText.h"
 #include "../Drawables/SFSprite.h"
+#include "../Drawables/SFText.h"
 #include <Engine/Interface/UI/IMenuItem.h>
 #include <Utilities/Vector.h>
 

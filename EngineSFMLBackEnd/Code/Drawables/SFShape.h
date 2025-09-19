@@ -1,32 +1,40 @@
 #pragma once
 
 #include "SFDrawables.h"
-#include <Utilities/Traits.h>
-#include <Utilities/Line.h>
-#include <Utilities/Vector.h>
 #include <Engine/Interface/Drawables/IShape.h>
-#include <SFML/Graphics/ConvexShape.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/CircleShape.hpp>
-#include <SFML/Graphics/Transformable.hpp>
+#include <Utilities/Line.h>
+#include <Utilities/Traits.h>
+#include <Utilities/Vector.h>
+
+namespace sf
+{
+    class Transformable;
+    class Shape;
+    class ConvexShape;
+    class RectangleShape;
+    class CircleShape;
+}
 
 template<typename TShape>
 class SFShape : public SFDrawables<TShape>, public IShape, public IMoveable
 {
 public:
-    void Move(float x, float y) override { this->GetPrimaryDrawableAs<TShape>()->move(Vector2f(x, y)); }
-    void Move(const Vector2f& vel) override { this->Move(vel.x, vel.y); }
+    // IMoveable
+    void Move(float x, float y) override;
+    void Move(const Vector2f& vel) override;
 
-    Colour GetFillColour() override { return this->GetPrimaryDrawableAs<TShape>()->getFillColor(); }
-    void SetFillColour(const Colour& col) override { this->GetPrimaryDrawableAs<TShape>()->setFillColor(col); }
+    // IShape (colour/outline)
+    Colour GetFillColour() override;
+    void SetFillColour(const Colour& col) override;
 
-    Colour GetOutlineColour() override { return this->GetPrimaryDrawableAs<TShape>()->getOutlineColor(); }
-    void SetOutlineColour(const Colour& col) override { this->GetPrimaryDrawableAs<TShape>()->setOutlineColor(col); }
+    Colour GetOutlineColour() override;
+    void SetOutlineColour(const Colour& col) override;
 
-    float GetOutlineThickness() override { return this->GetPrimaryDrawableAs<TShape>()->getOutlineThickness(); }
-    void SetOutlineThickness(float scale) override { this->GetPrimaryDrawableAs<TShape>()->setOutlineThickness(scale); }
+    float GetOutlineThickness() override;
+    void SetOutlineThickness(float scale) override;
 
-    void SetRotation(float rotation) override { this->GetPrimaryDrawableAs<TShape>()->setRotation(sf::degrees(rotation)); }
+    // Rotation in degrees (we’ll convert to sf::Angle in the .cpp)
+    void SetRotation(float rotationDegrees) override;
 };
 
 class SFTriangle : public SFShape<sf::ConvexShape>, public ITriangleShape
@@ -40,7 +48,7 @@ public:
 
     void Reset(const std::array<Vector2f, 3>& points);
 
-    sf::ConvexShape* GetTriangle() { return this->GetPrimaryDrawableAs<sf::ConvexShape>(); }
+    sf::ConvexShape* GetTriangle();
 
     Vector2f GetPoint(int idx) override;
     Linef GetLine(int start, int end) override;
@@ -64,10 +72,10 @@ public:
 
     void Reset(const Vector2f& size);
 
-    sf::RectangleShape* GetRect() { return this->GetPrimaryDrawableAs<sf::RectangleShape>(); }
+    sf::RectangleShape* GetRect();
 
-    Vector2f GetSize() override { return GetRect()->getSize(); }
-    void SetSize(const Vector2f& size) override { GetRect()->setSize(size); }
+    Vector2f GetSize() override;
+    void SetSize(const Vector2f& size) override;
 };
 
 // --- Circle Shape ---
@@ -82,10 +90,10 @@ public:
 
     void Reset(float radius);
 
-    sf::CircleShape* GetCircle() { return this->GetPrimaryDrawableAs<sf::CircleShape>(); }
+    sf::CircleShape* GetCircle();
 
-    float GetRadius() override { return GetCircle()->getRadius(); }
-    void SetRadius(float radius) override { GetCircle()->setRadius(radius); }
+    float GetRadius() override;
+    void SetRadius(float radius) override;
 };
 
 class SFCapsule : public SFShape<sf::Shape>, public ICapsuleShape
@@ -106,7 +114,7 @@ public:
 
     void Move(float x, float y) override;
 
-    void SetSize(const Vector2f& size) override { GetBody()->setSize(size); }
+    void SetSize(const Vector2f& size) override;
 };
 
 template <>

@@ -3,10 +3,10 @@
 #include "../Resources/SFFont.h"
 #include "../Resources/SFShader.h"
 #include <Engine/Core/GameManager.h>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/Shader.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+#include <SFML/Graphics/Shader.hpp>
+#include <SFML/Graphics/Text.hpp>
 
 SFText::SFText(const TextConfig& config)
 	: IText(config)

@@ -4,9 +4,9 @@
 #include <Engine/Interface/UI/IText.h>
 #include <Engine/Core/Timer.h>
 #include <Utilities/Vector.h>
-#include <string>
-#include <optional>
 #include <functional>
+#include <optional>
+#include <string>
 
 namespace sf { class Text; class Shader; }
 

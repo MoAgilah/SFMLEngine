@@ -5,7 +5,6 @@
 #include <Engine/UI/MenuNavigation.h>
 #include <Utilities/Vector.h>
 
-
 class SFMenuCursor : public IMenuCursor
 {
 public:

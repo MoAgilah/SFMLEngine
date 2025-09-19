@@ -1,10 +1,9 @@
 #include "SFRenderer.h"
 
 #include "SFWindow.h"
-#include <SFML/Graphics/RenderWindow.hpp>
-
 #include <Engine/Core/Constants.h>
 #include <Engine/Interface/Renderer/IRenderable.h>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 namespace
 {
