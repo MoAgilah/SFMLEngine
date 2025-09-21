@@ -1,5 +1,6 @@
 #include "SFDrawables.h"
 
+#include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -86,6 +87,7 @@ void SFDrawables<T>::SetSize(const Vector2f& /*size*/)
 
 // Explicit instantiations for the SFML drawables you actually use
 template class SFDrawables<sf::Sprite>;
+template class SFDrawables<sf::Shape>;
 template class SFDrawables<sf::Text>;
 template class SFDrawables<sf::RectangleShape>;
 template class SFDrawables<sf::CircleShape>;

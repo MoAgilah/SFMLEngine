@@ -29,3 +29,12 @@ public:
 
     void SetSize(const Vector2f& size) override;
 };
+
+namespace sf { class Sprite; class Shape; class Text; class RectangleShape; class CircleShape; class ConvexShape; }
+
+extern template class SFDrawables<sf::Sprite>;
+extern template class SFDrawables<sf::Shape>;
+extern template class SFDrawables<sf::Text>;
+extern template class SFDrawables<sf::RectangleShape>;
+extern template class SFDrawables<sf::CircleShape>;
+extern template class SFDrawables<sf::ConvexShape>;

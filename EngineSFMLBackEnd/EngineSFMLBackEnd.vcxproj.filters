@@ -61,6 +61,15 @@
     <Filter Include="Source Files\Resources">
       <UniqueIdentifier>{334290db-aee5-4998-b927-470ad903deee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Dlls">
+      <UniqueIdentifier>{126ec2f2-9970-4dc1-a62f-db33de867029}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dlls\Debug">
+      <UniqueIdentifier>{59233d71-a280-4775-9577-61e447a95245}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource Files\Dlls\Release">
+      <UniqueIdentifier>{7bb6feab-8f0f-4908-99e5-1a446697d95c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Collisions\SFGrid.cpp">
@@ -194,5 +203,37 @@
     <ClInclude Include="Code\Utilities\ActiveTypes.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="bin\Debug\sfml-audio-d-3.dll">
+      <Filter>Resource Files\Dlls\Debug</Filter>
+    </None>
+    <None Include="bin\Debug\sfml-graphics-d-3.dll">
+      <Filter>Resource Files\Dlls\Debug</Filter>
+    </None>
+    <None Include="bin\Debug\sfml-network-d-3.dll">
+      <Filter>Resource Files\Dlls\Debug</Filter>
+    </None>
+    <None Include="bin\Debug\sfml-system-d-3.dll">
+      <Filter>Resource Files\Dlls\Debug</Filter>
+    </None>
+    <None Include="bin\Debug\sfml-window-d-3.dll">
+      <Filter>Resource Files\Dlls\Debug</Filter>
+    </None>
+    <None Include="bin\Release\sfml-audio-3.dll">
+      <Filter>Resource Files\Dlls\Release</Filter>
+    </None>
+    <None Include="bin\Release\sfml-graphics-3.dll">
+      <Filter>Resource Files\Dlls\Release</Filter>
+    </None>
+    <None Include="bin\Release\sfml-network-3.dll">
+      <Filter>Resource Files\Dlls\Release</Filter>
+    </None>
+    <None Include="bin\Release\sfml-system-3.dll">
+      <Filter>Resource Files\Dlls\Release</Filter>
+    </None>
+    <None Include="bin\Release\sfml-window-3.dll">
+      <Filter>Resource Files\Dlls\Release</Filter>
+    </None>
   </ItemGroup>
 </Project>
