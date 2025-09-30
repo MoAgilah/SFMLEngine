@@ -45,17 +45,6 @@ sf::Sprite* SFSprite::GetSprite()
 	return this->GetPrimaryDrawableAs<sf::Sprite>();
 }
 
-void SFSprite::Move(float x, float y)
-{
-	Move(Vector2f(x, y));
-}
-
-void SFSprite::Move(const Vector2f& mov)
-{
-	for (auto spr : this->GetDrawables())
-		spr->move(mov);
-}
-
 Vector2u SFSprite::GetTextureSize() const
 {
 	return this->GetPrimaryDrawableAs<sf::Sprite>()->getTexture().getSize();

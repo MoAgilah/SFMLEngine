@@ -40,6 +40,13 @@ Vector2f SFDrawables<T>::GetPosition()
 }
 
 template <typename T>
+void SFDrawables<T>::OffsetPosition(const Vector2f& delta)
+{
+    if (auto* d = this->GetPrimaryDrawable())
+        d->move(delta);
+}
+
+template <typename T>
 void SFDrawables<T>::SetScale(const Vector2f& scl)
 {
     this->m_scale = scl;

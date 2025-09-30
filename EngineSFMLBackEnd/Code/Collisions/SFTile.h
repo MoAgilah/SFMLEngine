@@ -9,7 +9,6 @@ class SFTile : public ITile
 public:
 	SFTile();
 	SFTile(int gX, int gY, const std::string& fontName);
-	~SFTile() = default;
 
 	void Render(IRenderer* renderer) override;
 	void ResolveCollision(IDynamicGameObject* obj) override;

@@ -15,6 +15,8 @@ public:
     // Now these all work on the primary
     void SetPosition(const Vector2f& pos) override;
 
+    virtual void OffsetPosition(const Vector2f& delta);
+
     Vector2f GetPosition() override;
 
     void SetScale(const Vector2f& scl) override;
