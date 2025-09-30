@@ -9,19 +9,6 @@
 #include <numbers>
 
 template<typename TShape>
-void SFShape<TShape>::Move(float x, float y)
-{
-    if (auto s = this->GetPrimaryDrawable())
-        s->move(Vector2f(x, y));
-}
-
-template<typename TShape>
-void SFShape<TShape>::Move(const Vector2f& vel)
-{
-    Move(vel.x, vel.y);
-}
-
-template<typename TShape>
 Colour SFShape<TShape>::GetFillColour()
 {
     if (auto s = this->GetPrimaryDrawable())
@@ -403,13 +390,6 @@ sf::CircleShape* SFCapsule::GetEndCap2()
     if (this->GetDrawables().size() > 2)
         return dynamic_cast<sf::CircleShape*>(this->GetDrawables()[2].get());
     return nullptr;
-}
-
-void SFCapsule::Move(float x, float y)
-{
-    GetBody()->move(Vector2f(x, y));
-    GetEndCap1()->move(Vector2f(x, y));
-    GetEndCap2()->move(Vector2f(x, y));
 }
 
 void SFCapsule::SetSize(const Vector2f& size)

@@ -16,12 +16,9 @@ namespace sf
 }
 
 template<typename TShape>
-class SFShape : public SFDrawables<TShape>, public IShape, public IMoveable
+class SFShape : public SFDrawables<TShape>, public IShape
 {
 public:
-    // IMoveable
-    void Move(float x, float y) override;
-    void Move(const Vector2f& vel) override;
 
     // IShape (colour/outline)
     Colour GetFillColour() override;
@@ -111,8 +108,6 @@ public:
     sf::RectangleShape* GetBody();
     sf::CircleShape* GetEndCap1();
     sf::CircleShape* GetEndCap2();
-
-    void Move(float x, float y) override;
 
     void SetSize(const Vector2f& size) override;
 };
