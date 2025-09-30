@@ -15,6 +15,8 @@ public:
     // Now these all work on the primary
     void SetPosition(const Vector2f& pos) override;
 
+    virtual void OffsetPosition(const Vector2f& delta);
+
     Vector2f GetPosition() override;
 
     void SetScale(const Vector2f& scl) override;
@@ -29,3 +31,12 @@ public:
 
     void SetSize(const Vector2f& size) override;
 };
+
+namespace sf { class Sprite; class Shape; class Text; class RectangleShape; class CircleShape; class ConvexShape; }
+
+extern template class SFDrawables<sf::Sprite>;
+extern template class SFDrawables<sf::Shape>;
+extern template class SFDrawables<sf::Text>;
+extern template class SFDrawables<sf::RectangleShape>;
+extern template class SFDrawables<sf::CircleShape>;
+extern template class SFDrawables<sf::ConvexShape>;

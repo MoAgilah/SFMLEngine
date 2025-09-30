@@ -64,3 +64,11 @@ bool SFCamera::CheckVerticalBounds(IBoundingVolume* volume)
 
     return false;
 }
+
+sf::View* SFCamera::GetView()
+{
+    if (m_camera)
+        return m_camera.get();
+
+    return nullptr;
+}

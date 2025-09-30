@@ -21,9 +21,6 @@ public:
 
 	sf::Sprite* GetSprite();
 
-	void Move(float x, float y) override;
-	void Move(const Vector2f& mov) override;
-
 	Vector2u GetTextureSize() const override;
 	void SetTextureRect(const IntRect& rect) override;
 

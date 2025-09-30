@@ -19,7 +19,7 @@ public:
 	void Update(float deltaTime) override;
 	void Render(IRenderer* renderer) override;
 
-	virtual void SetText(const std::string& text);
+	void SetText(const std::string& text) override;
 	virtual void Reset(const std::string& text, std::optional<TextConfig> config = std::nullopt);
 
 	Vector2f GetSize() override;

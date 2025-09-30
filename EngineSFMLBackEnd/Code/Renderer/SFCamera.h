@@ -20,6 +20,8 @@ public:
     bool IsInView(IBoundingVolume* volume) override;
     bool CheckVerticalBounds(IBoundingVolume* volume) override;
 
+    sf::View* GetView();
+
 private:
 
     std::unique_ptr<sf::View> m_camera;

@@ -18,9 +18,7 @@ SFText::SFText(const TextConfig& config)
 	else
 		std::cerr << "Font Error: Could not find font '" << m_config.m_fontName << "'\n";
 
-	SetCharSize(m_config.m_charSize);
-	SetOutlineThickness(m_config.m_charSize / 10.f);
-	SetOutlineColour(m_config.m_colour);
+	Init();
 }
 
 void SFText::Update(float deltaTime)
@@ -40,7 +38,7 @@ void SFText::SetText(const std::string& text)
 	{
 		txtObj->setString(text);
 		auto bounds = txtObj->getLocalBounds();
-		SetPosition(SetTextPosition(m_config.m_alignment, m_config.m_position, bounds.size, bounds.position));
+		SetPosition(SetTextPosition(m_config.m_alignment, GetPosition(), bounds.size, bounds.position));
 	}
 }
 
@@ -127,6 +125,7 @@ void SFText::Init()
 	SetCharSize(m_config.m_charSize);
 	SetOutlineThickness(m_config.m_charSize / 10.f);
 	SetOutlineColour(m_config.m_colour);
+	SetPosition(m_config.m_position);
 }
 
 SFAnimatedText::SFAnimatedText(const TextConfig& config)
