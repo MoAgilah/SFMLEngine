@@ -43,6 +43,14 @@ void SFRenderer::Draw(IRenderable* object)
     object->Render(this);
 }
 
+void SFRenderer::Draw(IRenderable* object, IShader* shader)
+{
+    if (!object || !m_window || !shader)
+        return;
+
+    object->Render(this, shader);
+}
+
 void SFRenderer::Present()
 {
     if (auto* sfw = AsSF(m_nativeWindow))

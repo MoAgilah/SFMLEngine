@@ -51,6 +51,8 @@ public:
 	void ChangeAnim(int animNum);
 	int GetCurrentAnim() const { return m_animation.m_current; }
 
+	void EnsureAnim(int anim);
+
 	void SetFrames(const std::vector<int>& numFrames);
 	void SetFrameData(int rows, int columns, const std::vector<int>& numFrames);
 
@@ -59,6 +61,7 @@ public:
 
 	void SetShouldLoop(bool loop) { m_loop = loop; }
 
+	float GetCurrAnimSpeed() { return m_animSpeed; }
 	void UpdateAnimSpeed(float animSpd);
 
 private:
@@ -75,3 +78,5 @@ private:
 	Vector2u m_frameSize;
 	std::vector<int> m_numFrames;
 };
+
+SFAnimatedSprite* GetAnimatedSprite(IDrawable* drawable);

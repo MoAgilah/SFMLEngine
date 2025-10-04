@@ -28,7 +28,7 @@ template<typename TShape>
 Colour SFShape<TShape>::GetOutlineColour()
 {
     if (auto s = this->GetPrimaryDrawable())
-        s->getOutlineColor();
+        return s->getOutlineColor();
 
     return {};
 }
@@ -44,7 +44,7 @@ template<typename TShape>
 float SFShape<TShape>::GetOutlineThickness()
 {
     if (auto s = this->GetPrimaryDrawable())
-        s->getOutlineThickness();
+        return s->getOutlineThickness();
 
     return {};
 }

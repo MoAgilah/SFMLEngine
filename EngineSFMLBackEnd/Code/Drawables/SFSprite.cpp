@@ -129,6 +129,12 @@ void SFAnimatedSprite::ChangeAnim(int animNum)
 	m_animation.m_current = animNum;
 }
 
+void SFAnimatedSprite::EnsureAnim(int anim)
+{
+	if (GetCurrentAnim() != anim)
+		ChangeAnim(anim);
+}
+
 void SFAnimatedSprite::SetFrames(const std::vector<int>& numFrames)
 {
 	m_numFrames.assign(numFrames.begin(), numFrames.end());
@@ -146,4 +152,13 @@ void SFAnimatedSprite::UpdateAnimSpeed(float animSpd)
 {
 	if (m_animSpeed != animSpd)
 		m_animSpeed = animSpd;
+}
+
+SFAnimatedSprite* GetAnimatedSprite(IDrawable* drawable)
+{
+	auto spr = dynamic_cast<SFAnimatedSprite*>(drawable);
+	if (spr)
+		return spr;
+
+	return nullptr;
 }

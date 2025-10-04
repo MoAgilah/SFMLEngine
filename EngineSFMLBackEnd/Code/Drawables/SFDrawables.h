@@ -11,6 +11,7 @@ public:
 
     // Render only the primary drawable for base case
     void Render(IRenderer* renderer) override;
+    void Render(IRenderer* renderer, IShader* shader) override;
 
     // Now these all work on the primary
     void SetPosition(const Vector2f& pos) override;

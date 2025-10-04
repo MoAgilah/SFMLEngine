@@ -67,7 +67,7 @@ Vector2f SFText::GetSize()
 unsigned int SFText::GetCharSize()
 {
 	if (auto* txt = this->GetPrimaryDrawable())
-		txt->getCharacterSize();
+		return txt->getCharacterSize();
 
 	return {};
 }

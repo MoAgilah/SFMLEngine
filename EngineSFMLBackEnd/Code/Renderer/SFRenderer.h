@@ -13,6 +13,7 @@ public:
     void PollWindowEvents() override;
     void Clear() override;
     void Draw(IRenderable* object) override;
+    void Draw(IRenderable* object, IShader* shader) override;
     void Present() override;
 
 private:

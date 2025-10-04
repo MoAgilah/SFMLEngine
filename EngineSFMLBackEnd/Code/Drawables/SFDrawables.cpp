@@ -1,10 +1,12 @@
 #include "SFDrawables.h"
 
+#include "../Resources/SFShader.h"
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/Shader.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
 
@@ -22,6 +24,32 @@ void SFDrawables<T>::Render(IRenderer* renderer)
     auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
     if (sfw)
         sfw->draw(*drawable);
+}
+
+template<typename T>
+void SFDrawables<T>::Render(IRenderer* renderer, IShader* shader)
+{
+    auto* drawable = this->GetPrimaryDrawable();
+    if (!renderer || !drawable)
+        return;
+
+    INativeWindow* win = renderer->GetWindow();
+    if (!win)
+        return;
+
+    //auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
+    //if (sfw)
+    //{
+    //    if (auto* sfShader = dynamic_cast<SFShader*>(shader))
+    //    {
+    //        if (auto& native = sfShader->GetNativeShader()) // sf::Shader*
+    //        {
+    //            sf::RenderStates states;
+    //            states.shader = native;
+    //            sfw->draw(*drawable, states);               // draw with states
+    //        }
+    //    }
+    //}
 }
 
 template <typename T>
