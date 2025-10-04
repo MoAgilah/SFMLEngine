@@ -17,7 +17,7 @@ void SFDrawables<T>::Render(IRenderer* renderer)
     if (!renderer || !drawable)
         return;
 
-    INativeWindow* win = renderer->GetWindow();
+    auto* win = renderer->GetWindow();
     if (!win)
         return;
 
@@ -33,23 +33,22 @@ void SFDrawables<T>::Render(IRenderer* renderer, IShader* shader)
     if (!renderer || !drawable)
         return;
 
-    INativeWindow* win = renderer->GetWindow();
+    auto* win = renderer->GetWindow();
     if (!win)
         return;
 
-    //auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
-    //if (sfw)
-    //{
-    //    if (auto* sfShader = dynamic_cast<SFShader*>(shader))
-    //    {
-    //        if (auto& native = sfShader->GetNativeShader()) // sf::Shader*
-    //        {
-    //            sf::RenderStates states;
-    //            states.shader = native;
-    //            sfw->draw(*drawable, states);               // draw with states
-    //        }
-    //    }
-    //}
+    auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
+    if (!sfw)
+        return;
+
+    auto* sfShader = dynamic_cast<SFShader*>(shader);
+    if (!sfShader)
+        return;
+
+    sf::RenderStates states;
+    states.shader = &sfShader->GetNativeShader();
+
+    sfw->draw(*drawable, states);
 }
 
 template <typename T>
