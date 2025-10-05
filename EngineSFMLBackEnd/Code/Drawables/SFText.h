@@ -8,7 +8,7 @@
 #include <optional>
 #include <string>
 
-namespace sf { class Text; class Shader; }
+namespace sf { class Text; }
 
 class SFText : public SFDrawables<sf::Text>, public IText
 {
@@ -88,7 +88,7 @@ private:
 	UpdateFunc m_updateFunc;
 	RenderFunc m_renderFunc;
 	std::string m_countdownMsg;
-	sf::Shader* m_textShader;
+	IShader* m_textShader;
 };
 
 void InitFlashingText(SFAnimatedText* txtObj, const std::string& text, bool loop = true, std::optional<TextConfig> config = std::nullopt);

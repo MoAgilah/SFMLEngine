@@ -5,6 +5,7 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Collisions/BoundingCapsule.h>
 #include <Engine/Collisions/BoundingCircle.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 SFTile::SFTile()
@@ -17,6 +18,8 @@ SFTile::SFTile(int gX, int gY, const std::string& fontName)
 
 void SFTile::Render(IRenderer* renderer)
 {
+	ENSURE_VALID(renderer);
+
 #if defined _DEBUG
 	if (m_type == Types::DIAGU || m_type == Types::DIAGD)
 	{
@@ -24,9 +27,7 @@ void SFTile::Render(IRenderer* renderer)
 		{
 			auto triangle = dynamic_cast<SFTriangle*>(m_slope.get());
 			if (triangle)
-			{
 				triangle->Render(renderer);
-			}
 		}
 	}
 
@@ -47,7 +48,8 @@ void SFTile::Render(IRenderer* renderer)
 		}
 	}
 
-	m_aabb->Render(renderer);
+	if (m_aabb)
+		m_aabb->Render(renderer);
 
 	if (m_text)
 		m_text->Render(renderer);
@@ -56,6 +58,10 @@ void SFTile::Render(IRenderer* renderer)
 
 void SFTile::ResolveCollision(IDynamicGameObject* obj)
 {
+	ENSURE_VALID(obj);
+	ENSURE_VALID(obj->GetVolume());
+	ENSURE_VALID(m_aabb);
+
 	Direction dir = obj->GetFacingDirection();
 	Line tileTopEdge = m_aabb->GetSide(Side::Top);
 	Vector2f objBottomPoint = obj->GetVolume()->GetPoint(Side::Bottom);
@@ -186,6 +192,8 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 
 void SFTile::SetPosition(const Vector2f& pos)
 {
+	ENSURE_VALID(m_aabb);
+
 	m_aabb->Update(pos);
 
 	switch (m_type)
@@ -227,22 +235,20 @@ void SFTile::SetFillColour(Colour col)
 {
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
 	if (sfAABB)
-	{
 		sfAABB->GetShape()->SetFillColour(col);
-	}
 }
 
 void SFTile::SetOutlineColour(Colour col)
 {
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
 	if (sfAABB)
-	{
 		sfAABB->GetShape()->SetOutlineColour(col);
-	}
 }
 
 void SFTile::ResolveObjectToBoxTop(IDynamicGameObject* obj)
 {
+	ENSURE_VALID(obj);
+
 	Vector2f seperationVector = GetSeperationVector(obj);
 
 	obj->Move(0, -seperationVector.y);
@@ -252,6 +258,8 @@ void SFTile::ResolveObjectToBoxTop(IDynamicGameObject* obj)
 
 void SFTile::ResolveObjectToBoxBottom(IDynamicGameObject* obj)
 {
+	ENSURE_VALID(obj);
+
 	Vector2f seperationVector = GetSeperationVector(obj);
 
 	obj->Move(0, seperationVector.y);
@@ -259,6 +267,8 @@ void SFTile::ResolveObjectToBoxBottom(IDynamicGameObject* obj)
 
 void SFTile::ResolveObjectToBoxHorizontally(IDynamicGameObject* obj)
 {
+	ENSURE_VALID(obj);
+
 	Vector2f seperationVector = GetSeperationVector(obj);
 
 	obj->Move((obj->GetDirection() ? -1 : 1) * seperationVector.x, 0);
@@ -266,6 +276,8 @@ void SFTile::ResolveObjectToBoxHorizontally(IDynamicGameObject* obj)
 
 bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj)
 {
+	ENSURE_VALID_RET(obj, false);
+
 	/*Line line = GetSlope(0, 1);
 	BoundingCircle circle(4, obj->GetColVolume()->GetPoint(Side::Bottom));
 
@@ -291,6 +303,8 @@ static float GetYOffSet(float pDistX, float lDistY, float slopeY, float currY, f
 
 bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end)
 {
+	ENSURE_VALID_RET(obj, false);
+
 	/*Line line = GetSlope(start, end);
 	BoundingCircle circle(4, obj->GetColVolume()->GetPoint(Side::Bottom));
 	BoundingCapsule capsule(6, line);
@@ -313,6 +327,8 @@ bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int
 
 bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end)
 {
+	ENSURE_VALID_RET(obj, false);
+
 	/*Line line = GetSlope(start, end);
 	BoundingCircle circle(4, obj->GetColVolume()->GetPoint(Side::Bottom));
 	BoundingCapsule capsule(6, line);
@@ -335,6 +351,8 @@ bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int
 
 void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 {
+	ENSURE_VALID(obj);
+
 	/*if (IsPlayerObject(obj->GetID()))
 		return;
 

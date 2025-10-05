@@ -5,17 +5,22 @@
 #include "../Drawables/SFShape.h"
 #include "../Drawables/SFSprite.h"
 #include "../Drawables/SFText.h"
+#include <Utilities/Utils.h>
 
 SFMenu::SFMenu(const Vector2f& menuSize, float outlineThickness, const Vector2f& dimensions, const MenuPositionData& menuPositionData)
 	: IMenu(outlineThickness, dimensions, menuPositionData)
 {
 	m_menuSpace = std::make_shared<SFRect>(menuSize, Vector2f());
 
+	ENSURE_VALID(m_menuSpace);
+
 	BuildMenuSpace();
 }
 
 void SFMenu::AddCursor(ISprite* spr, const MenuNav& menuNav)
 {
+	ENSURE_VALID(spr);
+
 	auto cursor = std::make_shared<SFMenuCursor>(
 		dynamic_cast<SFSprite*>(spr), menuNav);
 	m_cursors.push_back(std::move(cursor));

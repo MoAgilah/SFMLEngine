@@ -6,11 +6,13 @@ SFMenuCursor::SFMenuCursor(SFSprite* sprite, const MenuNav& menuNav)
 
 void SFMenuCursor::SetPosition(const Vector2f& pos)
 {
+	ENSURE_VALID(m_cursor);
 	static_cast<SFSprite*>(m_cursor.get())->SetPosition(pos);
 }
 
 void SFMenuCursor::SetScale(const Vector2f& cellSize)
 {
+	ENSURE_VALID(m_cursor);
 	auto spr = static_cast<SFSprite*>(m_cursor.get());
 
 	Vector2f scaleXY = cellSize / spr->GetSize();

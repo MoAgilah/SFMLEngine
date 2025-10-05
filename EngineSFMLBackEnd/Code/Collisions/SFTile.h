@@ -20,8 +20,6 @@ public:
 
 protected:
 
-	Vector2f GetSeperationVector(IDynamicGameObject* obj) { return m_aabb->GetSeparationVector(obj->GetVolume()); }
-
 	void ResolveObjectToBoxTop(IDynamicGameObject* obj) override;
 	void ResolveObjectToBoxBottom(IDynamicGameObject* obj) override;
 	void ResolveObjectToBoxHorizontally(IDynamicGameObject* obj) override;

@@ -1,6 +1,7 @@
 #include "SFDrawables.h"
 
 #include "../Resources/SFShader.h"
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
@@ -13,37 +14,43 @@
 template <typename T>
 void SFDrawables<T>::Render(IRenderer* renderer)
 {
+    ENSURE_VALID(renderer);
+
     auto* drawable = this->GetPrimaryDrawable();
-    if (!renderer || !drawable)
-        return;
+
+    ENSURE_VALID(drawable);
 
     auto* win = renderer->GetWindow();
-    if (!win)
-        return;
+
+    ENSURE_VALID(win);
 
     auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
-    if (sfw)
-        sfw->draw(*drawable);
+
+    ENSURE_VALID(sfw);
+
+    sfw->draw(*drawable);
 }
 
 template<typename T>
 void SFDrawables<T>::Render(IRenderer* renderer, IShader* shader)
 {
+    ENSURE_VALID(renderer);
+
     auto* drawable = this->GetPrimaryDrawable();
-    if (!renderer || !drawable)
-        return;
+
+    ENSURE_VALID(drawable);
 
     auto* win = renderer->GetWindow();
-    if (!win)
-        return;
+
+    ENSURE_VALID(win);
 
     auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
-    if (!sfw)
-        return;
+
+    ENSURE_VALID(sfw);
 
     auto* sfShader = dynamic_cast<SFShader*>(shader);
-    if (!sfShader)
-        return;
+
+    ENSURE_VALID(sfShader);
 
     sf::RenderStates states;
     states.shader = &sfShader->GetNativeShader();

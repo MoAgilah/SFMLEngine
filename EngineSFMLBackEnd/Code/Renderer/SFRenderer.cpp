@@ -3,6 +3,7 @@
 #include "SFWindow.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Interface/Renderer/IRenderable.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 namespace
@@ -17,6 +18,7 @@ void SFRenderer::Initialise(const Vector2f& screenDims, const std::string& title
 {
     // Create a concrete window (still type-erased in the interface)
     m_window = std::make_shared<SFWindow>();
+    ENSURE_VALID(m_window);
     m_window->Create(screenDims, title);
 
     // Cache the native handle once (type-erased in the renderer’s header)
@@ -37,16 +39,17 @@ void SFRenderer::Clear()
 
 void SFRenderer::Draw(IRenderable* object)
 {
-    if (!object || !m_window)
-        return;
+    ENSURE_VALID(object);
+    ENSURE_VALID(m_window);
 
     object->Render(this);
 }
 
 void SFRenderer::Draw(IRenderable* object, IShader* shader)
 {
-    if (!object || !m_window || !shader)
-        return;
+    ENSURE_VALID(object);
+    ENSURE_VALID(m_window);
+    ENSURE_VALID(shader);
 
     object->Render(this, shader);
 }

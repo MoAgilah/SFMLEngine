@@ -2,11 +2,13 @@
 
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics.hpp>
 
 bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
 {
 	m_window = std::make_shared<sf::RenderWindow>();
+	ENSURE_VALID_RET(m_window, false);
 	m_window->create(sf::VideoMode(sf::Vector2u(static_cast<int>(screemDims.x), static_cast<int>(screemDims.y))), title);
 	m_window->setFramerateLimit(static_cast<int>(GameConstants::FPS));
 	return m_window->isOpen();
@@ -14,6 +16,10 @@ bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
 
 void SFWindow::PollEvents()
 {
+	ENSURE_VALID(m_window);
+	GET_OR_RETURN(gameMgr, GameManager::Get());
+	GET_OR_RETURN(inputMgr, gameMgr->GetInputManager());
+
 	while (auto event = m_window->pollEvent())
 	{
 		if (event.has_value())
@@ -27,12 +33,12 @@ void SFWindow::PollEvents()
 				if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
 					Close();
 
-				GameManager::Get()->GetInputManager()->ProcessPlatformKeyPress(
+				inputMgr->ProcessPlatformKeyPress(
 					static_cast<int>(keyPressed->code));
 			}
 			else if (const auto* keyReleased = event->getIf<sf::Event::KeyReleased>())
 			{
-				GameManager::Get()->GetInputManager()->ProcessPlatformKeyRelease(
+				inputMgr->ProcessPlatformKeyRelease(
 					static_cast<int>(keyReleased->code));
 			}
 		}
@@ -41,6 +47,7 @@ void SFWindow::PollEvents()
 
 bool SFWindow::ShouldClose() const
 {
+	ENSURE_VALID_RET(m_window, false);
 	return m_shouldClose || !m_window->isOpen();
 }
 

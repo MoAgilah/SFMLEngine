@@ -1,6 +1,7 @@
 #include "SFShape.h"
 
 #include <Engine/Core/Constants.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -62,24 +63,6 @@ void SFShape<TShape>::SetRotation(float rotationDegrees)
     if (auto s = this->GetPrimaryDrawable())
         s->setRotation(sf::degrees(rotationDegrees));
 }
-
-/*
-
-void Move(float x, float y) override { this->GetPrimaryDrawableAs<TShape>()->move(Vector2f(x, y)); }
-    void Move(const Vector2f& vel) override { this->Move(vel.x, vel.y); }
-
-    Colour GetFillColour() override { return this->GetPrimaryDrawableAs<TShape>()->getFillColor(); }
-    void SetFillColour(const Colour& col) override { this->GetPrimaryDrawableAs<TShape>()->setFillColor(col); }
-
-    Colour GetOutlineColour() override { return this->GetPrimaryDrawableAs<TShape>()->getOutlineColor(); }
-    void SetOutlineColour(const Colour& col) override { this->GetPrimaryDrawableAs<TShape>()->setOutlineColor(col); }
-
-    float GetOutlineThickness() override { return this->GetPrimaryDrawableAs<TShape>()->getOutlineThickness(); }
-    void SetOutlineThickness(float scale) override { this->GetPrimaryDrawableAs<TShape>()->setOutlineThickness(scale); }
-
-    void SetRotation(float rotation) override { this->GetPrimaryDrawableAs<TShape>()->setRotation(sf::degrees(rotation)); }
-
-*/
 
 SFTriangle::SFTriangle()
 {
@@ -326,25 +309,22 @@ void SFCapsule::Update(const Vector2f& pos)
 
 void SFCapsule::Render(IRenderer* renderer)
 {
+    ENSURE_VALID(renderer);
+
     SFDrawables<sf::Shape>::Render(renderer);
 
-    if (auto* windowHandle = renderer->GetWindow())
-    {
-        auto* sfWindow = static_cast<sf::RenderWindow*>(windowHandle->GetNativeHandle());
-        if (sfWindow)
-        {
-            auto endCap1 = GetEndCap1();
-            if (endCap1)
-            {
-                sfWindow->draw(*endCap1);
-            }
+    GET_OR_RETURN(windowHandle, renderer->GetWindow());
 
-            auto endCap2 = GetEndCap2();
-            if (endCap2)
-            {
-                sfWindow->draw(*endCap2);
-            }
-        }
+    auto* sfWindow = static_cast<sf::RenderWindow*>(windowHandle->GetNativeHandle());
+    if (sfWindow)
+    {
+        auto endCap1 = GetEndCap1();
+        if (endCap1)
+            sfWindow->draw(*endCap1);
+
+        auto endCap2 = GetEndCap2();
+        if (endCap2)
+            sfWindow->draw(*endCap2);
     }
 }
 

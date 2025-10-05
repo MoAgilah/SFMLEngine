@@ -3,6 +3,7 @@
 #include "../Resources/SFFont.h"
 #include "../Resources/SFShader.h"
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Shader.hpp>
@@ -136,9 +137,10 @@ SFAnimatedText::SFAnimatedText(const TextConfig& config)
 	case TextAnimType::Flashing:
 	case TextAnimType::Countdown:
 	{
-		auto shader = dynamic_cast<SFShader*>(GameManager::Get()->GetShaderMgr().GetShader("FadeInOutShader"));
+		GET_OR_RETURN(gameMgr, GameManager::Get());
+		auto shader = gameMgr->GetShaderMgr().GetShader("FadeInOutShader");
 		if (shader)
-			m_textShader = &shader->GetNativeShader();
+			m_textShader = shader;
 		else
 			std::cerr << "Shader Error: 'FadeInOutShader' not found\n";
 	}
@@ -163,6 +165,8 @@ void SFAnimatedText::Update(float deltaTime)
 
 void SFAnimatedText::Render(IRenderer* renderer)
 {
+	ENSURE_VALID(renderer);
+
 	switch (m_config.m_animType)
 	{
 	case TextAnimType::Flashing:
@@ -258,49 +262,41 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 
 void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
 {
-	if (!renderer || !this->GetPrimaryDrawableAs<sf::Text>() || !m_textShader)
-		return;
+	ENSURE_VALID(renderer);
+	ENSURE_VALID(m_textShader);
+	GET_OR_RETURN(drawable, this->GetPrimaryDrawable());
 
-	m_textShader->setUniform("time", m_timer.GetCurrTime());
+	auto shader = dynamic_cast<SFShader*>(m_textShader);
+	ENSURE_VALID(shader);
 
-	if (auto* windowHandle = renderer->GetWindow())
-	{
-		auto* sfWindow = static_cast<sf::RenderWindow*>(windowHandle->GetNativeHandle());
-		if (sfWindow)
-		{
-			sf::RenderStates states;
-			states.shader = m_textShader;
-			sfWindow->draw(*this->GetPrimaryDrawable(), states);
-		}
-	}
+	shader->GetNativeShader().setUniform("time", m_timer.GetCurrTime());
+
+	renderer->Draw(this, m_textShader);
 }
 
 void InitFlashingText(SFAnimatedText* txtObj, const std::string& text, bool loop, std::optional<TextConfig> config)
 {
-	if (txtObj)
-	{
-		txtObj->SetIsLooping(loop);
-		txtObj->Reset(text, config);
-	}
+	ENSURE_VALID(txtObj);
+
+	txtObj->SetIsLooping(loop);
+	txtObj->Reset(text, config);
 }
 
 void InitCountdownText(SFAnimatedText* txtObj, int startFrom, const std::string& countDownMessage, std::optional<TextConfig> config)
 {
-	if (txtObj)
-	{
-		txtObj->SetMaxCount(startFrom);
-		txtObj->SetIsLooping(false);
-		txtObj->SetCountDown(countDownMessage);
-		txtObj->Reset(std::to_string(startFrom), config);
-	}
+	ENSURE_VALID(txtObj);
+
+	txtObj->SetMaxCount(startFrom);
+	txtObj->SetIsLooping(false);
+	txtObj->SetCountDown(countDownMessage);
+	txtObj->Reset(std::to_string(startFrom), config);
 }
 
 void InitCustomTextAnim(SFAnimatedText* txtObj, const std::string& text, UpdateFunc updator, RenderFunc rendaror, const std::string& shaderName, std::optional<TextConfig> config)
 {
-	if (txtObj)
-	{
-		txtObj->SetUpdateFunc(updator);
-		txtObj->SetRenderFunc(rendaror);
-		txtObj->Reset(text, config);
-	}
+	ENSURE_VALID(txtObj);
+
+	txtObj->SetUpdateFunc(updator);
+	txtObj->SetRenderFunc(rendaror);
+	txtObj->Reset(text, config);
 }
