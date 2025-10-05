@@ -154,6 +154,15 @@ void SFAnimatedSprite::UpdateAnimSpeed(float animSpd)
 		m_animSpeed = animSpd;
 }
 
+SFSprite* GetSprite(IDrawable* drawable)
+{
+	auto spr = dynamic_cast<SFSprite*>(drawable);
+	if (spr)
+		return spr;
+
+	return nullptr;
+}
+
 SFAnimatedSprite* GetAnimatedSprite(IDrawable* drawable)
 {
 	auto spr = dynamic_cast<SFAnimatedSprite*>(drawable);

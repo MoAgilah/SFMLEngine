@@ -35,6 +35,8 @@ struct Range
 	int m_max = 0;
 };
 
+SFSprite* GetSprite(IDrawable* drawable);
+
 class SFAnimatedSprite : public SFSprite
 {
 public:
