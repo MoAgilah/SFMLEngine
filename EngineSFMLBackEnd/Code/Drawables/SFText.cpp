@@ -183,7 +183,10 @@ void SFAnimatedText::Render(IRenderer* renderer)
 void SFAnimatedText::Reset(const std::string& text, std::optional<TextConfig> config)
 {
 	if (config)
+	{
 		m_config = *config;
+		SetPosition(m_config.m_position);
+	}
 
 	SetText(text);
 }
