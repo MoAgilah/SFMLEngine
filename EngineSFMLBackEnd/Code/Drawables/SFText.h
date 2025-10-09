@@ -4,7 +4,6 @@
 #include <Engine/Interface/UI/IText.h>
 #include <Engine/Core/Timer.h>
 #include <Utilities/Vector.h>
-#include <functional>
 #include <optional>
 #include <string>
 
@@ -20,7 +19,6 @@ public:
 	void Render(IRenderer* renderer) override;
 
 	void SetText(const std::string& text) override;
-	virtual void Reset(const std::string& text, std::optional<TextConfig> config = std::nullopt);
 
 	Vector2f GetSize() override;
 
@@ -38,28 +36,24 @@ public:
 
 	void ResetOutlineColour() { SetOutlineColour(m_config.m_colour); }
 
-private:
+protected:
 
-	void Init() override;
+	bool Init() override;
 };
-
-using UpdateFunc = std::function<void(float)>;
-using RenderFunc = std::function<void(IRenderer* renderer)>;
 
 class SFAnimatedText : public SFText
 {
 public:
 	SFAnimatedText(const TextConfig& config);
+	SFAnimatedText(const CustomTextConfig& config);
 
 	void Update(float deltaTime) override;
 	void Render(IRenderer* renderer) override;
 
-	void Reset(const std::string& text, std::optional<TextConfig> config = std::nullopt) override;
-
-	bool GetIsLooping() { return m_looping; }
+	bool GetIsLooping() const { return m_looping; }
 	void SetIsLooping(bool loop) { m_looping = loop; }
 
-	bool GetIsPaused() { return m_paused; }
+	bool GetIsPaused() const { return m_paused; }
 	void SetIsPaused(bool pause) { m_paused = pause; }
 
 	void SetMaxCount(int startFrom);
@@ -72,7 +66,13 @@ public:
 
 	Timer& GetTimer() { return m_timer; }
 
+protected:
+
+	bool Init() override;
+
 private:
+
+	bool LoadShader(const std::string& shader);
 
 	void FadeInAndOutUpdate(float deltaTime);
 	void FadeInFadeOutRender(IRenderer* renderer);
@@ -90,7 +90,3 @@ private:
 	std::string m_countdownMsg;
 	IShader* m_textShader;
 };
-
-void InitFlashingText(SFAnimatedText* txtObj, const std::string& text, bool loop = true, std::optional<TextConfig> config = std::nullopt);
-void InitCountdownText(SFAnimatedText* txtObj, int startFrom, const std::string& countDownMessage, std::optional<TextConfig> config = std::nullopt);
-void InitCustomTextAnim(SFAnimatedText* txtObj, const std::string& text, UpdateFunc updator, RenderFunc rendaror, const std::string& shaderName = "", std::optional<TextConfig> config = std::nullopt);

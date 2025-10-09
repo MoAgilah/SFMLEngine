@@ -1,4 +1,4 @@
-#include "SFText.h"
+﻿#include "SFText.h"
 
 #include "../Resources/SFFont.h"
 #include "../Resources/SFShader.h"
@@ -12,14 +12,7 @@
 SFText::SFText(const TextConfig& config)
 	: IText(config)
 {
-	auto font = dynamic_cast<SFFont*>(GameManager::Get()->GetFontMgr().GetFont(m_config.m_fontName));
-
-	if (font)
-		SetDrawable(std::make_shared<sf::Text>(font->GetNativeFont()));
-	else
-		std::cerr << "Font Error: Could not find font '" << m_config.m_fontName << "'\n";
-
-	Init();
+	THROW_IF_FALSE_MSG(Init(), "SFText initialization failed");
 }
 
 void SFText::Update(float deltaTime)
@@ -41,17 +34,6 @@ void SFText::SetText(const std::string& text)
 		auto bounds = txtObj->getLocalBounds();
 		SetPosition(SetTextPosition(m_config.m_alignment, GetPosition(), bounds.size, bounds.position));
 	}
-}
-
-void SFText::Reset(const std::string& text, std::optional<TextConfig> config)
-{
-	if (config)
-	{
-		m_config = *config;
-		Init();
-	}
-
-	SetText(text);
 }
 
 Vector2f SFText::GetSize()
@@ -121,8 +103,24 @@ void SFText::SetOutlineThickness(float thickness)
 		return txt->setOutlineThickness(thickness);
 }
 
-void SFText::Init()
+bool SFText::Init()
 {
+	GameManager* gameMgr = nullptr;
+	// Safely get the singleton (catch exceptions → set outError, log, return false)
+	ERR_TRY_ASSIGN_OR_RET(gameMgr, GameManager::Get(), false);
+	ENSURE_VALID_RET(gameMgr, false);
+
+	IFont* baseFont = nullptr;
+	// Safely fetch the texture (catch exceptions → set outError, log, return false)
+	ERR_TRY_ASSIGN_OR_RET(baseFont, gameMgr->GetFontMgr().GetFont(m_config.m_fontName), false);
+	ENSURE_VALID_RET(baseFont, false);
+
+	// Back end type check
+	auto* sfFont = dynamic_cast<SFFont*>(baseFont);
+	ENSURE_VALID_RET(sfFont, false);
+
+	SetDrawable(std::make_shared<sf::Text>(sfFont->GetNativeFont()));
+
 	SetCharSize(m_config.m_charSize);
 	SetOutlineThickness(m_config.m_charSize / 10.f);
 	SetOutlineColour(m_config.m_colour);
@@ -130,22 +128,20 @@ void SFText::Init()
 }
 
 SFAnimatedText::SFAnimatedText(const TextConfig& config)
-	: SFText(config), m_timer(1.f), m_textShader(nullptr)
+	: SFText(config), m_timer(1.f), m_textShader(nullptr), m_updateFunc(nullptr), m_renderFunc(nullptr)
 {
-	switch (m_config.m_animType)
-	{
-	case TextAnimType::Flashing:
-	case TextAnimType::Countdown:
-	{
-		GET_OR_RETURN(gameMgr, GameManager::Get());
-		auto shader = gameMgr->GetShaderMgr().GetShader("FadeInOutShader");
-		if (shader)
-			m_textShader = shader;
-		else
-			std::cerr << "Shader Error: 'FadeInOutShader' not found\n";
-	}
-		break;
-	}
+	THROW_IF_FALSE_MSG(m_config.m_animType != TextAnimType::Custom, "TextConfig can't initialize TextAnimType::Custom");
+	THROW_IF_FALSE_MSG(Init(), "SFAnimatedText initialization failed");
+}
+
+SFAnimatedText::SFAnimatedText(const CustomTextConfig& ctc)
+	: SFText(ctc.m_config), m_timer(1.f), m_textShader(nullptr), m_updateFunc(ctc.m_updateFunc), m_renderFunc(ctc.m_renderFunc)
+{
+	THROW_IF_FALSE_MSG(m_config.m_animType == TextAnimType::Custom, "CustomTextConfig can't initialize TextAnimType types other than TextAnimType::Custom");
+	THROW_IF_FALSE_MSG(Init(), "SFAnimatedText initialization failed");
+
+	if (!ctc.m_shaderName.empty())
+		THROW_IF_FALSE_MSG(LoadShader(ctc.m_shaderName), "LoadShader failed: id-{}", ctc.m_shaderName);
 }
 
 void SFAnimatedText::Update(float deltaTime)
@@ -180,17 +176,6 @@ void SFAnimatedText::Render(IRenderer* renderer)
 	}
 }
 
-void SFAnimatedText::Reset(const std::string& text, std::optional<TextConfig> config)
-{
-	if (config)
-	{
-		m_config = *config;
-		SetPosition(m_config.m_position);
-	}
-
-	SetText(text);
-}
-
 void SFAnimatedText::SetMaxCount(int startFrom)
 {
 	m_count = m_maxCount = startFrom;
@@ -204,6 +189,21 @@ void SFAnimatedText::SetUpdateFunc(UpdateFunc func)
 void SFAnimatedText::SetRenderFunc(RenderFunc func)
 {
 	m_renderFunc = func;
+}
+
+bool SFAnimatedText::LoadShader(const std::string& shaderID)
+{
+	GameManager* gameMgr = nullptr;
+	ERR_TRY_ASSIGN_OR_RET(gameMgr, GameManager::Get(), false);
+	ENSURE_VALID_RET(gameMgr, false);
+
+	IShader* shader = nullptr;
+	ERR_TRY_ASSIGN_OR_RET(shader, gameMgr->GetShaderMgr().GetShader(shaderID), false);
+	ENSURE_VALID_RET(shader, false);
+
+	m_textShader = shader;
+
+	return true;
 }
 
 void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
@@ -248,11 +248,11 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 				--m_count;
 				if (m_count != 0)
 				{
-					Reset(std::to_string(m_count));
+					SetText(std::to_string(m_count));
 				}
 				else
 				{
-					Reset(m_countdownMsg);
+					SetText(m_countdownMsg);
 				}
 			}
 			else
@@ -277,29 +277,30 @@ void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
 	renderer->Draw(this, m_textShader);
 }
 
-void InitFlashingText(SFAnimatedText* txtObj, const std::string& text, bool loop, std::optional<TextConfig> config)
+bool SFAnimatedText::Init()
 {
-	ENSURE_VALID(txtObj);
+	THROW_IF_FALSE_MSG(SFText::Init(), "SFText parent initialization failed");
 
-	txtObj->SetIsLooping(loop);
-	txtObj->Reset(text, config);
-}
+	switch (m_config.m_animType)
+	{
+	case TextAnimType::Flashing:
+	{
+		THROW_IF_FALSE_MSG(LoadShader("FadeInAndOutShader"),
+			"LoadShader failed: id-{}",
+			"FadeInAndOutShader");
+	}
+		break;
+	case TextAnimType::Countdown:
+	{
+		THROW_IF_FALSE_MSG(LoadShader("FadeInAndOutShader"),
+			"LoadShader failed: id-{}",
+			"FadeInAndOutShader");
+	}
+		break;
+	default:
+		// no special resources needed; keep going
+		break;
+	}
 
-void InitCountdownText(SFAnimatedText* txtObj, int startFrom, const std::string& countDownMessage, std::optional<TextConfig> config)
-{
-	ENSURE_VALID(txtObj);
-
-	txtObj->SetMaxCount(startFrom);
-	txtObj->SetIsLooping(false);
-	txtObj->SetCountDown(countDownMessage);
-	txtObj->Reset(std::to_string(startFrom), config);
-}
-
-void InitCustomTextAnim(SFAnimatedText* txtObj, const std::string& text, UpdateFunc updator, RenderFunc rendaror, const std::string& shaderName, std::optional<TextConfig> config)
-{
-	ENSURE_VALID(txtObj);
-
-	txtObj->SetUpdateFunc(updator);
-	txtObj->SetRenderFunc(rendaror);
-	txtObj->Reset(text, config);
+	return true;
 }

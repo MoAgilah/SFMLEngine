@@ -14,7 +14,7 @@ public:
 
 	std::string_view GetTexID() const { return m_texID; }
 
-	void SetTexture(const std::string& texId);
+	bool SetTexture(const std::string& texId) override;
 
 	void Update(float dt) override;
 	void Render(IRenderer* renderer) override;
@@ -63,7 +63,7 @@ public:
 
 	void SetShouldLoop(bool loop) { m_loop = loop; }
 
-	float GetCurrAnimSpeed() { return m_animSpeed; }
+	float GetCurrAnimSpeed() const { return m_animSpeed; }
 	void UpdateAnimSpeed(float animSpd);
 
 private:

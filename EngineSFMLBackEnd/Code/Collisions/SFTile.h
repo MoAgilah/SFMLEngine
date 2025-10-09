@@ -7,7 +7,7 @@
 class SFTile : public ITile
 {
 public:
-	SFTile();
+	SFTile(int gX, int gY);
 	SFTile(int gX, int gY, const std::string& fontName);
 
 	void Render(IRenderer* renderer) override;

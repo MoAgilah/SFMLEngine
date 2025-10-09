@@ -1,34 +1,46 @@
-#include "SFSprite.h"
+﻿#include "SFSprite.h"
 
 #include "Resources/SFTexture.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Utilities/Utils.h>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 
+
 SFSprite::SFSprite(const std::string& texId)
 {
-	SetTexture(texId);
+	THROW_IF_FALSE_MSG(SetTexture(texId), "SFSprite initialization failed");
 }
 
-void SFSprite::SetTexture(const std::string& texId)
+bool SFSprite::SetTexture(const std::string& texId)
 {
+	GameManager* gameMgr = nullptr;
+	// Safely get the singleton (catch exceptions → set outError, log, return false)
+	ERR_TRY_ASSIGN_OR_RET(gameMgr, GameManager::Get(), false);
+	ENSURE_VALID_RET(gameMgr, false);
+
+	ITexture* baseTex = nullptr;
+	// Safely fetch the texture (catch exceptions → set outError, log, return false)
+	ERR_TRY_ASSIGN_OR_RET(baseTex, gameMgr->GetTextureMgr().GetTexture(texId), false);
+	ENSURE_VALID_RET(baseTex, false);
+
+	// Backend type check
+	auto* sfTex = dynamic_cast<SFTexture*>(baseTex);
+	ENSURE_VALID_RET(sfTex, false);
+
+	// Apply to drawable
+	SetDrawable(std::make_shared<sf::Sprite>(sfTex->GetNativeTexture()));
+
 	m_texID = texId;
-
-	try
-	{
-		SetDrawable(std::make_shared<sf::Sprite>(dynamic_cast<SFTexture*>(GameManager::Get()->GetTextureMgr().GetTexture(m_texID))->GetNativeTexture()));
-	}
-	catch (const std::invalid_argument& e)
-	{
-		std::cerr << "Texture Error: " << e.what() << std::endl;
-	}
-
 	SetScale(GameConstants::Scale);
-	auto texSize = GetTextureSize();
+	const auto texSize = GetTextureSize();
 	SetOrigin(Vector2f(static_cast<float>(texSize.x), static_cast<float>(texSize.y)) * 0.5f);
+
+	return true;
 }
+
 
 void SFSprite::Update(float dt)
 {

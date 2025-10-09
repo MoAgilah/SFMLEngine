@@ -8,13 +8,15 @@
 #include <Utilities/Utils.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 
-SFTile::SFTile()
-	: ITile(std::make_shared<BoundingBox<SFRect>>(), nullptr, nullptr)
+SFTile::SFTile(int gX, int gY)
+	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(), nullptr, nullptr)
 {}
 
 SFTile::SFTile(int gX, int gY, const std::string& fontName)
-	: ITile(std::make_shared<BoundingBox<SFRect>>(), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
-{}
+	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
+{
+
+}
 
 void SFTile::Render(IRenderer* renderer)
 {
