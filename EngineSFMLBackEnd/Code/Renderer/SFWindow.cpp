@@ -17,8 +17,8 @@ bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
 void SFWindow::PollEvents()
 {
 	ENSURE_VALID(m_window);
-	GET_OR_RETURN(gameMgr, GameManager::Get());
-	GET_OR_RETURN(inputMgr, gameMgr->GetInputManager());
+	DECL_GET_OR_RETURN(gameMgr, GameManager::Get());
+	DECL_GET_OR_RETURN(inputMgr, gameMgr->GetInputManager());
 
 	while (auto event = m_window->pollEvent())
 	{

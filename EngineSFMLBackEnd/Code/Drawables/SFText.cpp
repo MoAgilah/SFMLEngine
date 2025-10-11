@@ -125,6 +125,8 @@ bool SFText::Init()
 	SetOutlineThickness(m_config.m_charSize / 10.f);
 	SetOutlineColour(m_config.m_colour);
 	SetPosition(m_config.m_position);
+
+	return true;
 }
 
 SFAnimatedText::SFAnimatedText(const TextConfig& config)
@@ -174,6 +176,20 @@ void SFAnimatedText::Render(IRenderer* renderer)
 			m_renderFunc(renderer);
 		break;
 	}
+}
+
+void SFAnimatedText::InitFlashingText(const std::string& text, bool loop)
+{
+	SetIsLooping(loop);
+	SetText(text);
+}
+
+void SFAnimatedText::InitCountdownText(int startFrom, const std::string& countDownMessage)
+{
+	SetMaxCount(startFrom);
+	SetIsLooping(false);
+	SetCountDown(countDownMessage);
+	SetText(std::to_string(startFrom));
 }
 
 void SFAnimatedText::SetMaxCount(int startFrom)
@@ -267,7 +283,7 @@ void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
 {
 	ENSURE_VALID(renderer);
 	ENSURE_VALID(m_textShader);
-	GET_OR_RETURN(drawable, this->GetPrimaryDrawable());
+	DECL_GET_OR_RETURN(drawable, this->GetPrimaryDrawable());
 
 	auto shader = dynamic_cast<SFShader*>(m_textShader);
 	ENSURE_VALID(shader);
@@ -285,16 +301,16 @@ bool SFAnimatedText::Init()
 	{
 	case TextAnimType::Flashing:
 	{
-		THROW_IF_FALSE_MSG(LoadShader("FadeInAndOutShader"),
+		THROW_IF_FALSE_MSG(LoadShader("FadeInOutShader"),
 			"LoadShader failed: id-{}",
-			"FadeInAndOutShader");
+			"FadeInOutShader");
 	}
 		break;
 	case TextAnimType::Countdown:
 	{
-		THROW_IF_FALSE_MSG(LoadShader("FadeInAndOutShader"),
+		THROW_IF_FALSE_MSG(LoadShader("FadeInOutShader"),
 			"LoadShader failed: id-{}",
-			"FadeInAndOutShader");
+			"FadeInOutShader");
 	}
 		break;
 	default:

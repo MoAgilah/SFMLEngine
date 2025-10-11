@@ -313,7 +313,7 @@ void SFCapsule::Render(IRenderer* renderer)
 
     SFDrawables<sf::Shape>::Render(renderer);
 
-    GET_OR_RETURN(windowHandle, renderer->GetWindow());
+    DECL_GET_OR_RETURN(windowHandle, renderer->GetWindow());
 
     auto* sfWindow = static_cast<sf::RenderWindow*>(windowHandle->GetNativeHandle());
     if (sfWindow)

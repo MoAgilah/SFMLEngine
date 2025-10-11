@@ -50,6 +50,9 @@ public:
 	void Update(float deltaTime) override;
 	void Render(IRenderer* renderer) override;
 
+	void InitFlashingText(const std::string& text, bool loop = true);
+	void InitCountdownText(int startFrom, const std::string& countDownMessage);
+
 	bool GetIsLooping() const { return m_looping; }
 	void SetIsLooping(bool loop) { m_looping = loop; }
 
