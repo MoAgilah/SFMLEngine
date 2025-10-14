@@ -37,10 +37,11 @@ SFMLEngine/
 ## ⚙️ Getting Started
 
 ### 1. Clone with submodules
-```bash
+```
 git clone https://github.com/MoAgilah/SFMLEngine.git
 cd SFMLEngine
 git submodule update --init --recursive
+```
 
 ### 2. Build
 
