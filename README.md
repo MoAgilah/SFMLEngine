@@ -41,3 +41,9 @@ SFMLEngine/
 git clone https://github.com/MoAgilah/SFMLEngine.git
 cd SFMLEngine
 git submodule update --init --recursive
+
+### 2. Build
+
+#### 🧰 Using Visual Studio
+Simply open `SFMLEngine.sln` and build your desired configuration (**Debug** or **Release**).
+
