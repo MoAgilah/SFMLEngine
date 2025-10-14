@@ -57,4 +57,13 @@ To use **SFMLEngine**:
 3. Link against the **EngineSFMLBackEnd** library (or another backend once available).  
 4. Instantiate your engine via the backend’s **factory method** and use only the **interface layer** in your gameplay code.
 
+## 🚀 Example Projects
+
+| Project | Purpose | Description |
+|----------|----------|-------------|
+| [**Pong**](https://github.com/MoAgilah/Pong) | Demonstration | Simple gameplay showcase built on **SFMLEngine**. |
+| [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller) | Prototype | Original project where the engine architecture was first conceptualized. |
+| [**SuperMarioWorldClone**](https://github.com/MoAgilah/SuperMarioWorldClone) | Next Phase | Rebuild of the AI-Game-Controller project using **SFMLEngine** for modularity and scalability. |
+
+
 
