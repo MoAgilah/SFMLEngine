@@ -48,3 +48,13 @@ git submodule update --init --recursive
 #### 🧰 Using Visual Studio
 Simply open `SFMLEngine.sln` and build your desired configuration (**Debug** or **Release**).
 
+### 3. Link in your project
+
+To use **SFMLEngine**:
+
+1. Add it as a **submodule** or dependency in your project.  
+2. Include the **EngineInterface** headers.  
+3. Link against the **EngineSFMLBackEnd** library (or another backend once available).  
+4. Instantiate your engine via the backend’s **factory method** and use only the **interface layer** in your gameplay code.
+
+
