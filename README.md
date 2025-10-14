@@ -65,5 +65,15 @@ To use **SFMLEngine**:
 | [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller) | Prototype | Original project where the engine architecture was first conceptualized. |
 | [**SuperMarioWorldClone**](https://github.com/MoAgilah/SuperMarioWorldClone) | Next Phase | Rebuild of the AI-Game-Controller project using **SFMLEngine** for modularity and scalability. |
 
+## 🏗️ Roadmap
+
+- [ ] Complete SFML backend coverage (rendering, input, audio)  
+- [ ] Add example scenes and test harness  
+- [ ] Introduce component/entity system layer  
+- [ ] Add alternative backends (SDL, Vulkan, DirectX)  
+- [ ] Integrate AI controller utilities  
+- [ ] Create documentation site and wiki  
+
+
 
 
