@@ -69,8 +69,7 @@ To use **SFMLEngine**:
 
 - [ ] Complete SFML backend coverage (rendering, input, audio)  
 - [ ] Add example scenes and test harness  
-- [ ] Introduce component/entity system layer  
-- [ ] Add alternative backends (SDL, Vulkan, DirectX)  
+- [ ] Add alternative backends (i.e. DirectX)  
 - [ ] Integrate AI controller utilities  
 - [ ] Create documentation site and wiki  
 
