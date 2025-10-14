@@ -73,11 +73,10 @@ To use **SFMLEngine**:
 - [ ] Integrate AI controller utilities  
 - [ ] Create documentation site and wiki  
 
-## 💡 Credits
-
-Built and maintained by [**MoAgilah**](https://github.com/MoAgilah)  
-
-Inspired by architecture experiments and AI control systems from [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller).
-
+## 👤 Author
+**Mohamed Agilah**  
+🎓 Games Programmer & AI Developer  
+🌐 [Portfolio Website](https://moagilah.com/)  
+📧 Contact: agilahmohamed@gmail.com  
 
 
