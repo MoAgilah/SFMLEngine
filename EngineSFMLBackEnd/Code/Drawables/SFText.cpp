@@ -30,23 +30,15 @@ void SFText::SetText(const std::string& text)
 	auto txtObj = this->GetPrimaryDrawableAs<sf::Text>();
 	if (!txtObj) return;
 
-	// Keep the same world-space anchor regardless of width changes
 	const Vector2f oldPos = GetPosition();
 
-	// Update string first so bounds are correct
 	txtObj->setString(text);
 
-	// SFML 3 bounds: use .position and .size
 	const sf::FloatRect b = txtObj->getLocalBounds();
 
-	// Only adjust origin when an explicit alignment is requested.
-	// This emulates your SetTextPosition rules:
-	//  - LeftHand  : left-aligned, vertically centered
-	//  - Center    : centered both axes
-	//  - RightHand : right-aligned, vertically centered
 	if (m_config.m_alignment != TextAlignment::None)
 	{
-		float xFactor = 0.5f; // default to center
+		float xFactor = 0.5f;
 		switch (m_config.m_alignment)
 		{
 		case TextAlignment::LeftHand:  xFactor = 0.f;   break;
@@ -55,7 +47,7 @@ void SFText::SetText(const std::string& text)
 		default: /* None handled above */                break;
 		}
 
-		const float yFactor = 0.5f; // your code centers vertically for aligned cases
+		const float yFactor = 0.5f;
 
 		const sf::Vector2f origin{
 			b.position.x + b.size.x * xFactor,
@@ -63,9 +55,7 @@ void SFText::SetText(const std::string& text)
 		};
 		txtObj->setOrigin(origin);
 	}
-	// else: TextAlignment::None → leave origin unchanged (matches your previous "do nothing" case) :contentReference[oaicite:1]{index=1}
 
-	// Restore the exact same world position so visual anchor doesn't move
 	SetPosition(oldPos);
 }
 
