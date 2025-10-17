@@ -28,13 +28,47 @@ void SFText::Render(IRenderer* renderer)
 void SFText::SetText(const std::string& text)
 {
 	auto txtObj = this->GetPrimaryDrawableAs<sf::Text>();
-	if (txtObj)
+	if (!txtObj) return;
+
+	// Keep the same world-space anchor regardless of width changes
+	const Vector2f oldPos = GetPosition();
+
+	// Update string first so bounds are correct
+	txtObj->setString(text);
+
+	// SFML 3 bounds: use .position and .size
+	const sf::FloatRect b = txtObj->getLocalBounds();
+
+	// Only adjust origin when an explicit alignment is requested.
+	// This emulates your SetTextPosition rules:
+	//  - LeftHand  : left-aligned, vertically centered
+	//  - Center    : centered both axes
+	//  - RightHand : right-aligned, vertically centered
+	if (m_config.m_alignment != TextAlignment::None)
 	{
-		txtObj->setString(text);
-		auto bounds = txtObj->getLocalBounds();
-		SetPosition(SetTextPosition(m_config.m_alignment, GetPosition(), bounds.size, bounds.position));
+		float xFactor = 0.5f; // default to center
+		switch (m_config.m_alignment)
+		{
+		case TextAlignment::LeftHand:  xFactor = 0.f;   break;
+		case TextAlignment::Center:    xFactor = 0.5f;  break;
+		case TextAlignment::RightHand: xFactor = 1.f;   break;
+		default: /* None handled above */                break;
+		}
+
+		const float yFactor = 0.5f; // your code centers vertically for aligned cases
+
+		const sf::Vector2f origin{
+			b.position.x + b.size.x * xFactor,
+			b.position.y + b.size.y * yFactor
+		};
+		txtObj->setOrigin(origin);
 	}
+	// else: TextAlignment::None → leave origin unchanged (matches your previous "do nothing" case) :contentReference[oaicite:1]{index=1}
+
+	// Restore the exact same world position so visual anchor doesn't move
+	SetPosition(oldPos);
 }
+
 
 Vector2f SFText::GetSize()
 {
@@ -190,6 +224,8 @@ void SFAnimatedText::InitCountdownText(int startFrom, const std::string& countDo
 	SetIsLooping(false);
 	SetCountDown(countDownMessage);
 	SetText(std::to_string(startFrom));
+	m_timer.SetMaxTime(1.f);
+	m_timer.RestartTimer(); // start ticking immediately
 }
 
 void SFAnimatedText::SetMaxCount(int startFrom)
@@ -234,6 +270,7 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 
 	if (m_reduceAlpha)
 	{
+		// FLASHING / LOOP fade logic (unchanged)
 		m_timer.Update(deltaTime);
 		time = m_timer.GetCurrTime() / m_timer.GetMaxTime();
 
@@ -248,6 +285,7 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 	{
 		if (m_looping)
 		{
+			// FLASHING / LOOP fade logic (unchanged)
 			m_timer.Update(-deltaTime);
 			time = m_timer.GetCurrTime() / m_timer.GetMaxTime();
 
@@ -259,16 +297,28 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 		}
 		else
 		{
+			// COUNTDOWN: tick once per timer interval
 			if (!CountHasEnded())
 			{
-				--m_count;
-				if (m_count != 0)
+				// advance the timer forward
+				m_timer.Update(deltaTime);
+
+				// when interval completes, decrement and restart the timer
+				if (m_timer.CheckEnd())
 				{
-					SetText(std::to_string(m_count));
-				}
-				else
-				{
-					SetText(m_countdownMsg);
+					--m_count;
+
+					if (m_count > 0)
+					{
+						SetText(std::to_string(m_count));
+					}
+					else
+					{
+						SetText(m_countdownMsg);
+						//m_paused = true;     // finished; stop updating
+					}
+
+					m_timer.RestartTimer();  // prepare for next tick
 				}
 			}
 			else
