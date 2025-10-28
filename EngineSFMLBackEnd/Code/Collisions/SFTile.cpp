@@ -2,6 +2,7 @@
 
 #include "../Drawables/SFShape.h"
 #include "../Drawables/SFText.h"
+#include <Engine/Core/Constants.h>
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Collisions/BoundingCapsule.h>
 #include <Engine/Collisions/BoundingCircle.h>
@@ -26,41 +27,41 @@ SFTile::SFTile(int gX, int gY, const std::string& fontName)
 void SFTile::Render(IRenderer* renderer)
 {
 	ENSURE_VALID(renderer);
-
-#if defined _DEBUG
-	if (m_type == Types::DIAGU || m_type == Types::DIAGD)
+	if (GameConstants::DRender)
 	{
-		if (m_slope)
+		if (m_type == Types::DIAGU || m_type == Types::DIAGD)
 		{
-			auto triangle = dynamic_cast<SFTriangle*>(m_slope.get());
-			if (triangle)
-				triangle->Render(renderer);
+			if (m_slope)
+			{
+				auto triangle = dynamic_cast<SFTriangle*>(m_slope.get());
+				if (triangle)
+					triangle->Render(renderer);
+			}
 		}
-	}
 
-	if (m_type == Types::LCRN || m_type == Types::RCRN)
-	{
-		auto* window = static_cast<sf::RenderWindow*>(
-			renderer->GetWindow()->GetNativeHandle());
-
-		if (window)
+		if (m_type == Types::LCRN || m_type == Types::RCRN)
 		{
-			sf::Vertex line[2];
-			line[0].position = m_edge.start;
-			line[0].color = Colour::Red;
-			line[1].position = m_edge.end;
-			line[1].color = Colour::Red;
+			auto* window = static_cast<sf::RenderWindow*>(
+				renderer->GetWindow()->GetNativeHandle());
 
-			window->draw(line, 2, sf::PrimitiveType::Lines);
+			if (window)
+			{
+				sf::Vertex line[2];
+				line[0].position = m_edge.start;
+				line[0].color = Colour::Red;
+				line[1].position = m_edge.end;
+				line[1].color = Colour::Red;
+
+				window->draw(line, 2, sf::PrimitiveType::Lines);
+			}
 		}
+
+		if (m_aabb)
+			m_aabb->Render(renderer);
+
+		if (m_text)
+			m_text->Render(renderer);
 	}
-
-	if (m_aabb)
-		m_aabb->Render(renderer);
-
-	if (m_text)
-		m_text->Render(renderer);
-#endif
 }
 
 void SFTile::ResolveCollision(IDynamicGameObject* obj)

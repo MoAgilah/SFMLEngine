@@ -60,7 +60,7 @@ public:
 	void SetIsPaused(bool pause) { m_paused = pause; }
 
 	void SetMaxCount(int startFrom);
-	bool CountHasEnded() const { return m_count == 0; }
+	bool CountHasEnded() const { return m_count == -1; }
 
 	void SetCountDown(const std::string& msg) { m_countdownMsg = msg; }
 
