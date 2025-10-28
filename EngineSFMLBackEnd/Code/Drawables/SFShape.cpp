@@ -70,7 +70,7 @@ SFTriangle::SFTriangle()
     SetScale(GameConstants::Scale);
     SetFillColour(Colour::Transparent);
     SetOutlineColour(Colour::Red);
-    SetOutlineThickness(2);
+    SetOutlineThickness(1);
 }
 
 SFTriangle::SFTriangle(const std::array<Vector2f, 3>& points, const Vector2f& pos)
@@ -133,7 +133,7 @@ SFRect::SFRect()
 	SetScale(GameConstants::Scale);
 	SetFillColour(Colour::Transparent);
 	SetOutlineColour(Colour::Red);
-	SetOutlineThickness(2);
+	SetOutlineThickness(1);
 }
 
 SFRect::SFRect(const Vector2f& size, const Vector2f& pos)
@@ -156,7 +156,7 @@ void SFRect::Render(IRenderer* renderer)
 
 void SFRect::Reset(const Vector2f& size)
 {
-	SetSize(size);
+    SetSize(size);
 	SetOrigin(size * 0.5f);
 }
 
@@ -167,10 +167,15 @@ sf::RectangleShape* SFRect::GetRect()
 
 Vector2f SFRect::GetSize()
 {
-    return GetRect()->getSize();
+    return SFDrawables<sf::RectangleShape>::GetSize();
 }
 
 void SFRect::SetSize(const Vector2f& size)
+{
+    SFDrawables<sf::RectangleShape>::SetSize(size);
+}
+
+void SFRect::SetLocalSize(const Vector2f& size)
 {
     GetRect()->setSize(size);
 }
@@ -181,7 +186,7 @@ SFCircle::SFCircle()
 	SetScale(GameConstants::Scale);
 	SetFillColour(Colour::Transparent);
 	SetOutlineColour(Colour::Red);
-	SetOutlineThickness(2);
+	SetOutlineThickness(1);
 }
 
 SFCircle::SFCircle(float radius, const Vector2f& pos)
@@ -254,20 +259,20 @@ SFCapsule::SFCapsule()
     SetDrawable(std::static_pointer_cast<sf::Shape>(rect));
     SetFillColour(Colour::Transparent);
     SetOutlineColour(Colour::Red);
-    SetOutlineThickness(2);
+    SetOutlineThickness(1);
     SetScale(GameConstants::Scale);
 
     auto cap1 = std::make_shared<sf::CircleShape>();
     cap1->setFillColor(Colour::Transparent);
     cap1->setOutlineColor(Colour::Red);
-    cap1->setOutlineThickness(2);
+    cap1->setOutlineThickness(1);
     cap1->setScale(GameConstants::Scale);
     AddDrawable(std::static_pointer_cast<sf::Shape>(cap1));
 
     auto cap2 = std::make_shared<sf::CircleShape>();
     cap2->setFillColor(Colour::Transparent);
     cap2->setOutlineColor(Colour::Red);
-    cap2->setOutlineThickness(2);
+    cap2->setOutlineThickness(1);
     cap2->setScale(GameConstants::Scale);
     AddDrawable(std::static_pointer_cast<sf::Shape>(cap2));
 }

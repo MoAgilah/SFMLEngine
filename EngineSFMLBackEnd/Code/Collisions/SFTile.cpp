@@ -5,17 +5,22 @@
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Collisions/BoundingCapsule.h>
 #include <Engine/Collisions/BoundingCircle.h>
+#include <Engine/Core/Constants.h>
 #include <Utilities/Utils.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 SFTile::SFTile(int gX, int gY)
-	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(), nullptr, nullptr)
-{}
+	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16,16)), nullptr, nullptr)
+{
+}
 
 SFTile::SFTile(int gX, int gY, const std::string& fontName)
-	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
+	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
 {
-
+	DECL_GET_OR_RETURN(sfTxt, dynamic_cast<SFText*>(m_text.get()));
+	sfTxt->SetCharSize(12);
+	sfTxt->SetOrigin({ 6.f,6.f });
+	sfTxt->SetText(std::format("{}\n{}", m_colNum, m_rowNum));
 }
 
 void SFTile::Render(IRenderer* renderer)
@@ -280,18 +285,17 @@ bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj)
 {
 	ENSURE_VALID_RET(obj, false);
 
-	/*Line line = GetSlope(0, 1);
-	BoundingCircle circle(4, obj->GetColVolume()->GetPoint(Side::Bottom));
-
+	Line line = GetSlope(0, 1);
+	BoundingCircle<SFCircle> circle(4, GetBoundingBox()->GetPoint(Side::Bottom));
 	if (line.IsPointAboveLine(circle.GetCenter()))
 	{
-		BoundingCapsule capsule(6, line);
-		if (capsule.Intersects(static_cast<BoundingVolume*>(&circle)))
+		BoundingCapsule<SFCapsule> capsule(6, line);
+		if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 		{
 			obj->SetOnSlope(true);
 			return true;
 		}
-	}*/
+	}
 
 	return false;
 }
@@ -307,22 +311,22 @@ bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int
 {
 	ENSURE_VALID_RET(obj, false);
 
-	/*Line line = GetSlope(start, end);
-	BoundingCircle circle(4, obj->GetColVolume()->GetPoint(Side::Bottom));
-	BoundingCapsule capsule(6, line);
-	if (capsule.Intersects(static_cast<BoundingVolume*>(&circle)))
+	Line line = GetSlope(start, end);
+	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
+	BoundingCapsule<SFCapsule> capsule(6, line);
+	if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 	{
 		auto yOffset = GetYOffSet(start ? GetXDist(circle.GetCenter(), line.start) : GetXDist(line.start, circle.GetCenter()),
 			line.DistY(),
 			line.start.y,
-			obj->GetBoundingBox()->GetPosition().y,
+			obj->GetVolume()->GetPosition().y,
 			GetTileHeight());
 
 		obj->Move(0, yOffset);
 		obj->SetOnSlope(true);
 
 		return true;
-	}*/
+	}
 
 	return false;
 }
@@ -331,22 +335,22 @@ bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int
 {
 	ENSURE_VALID_RET(obj, false);
 
-	/*Line line = GetSlope(start, end);
-	BoundingCircle circle(4, obj->GetColVolume()->GetPoint(Side::Bottom));
-	BoundingCapsule capsule(6, line);
-	if (capsule.Intersects(static_cast<BoundingVolume*>(&circle)))
+	Line line = GetSlope(start, end);
+	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
+	BoundingCapsule<SFCapsule> capsule(6, line);
+	if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 	{
 		auto yOffset = GetYOffSet(start ? GetXDist(circle.GetCenter(), line.start) : GetXDist(line.start, circle.GetCenter()),
 			line.DistY(),
 			line.start.y,
-			obj->GetBoundingBox()->GetPosition().y,
+			obj->GetVolume()->GetPosition().y,
 			GetTileHeight());
 
 		obj->Move(0, -yOffset);
 		obj->SetOnSlope(true);
 
 		return true;
-	}*/
+	}
 
 	return false;
 }
@@ -356,21 +360,24 @@ void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 	ENSURE_VALID(obj);
 
 	/*if (IsPlayerObject(obj->GetID()))
-		return;
+		return;*/
 
 	Vector2f side;
 	if (m_type == Types::LCRN)
-		side = obj->GetBoundingBox()->GetPoint(Side::Right);
+		side = obj->GetVolume()->GetPoint(Side::Right);
 	else
-		side = obj->GetBoundingBox()->GetPoint(Side::Left);
+		side = obj->GetVolume()->GetPoint(Side::Left);
 
 	Line edge = GetEdge();
 
-	if (pnt::IsMovingTowards(edge.start, side, Vector2f(0, 0), obj->GetVelocity()))
+	// Inline “moving towards” check:
+	// true when dot( side - edge.start, velocity ) > 0
+	if (((side.x - edge.start.x) * obj->GetVelocity().x +
+		(side.y - edge.start.y) * obj->GetVelocity().y) > 0.0f)
 	{
-		BoundingCircle circle(4, side);
-		BoundingCapsule capsule(4, edge);
-		if (capsule.Intersects(static_cast<BoundingVolume*>(&circle)))
+		BoundingCircle<SFCircle> circle(4, side);
+		BoundingCapsule<SFCapsule> capsule(4, edge);
+		if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 			obj->SetDirection(!obj->GetDirection());
-	}*/
+	}
 }

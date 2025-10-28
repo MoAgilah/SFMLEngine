@@ -73,6 +73,8 @@ public:
 
     Vector2f GetSize() override;
     void SetSize(const Vector2f& size) override;
+
+    void SetLocalSize(const Vector2f& size) override;
 };
 
 // --- Circle Shape ---

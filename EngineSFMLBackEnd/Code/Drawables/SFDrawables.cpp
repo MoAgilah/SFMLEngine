@@ -109,8 +109,20 @@ void SFDrawables<T>::SetOrigin(const Vector2f& ori)
         d->setOrigin(ori);
 }
 
-template <typename T>
+template<typename T>
 Vector2f SFDrawables<T>::GetSize()
+{
+    return ITransforms::GetSize();
+}
+
+template<typename T>
+void SFDrawables<T>::SetSize(const Vector2f& size)
+{
+   ITransforms::SetSize(size);
+}
+
+template<typename T>
+Vector2f SFDrawables<T>::GetGlobalSize()
 {
     if (auto* d = this->GetPrimaryDrawable())
     {
@@ -120,8 +132,19 @@ Vector2f SFDrawables<T>::GetSize()
     return {};
 }
 
-template <typename T>
-void SFDrawables<T>::SetSize(const Vector2f& /*size*/)
+template<typename T>
+Vector2f SFDrawables<T>::GetLocalSize()
+{
+    if (auto* d = this->GetPrimaryDrawable())
+    {
+        auto bounds = d->getLocalBounds();
+        return Vector2f(bounds.size);
+    }
+    return {};
+}
+
+template<typename T>
+void SFDrawables<T>::SetLocalSize(const Vector2f& size)
 {
     // Intentionally empty; depends on concrete SFML type
 }

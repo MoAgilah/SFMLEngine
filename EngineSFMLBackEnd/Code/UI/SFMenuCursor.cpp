@@ -12,12 +12,17 @@ void SFMenuCursor::SetPosition(const Vector2f& pos)
 
 void SFMenuCursor::SetScale(const Vector2f& cellSize)
 {
-	ENSURE_VALID(m_cursor);
-	auto spr = static_cast<SFSprite*>(m_cursor.get());
+    ENSURE_VALID(m_cursor);
+    auto spr = static_cast<SFSprite*>(m_cursor.get());
 
-	Vector2f scaleXY = cellSize / spr->GetSize();
+    spr->SetScale({ 1.f, 1.f });
 
-	float scale = std::min(scaleXY.x, scaleXY.y);
+    auto texSize = spr->GetTextureSize();
 
-	spr->SetScale({ scale, scale });
+    // compare against local (texture) size, not global GetSize()
+    Vector2f tex = Vector2f(static_cast<int>(texSize.x), static_cast<int>(texSize.y));
+    Vector2f scaleXY = { cellSize.x / tex.x, cellSize.y / tex.y };
+
+    float scale = std::min(scaleXY.x, scaleXY.y);
+    spr->SetScale({ scale, scale });
 }

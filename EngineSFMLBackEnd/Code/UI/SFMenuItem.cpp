@@ -11,6 +11,7 @@ SFMenuItem::SFMenuItem(const Vector2f& menuSize, float outlineThickness)
 	auto rect = dynamic_cast<SFRect*>(m_cellSpace.get());
 	if (rect)
 	{
+		rect->SetScale({ 1.f, 1.f });
 		rect->SetOrigin(Vector2f(rect->GetSize()) / 2.f);
 		rect->SetOutlineThickness(outlineThickness);
 		rect->SetOutlineColour(Colour::Green);

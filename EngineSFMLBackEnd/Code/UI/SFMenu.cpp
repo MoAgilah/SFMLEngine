@@ -14,6 +14,10 @@ SFMenu::SFMenu(const Vector2f& menuSize, float outlineThickness, const Vector2f&
 
 	ENSURE_VALID(m_menuSpace);
 
+	// UI in screen space: ignore world scale
+	if (auto rect = static_cast<SFRect*>(m_menuSpace.get()))
+		rect->SetScale({ 1.f, 1.f });
+
 	BuildMenuSpace();
 }
 
@@ -32,7 +36,7 @@ void SFMenu::BuildMenuSpace()
 
 	if (rect)
 	{
-		rect->SetOrigin(Vector2f(rect->GetSize()) / 2.f);
+		rect->SetOrigin(rect->GetSize() / 2.f);
 
 		switch (m_menuPositionData.m_positionMode)
 		{
@@ -75,6 +79,8 @@ void SFMenu::BuildColumns()
 	for (size_t i = 0; i < m_dimensions.x; i++)
 	{
 		auto column = std::make_shared<SFRect>(m_columnsSize, Vector2f());
+		if (auto r = static_cast<SFRect*>(column.get()))
+			r->SetScale({ 1.f, 1.f });
 		m_columns.push_back(std::move(column));
 	}
 

@@ -31,6 +31,11 @@ public:
     Vector2f GetSize() override;
 
     void SetSize(const Vector2f& size) override;
+
+    Vector2f GetGlobalSize() override;
+
+    Vector2f GetLocalSize() override;
+    void SetLocalSize(const Vector2f& size) override;
 };
 
 namespace sf { class Sprite; class Shape; class Text; class RectangleShape; class CircleShape; class ConvexShape; }
