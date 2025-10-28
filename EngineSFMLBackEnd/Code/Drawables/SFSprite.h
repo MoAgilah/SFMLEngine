@@ -16,6 +16,8 @@ public:
 
 	bool SetTexture(const std::string& texId) override;
 
+	void SetDirection(bool dir) override;
+
 	void Update(float dt) override;
 	void Render(IRenderer* renderer) override;
 

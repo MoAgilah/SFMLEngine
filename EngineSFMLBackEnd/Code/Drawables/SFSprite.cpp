@@ -41,6 +41,20 @@ bool SFSprite::SetTexture(const std::string& texId)
 	return true;
 }
 
+void SFSprite::SetDirection(bool dir)
+{
+	if (dir)
+	{
+		// flip X
+		this->GetPrimaryDrawableAs<sf::Sprite>()->setScale(GameConstants::Scale);
+	}
+	else
+	{
+		//unflip x
+		this->GetPrimaryDrawableAs<sf::Sprite>()->setScale({ -GameConstants::Scale.x, GameConstants::Scale.y });
+	}
+}
+
 
 void SFSprite::Update(float dt)
 {

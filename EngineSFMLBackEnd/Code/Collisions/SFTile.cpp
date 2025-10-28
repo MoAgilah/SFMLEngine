@@ -2,7 +2,6 @@
 
 #include "../Drawables/SFShape.h"
 #include "../Drawables/SFText.h"
-#include <Engine/Core/Constants.h>
 #include <Engine/Collisions/BoundingBox.h>
 #include <Engine/Collisions/BoundingCapsule.h>
 #include <Engine/Collisions/BoundingCircle.h>
@@ -102,7 +101,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 	case Types::RCRN:
 	{
 		Vector2f seperationVector = obj->GetVolume()->GetSeparationVector(static_cast<IBoundingVolume*>(m_aabb.get()));
-		Direction colDir = Direction::LDIR; /*GetCollisionDirection(seperationVector, obj->GetVelocity(), Vector2f())*/;
+		Direction colDir = ICollisionManager::GetCollisionDirection(seperationVector, obj->GetVelocity(), Vector2f());
 
 		if (dir == Direction::DDIR)
 		{
