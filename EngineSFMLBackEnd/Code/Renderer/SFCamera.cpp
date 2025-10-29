@@ -31,7 +31,16 @@ void SFCamera::Update()
     ENSURE_VALID(m_camera);
     ENSURE_VALID(m_viewBox);
 
-    const float posX = 0.f;
+    float posX = 0.f;
+
+    if (m_toFollow)
+    {
+        posX = m_toFollow->GetPosition().x - GameConstants::ScreenDim.x * 0.5f;
+
+        if (posX < 0)
+            posX = 0;
+    }
+
     m_camera->setCenter({ posX + (GameConstants::ScreenDim.x * 0.5f), m_camera->getCenter().y });
     m_viewBox->Update(m_camera->getCenter());
 }
@@ -40,8 +49,6 @@ void SFCamera::Reset(IRenderer* renderer)
 {
     ENSURE_VALID(renderer);
     ENSURE_VALID(m_camera);
-
-    Update();
 
     // Downcast to SFML window implementation (safe only if this camera is used with SFML)
     auto* sfmlWindow = static_cast<sf::RenderWindow*>(renderer->GetWindow()->GetNativeHandle());

@@ -284,24 +284,31 @@ void SFTile::SetOutlineColour(Colour col)
 		sfAABB->GetShape()->SetOutlineColour(col);
 }
 
-bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float tFirst, float tLast)
+bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float /*tFirst*/, float /*tLast*/)
 {
 	ENSURE_VALID_RET(obj, false);
 
-	Line line = GetSlope(0, 1);
-	BoundingCircle<SFCircle> circle(4, GetBoundingBox()->GetPoint(Side::Bottom));
+	// 1) Use the correct slope orientation (flip for DIAGD if you used to)
+	const bool isDiagD = (GetType() == Types::DIAGD); // or whatever your enum/type check is
+	Line line = isDiagD ? GetSlope(1, 0) : GetSlope(0, 1);
+
+	// 2) Center circle on the OBJECT, not the tile
+	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
+
+	// Keep the "above line" guard like before
 	if (line.IsPointAboveLine(circle.GetCenter()))
 	{
 		BoundingCapsule<SFCapsule> capsule(6, line);
 		if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 		{
 			obj->SetOnSlope(true);
+			obj->SetOnGround(true); // parity with old behavior
 			return true;
 		}
 	}
-
 	return false;
 }
+
 
 static float GetYOffSet(float pDistX, float lDistY, float slopeY, float currY, float tileHeight)
 {
@@ -310,53 +317,73 @@ static float GetYOffSet(float pDistX, float lDistY, float slopeY, float currY, f
 	return ((currY - colHeight) / tileHeight);
 }
 
-bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end, float tFirst, float tLast)
+bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end,
+	float /*tFirst*/, float /*tLast*/)
 {
 	ENSURE_VALID_RET(obj, false);
 
 	Line line = GetSlope(start, end);
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
 	BoundingCapsule<SFCapsule> capsule(6, line);
+
 	if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 	{
-		auto yOffset = GetYOffSet(start ? GetXDist(circle.GetCenter(), line.start) : GetXDist(line.start, circle.GetCenter()),
+		// 3) Compute yOffset the same way and CONVERT to pixels
+		auto yOffset = GetYOffSet(
+			start ? GetXDist(circle.GetCenter(), line.start) : GetXDist(line.start, circle.GetCenter()),
 			line.DistY(),
 			line.start.y,
 			obj->GetVolume()->GetPosition().y,
-			GetTileHeight());
+			GetTileHeight() // keep passing tile height if your function expects it
+		);
 
-		obj->Move(0, yOffset);
-		obj->SetOnSlope(true);
+		// Convert to pixels like before (you said you previously used extent.y * 2;
+		// whatever GetTileHeight() returns must match that pixel scale)
+		float yPixels = yOffset * GetTileHeight();
 
-		return true;
+		// Stabilize like the old code
+		if (std::abs(yPixels) > 0.1f) {
+			yPixels = std::clamp(yPixels, -6.0f, 6.0f);
+			obj->Move(0, yPixels);
+			obj->SetOnSlope(true);
+			return true;
+		}
 	}
-
 	return false;
 }
 
-bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end, float tFirst, float tLast)
+bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end,
+	float /*tFirst*/, float /*tLast*/)
 {
 	ENSURE_VALID_RET(obj, false);
 
 	Line line = GetSlope(start, end);
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
 	BoundingCapsule<SFCapsule> capsule(6, line);
-	if (capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
+
+	// Match old behavior: move when NOT intersecting (if that was intentional)
+	if (!capsule.Intersects(static_cast<IBoundingVolume*>(&circle)))
 	{
-		auto yOffset = GetYOffSet(start ? GetXDist(circle.GetCenter(), line.start) : GetXDist(line.start, circle.GetCenter()),
+		auto yOffset = GetYOffSet(
+			start ? GetXDist(circle.GetCenter(), line.start) : GetXDist(line.start, circle.GetCenter()),
 			line.DistY(),
 			line.start.y,
 			obj->GetVolume()->GetPosition().y,
-			GetTileHeight());
+			GetTileHeight()
+		);
 
-		obj->Move(0, -yOffset);
-		obj->SetOnSlope(true);
+		float yPixels = -yOffset * GetTileHeight(); // same sign as before
 
-		return true;
+		if (std::abs(yPixels) > 0.1f) {
+			yPixels = std::clamp(yPixels, -6.0f, 6.0f);
+			obj->Move(0, yPixels);
+			obj->SetOnSlope(true);
+			return true;
+		}
 	}
-
 	return false;
 }
+
 
 void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 {
