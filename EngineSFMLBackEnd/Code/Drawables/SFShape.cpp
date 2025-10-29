@@ -112,20 +112,22 @@ Linef SFTriangle::GetLine(int start, int end)
 
 std::array<Vector2f, 3> SFTriangle::GetPoints() const
 {
-    return std::array<Vector2f, 3>{GetPrimaryDrawable()->getPoint(0),
-        GetPrimaryDrawable()->getPoint(1),
-        GetPrimaryDrawable()->getPoint(2)};
+    auto* tri = const_cast<SFTriangle*>(this)->GetTriangle();
+    return { tri->getPoint(0), tri->getPoint(1), tri->getPoint(2) };
 }
 
-void SFTriangle::SetPoints(const std::array<Vector2f, 3>& points)
+void SFTriangle::SetPoints(const std::array<Vector2f, 3>& pts)
 {
-    auto drawable = GetPrimaryDrawable();
-    if (drawable)
+    if (auto* tri = GetTriangle())
     {
-        for (int i = 0; i < 3; i++)
-            drawable->setPoint(i, points[i]);
+        tri->setPointCount(3);
+
+        tri->setPoint(0, pts[0]);
+        tri->setPoint(1, pts[1]);
+        tri->setPoint(2, pts[2]);
     }
 }
+
 
 SFRect::SFRect()
 {
@@ -381,3 +383,7 @@ void SFCapsule::SetSize(const Vector2f& size)
 {
     GetBody()->setSize(size);
 }
+
+template class SFShape<sf::RectangleShape>;
+template class SFShape<sf::CircleShape>;
+template class SFShape<sf::ConvexShape>;

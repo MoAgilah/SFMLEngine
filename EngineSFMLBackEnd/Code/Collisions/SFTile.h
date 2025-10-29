@@ -20,8 +20,8 @@ public:
 
 protected:
 
-	bool ResolveObjectToSlopeTop(IDynamicGameObject* obj) override;
-	bool ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end) override;
-	bool ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end) override;
+	bool ResolveObjectToSlopeTop(IDynamicGameObject* obj, float tFirst, float tLast) override;
+	bool ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end, float tFirst, float tLast) override;
+	bool ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end, float tFirst, float tLast) override;
 	void ResolveObjectToEdgeBounds(IDynamicGameObject* obj) override;
 };

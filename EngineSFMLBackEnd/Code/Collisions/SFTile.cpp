@@ -143,21 +143,21 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		switch (dir)
 		{
 		case Direction::DDIR:
-			if (ResolveObjectToSlopeTop(obj))
+			if (ResolveObjectToSlopeTop(obj, tFirst, tLast))
 			{
 				if (!obj->GetShouldSlideLeft())
 					obj->SetShouldSlideLeft(true);
 			}
 			break;
 		case Direction::RDIR:
-			if (ResolveObjectToSlopeIncline(obj, 0, 1))
+			if (ResolveObjectToSlopeIncline(obj, 0, 1, tFirst, tLast))
 			{
 				if (!obj->GetShouldSlideLeft())
 					obj->SetShouldSlideLeft(true);
 			}
 			break;
 		case Direction::LDIR:
-			if (ResolveObjectToSlopeDecline(obj, 1, 0))
+			if (ResolveObjectToSlopeDecline(obj, 1, 0, tFirst, tLast))
 			{
 				if (!obj->GetShouldSlideLeft())
 					obj->SetShouldSlideLeft(true);
@@ -171,21 +171,21 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		switch (dir)
 		{
 		case Direction::DDIR:
-			if (ResolveObjectToSlopeTop(obj))
+			if (ResolveObjectToSlopeTop(obj, tFirst, tLast))
 			{
 				if (!obj->GetShouldSlideRight())
 					obj->SetShouldSlideRight(true);
 			}
 			break;
 		case Direction::LDIR:
-			if (ResolveObjectToSlopeIncline(obj, 1, 0))
+			if (ResolveObjectToSlopeIncline(obj, 1, 0, tFirst, tLast))
 			{
 				if (!obj->GetShouldSlideRight())
 					obj->SetShouldSlideRight(true);
 			}
 			break;
 		case Direction::RDIR:
-			if (ResolveObjectToSlopeDecline(obj, 0, 1))
+			if (ResolveObjectToSlopeDecline(obj, 0, 1, tFirst, tLast))
 			{
 				if (!obj->GetShouldSlideRight())
 					obj->SetShouldSlideRight(true);
@@ -207,25 +207,54 @@ void SFTile::SetPosition(const Vector2f& pos)
 	{
 	case Types::DIAGU:
 	{
-		auto slope = std::make_shared<SFTriangle>();
-		std::array<Vector2f, 3> points;
-		points[0] = m_aabb->GetPosition() + Vector2f(-m_aabb->GetExtents().x, m_aabb->GetExtents().y);
-		points[1] = m_aabb->GetPosition() + Vector2f(m_aabb->GetExtents().x, -m_aabb->GetExtents().y);
-		points[2] = m_aabb->GetPosition() + m_aabb->GetExtents();
+		const Vector2f c = m_aabb->GetPosition(); // center
+		const Vector2f mn = m_aabb->GetMin();      // min corner  (x-, y-)
+		const Vector2f mx = m_aabb->GetMax();      // max corner  (x+, y+)
+
+		std::array<Vector2f, 3> local;
+
+		// bottom-left -> top-right -> bottom-right
+		local[0] = Vector2f(mn.x - c.x, mx.y - c.y); // BL  (min.x, max.y)
+		local[1] = Vector2f(mx.x - c.x, mn.y - c.y); // TR  (max.x, min.y)
+		local[2] = Vector2f(mx.x - c.x, mx.y - c.y); // BR  (max.x, max.y)
+
+		auto slope = std::make_shared<SFTriangle>(local, Vector2f());
 		slope->SetFillColour(Colour::Yellow);
+		slope->SetOutlineColour(Colour::Red);
+		slope->SetOutlineThickness(1.f);
+
+		slope->SetScale({ 1,1 });
+		slope->SetPosition(c); // place at center (world)
 		SetSlope(slope);
 	}
-		break;
+	break;
+
 	case Types::DIAGD:
 	{
-		auto slope = std::make_shared<SFTriangle>();
-		std::array<Vector2f, 3> points;
-		points[0] = m_aabb->GetPosition() - m_aabb->GetExtents();
-		points[1] = m_aabb->GetPosition() + m_aabb->GetExtents();
-		points[2] = m_aabb->GetPosition() - Vector2f(m_aabb->GetExtents().x, -m_aabb->GetExtents().y);
+		const Vector2f c = m_aabb->GetPosition(); // center
+		const Vector2f mn = m_aabb->GetMin();      // min corner
+		const Vector2f mx = m_aabb->GetMax();      // max corner
+
+		std::array<Vector2f, 3> local;
+
+		// top-left -> bottom-right -> bottom-left
+		local[0] = Vector2f(mn.x - c.x, mn.y - c.y); // TL  (min.x, min.y)
+		local[1] = Vector2f(mx.x - c.x, mx.y - c.y); // BR  (max.x, max.y)
+		local[2] = Vector2f(mn.x - c.x, mx.y - c.y); // BL  (min.x, max.y)
+
+		auto slope = std::make_shared<SFTriangle>(local, Vector2f());
 		slope->SetFillColour(Colour::Yellow);
+		slope->SetOutlineColour(Colour::Red);
+		slope->SetOutlineThickness(1.f);
+
+		slope->SetScale({ 1,1 });
+		slope->SetPosition(c); // place at center (world)
 		SetSlope(slope);
 	}
+	break;
+
+
+
 		break;
 	case Types::LCRN:
 		m_edge.start = m_aabb->GetMin() + Vector2f(m_aabb->GetExtents().x * 2, 0);
@@ -236,6 +265,9 @@ void SFTile::SetPosition(const Vector2f& pos)
 		m_edge.end = m_edge.start - Vector2f(0, GetTileHeight());
 		break;
 	}
+
+	DECL_GET_OR_RETURN(sfTxt, dynamic_cast<SFText*>(m_text.get()));
+	sfTxt->SetPosition({ m_aabb->GetPosition().x - 10.f, m_aabb->GetPosition().y - 7.5f });
 }
 
 void SFTile::SetFillColour(Colour col)
@@ -252,7 +284,7 @@ void SFTile::SetOutlineColour(Colour col)
 		sfAABB->GetShape()->SetOutlineColour(col);
 }
 
-bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj)
+bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float tFirst, float tLast)
 {
 	ENSURE_VALID_RET(obj, false);
 
@@ -278,7 +310,7 @@ static float GetYOffSet(float pDistX, float lDistY, float slopeY, float currY, f
 	return ((currY - colHeight) / tileHeight);
 }
 
-bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end)
+bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end, float tFirst, float tLast)
 {
 	ENSURE_VALID_RET(obj, false);
 
@@ -302,7 +334,7 @@ bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int
 	return false;
 }
 
-bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end)
+bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end, float tFirst, float tLast)
 {
 	ENSURE_VALID_RET(obj, false);
 
