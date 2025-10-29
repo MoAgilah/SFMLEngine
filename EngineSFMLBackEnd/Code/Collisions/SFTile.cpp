@@ -63,7 +63,7 @@ void SFTile::Render(IRenderer* renderer)
 	}
 }
 
-void SFTile::ResolveCollision(IDynamicGameObject* obj)
+void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast)
 {
 	ENSURE_VALID(obj);
 	ENSURE_VALID(obj->GetVolume());
@@ -84,7 +84,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 			if (static_cast<IBoundingVolume*>(&capsule)->Intersects(static_cast<IBoundingVolume*>(&circle)))
 			{
 				if (tileTopEdge.IsPointAboveLine(objBottomPoint))
-					ResolveObjectToBoxTop(obj);
+					ResolveObjectToBoxTop(obj, tFirst, tLast);
 			}
 		}
 		return;
@@ -93,7 +93,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 		if (dir == Direction::DDIR || dir == Direction::LDIR || dir == Direction::RDIR)
 		{
 			if (tileTopEdge.IsPointAboveLine(objBottomPoint))
-				ResolveObjectToBoxTop(obj);
+				ResolveObjectToBoxTop(obj, tFirst, tLast);
 		}
 		return;
 	case Types::LCRN:
@@ -110,7 +110,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 			{
 				if (tileTopEdge.IsPointAboveLine(objBottomPoint))
 				{
-					ResolveObjectToBoxTop(obj);
+					ResolveObjectToBoxTop(obj, tFirst, tLast);
 					return;
 				}
 			}
@@ -119,7 +119,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 		// the collision came from a horizontal direction
 		if (colDir == Direction::LDIR || colDir == Direction::RDIR)
 		{
-			ResolveObjectToBoxHorizontally(obj);
+			ResolveObjectToBoxHorizontally(obj, tFirst, tLast);
 		}
 		else
 		{
@@ -127,7 +127,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 			{
 				if (tileTopEdge.IsPointAboveLine(objBottomPoint))
 				{
-					ResolveObjectToBoxTop(obj);
+					ResolveObjectToBoxTop(obj, tFirst, tLast);
 				}
 
 				ResolveObjectToEdgeBounds(obj);
@@ -136,7 +136,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj)
 		return;
 	}
 	case Types::WALL:
-		ResolveObjectToBoxHorizontally(obj);
+		ResolveObjectToBoxHorizontally(obj, tFirst, tLast);
 		return;
 	case Types::DIAGU:
 	{
@@ -250,35 +250,6 @@ void SFTile::SetOutlineColour(Colour col)
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
 	if (sfAABB)
 		sfAABB->GetShape()->SetOutlineColour(col);
-}
-
-void SFTile::ResolveObjectToBoxTop(IDynamicGameObject* obj)
-{
-	ENSURE_VALID(obj);
-
-	Vector2f seperationVector = GetSeperationVector(obj);
-
-	obj->Move(0, -seperationVector.y);
-	obj->SetOnGround(true);
-	obj->SetOnSlope(false);
-}
-
-void SFTile::ResolveObjectToBoxBottom(IDynamicGameObject* obj)
-{
-	ENSURE_VALID(obj);
-
-	Vector2f seperationVector = GetSeperationVector(obj);
-
-	obj->Move(0, seperationVector.y);
-}
-
-void SFTile::ResolveObjectToBoxHorizontally(IDynamicGameObject* obj)
-{
-	ENSURE_VALID(obj);
-
-	Vector2f seperationVector = GetSeperationVector(obj);
-
-	obj->Move((obj->GetDirection() ? -1 : 1) * seperationVector.x, 0);
 }
 
 bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj)

@@ -11,7 +11,7 @@ public:
 	SFTile(int gX, int gY, const std::string& fontName);
 
 	void Render(IRenderer* renderer) override;
-	void ResolveCollision(IDynamicGameObject* obj) override;
+	void ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast) override;
 
 	void SetPosition(const Vector2f& pos) override;
 
@@ -20,9 +20,6 @@ public:
 
 protected:
 
-	void ResolveObjectToBoxTop(IDynamicGameObject* obj) override;
-	void ResolveObjectToBoxBottom(IDynamicGameObject* obj) override;
-	void ResolveObjectToBoxHorizontally(IDynamicGameObject* obj) override;
 	bool ResolveObjectToSlopeTop(IDynamicGameObject* obj) override;
 	bool ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end) override;
 	bool ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end) override;
