@@ -14,15 +14,19 @@ namespace
     }
 }
 
-void SFRenderer::Initialise(const Vector2f& screenDims, const std::string& title)
+bool SFRenderer::Initialise(const Vector2f& screenDims, const std::string& title)
 {
     // Create a concrete window (still type-erased in the interface)
     m_window = std::make_shared<SFWindow>();
-    ENSURE_VALID(m_window);
-    m_window->Create(screenDims, title);
+    ENSURE_VALID_RET(m_window, false);
+    if (m_window->Create(screenDims, title))
+    {
+        // Cache the native handle once (type-erased in the renderer’s header)
+        m_nativeWindow = m_window->GetNativeHandle();
+        return true;
+    }
 
-    // Cache the native handle once (type-erased in the renderer’s header)
-    m_nativeWindow = m_window ? m_window->GetNativeHandle() : nullptr;
+    return false;
 }
 
 void SFRenderer::PollWindowEvents()

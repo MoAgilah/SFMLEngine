@@ -9,7 +9,7 @@ class IRenderable; // fwd-declare
 class SFRenderer : public IRenderer
 {
 public:
-    void Initialise(const Vector2f& screenDims, const std::string& title) override;
+    bool Initialise(const Vector2f& screenDims, const std::string& title) override;
     void PollWindowEvents() override;
     void Clear() override;
     void Draw(IRenderable* object) override;
