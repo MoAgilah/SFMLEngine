@@ -2,9 +2,9 @@
 
 #include "SFDrawables.h"
 #include <Engine/Interface/Drawables/IShape.h>
-#include <Utilities/Line.h>
+#include <Utilities/Line2.h>
 #include <Utilities/Traits.h>
-#include <Utilities/Vector.h>
+#include <Utilities/Vector2.h>
 
 namespace sf
 {
@@ -48,7 +48,7 @@ public:
     sf::ConvexShape* GetTriangle();
 
     Vector2f GetPoint(int idx) override;
-    Linef GetLine(int start, int end) override;
+    Line2f GetLine(int start, int end) override;
 
     // Returns the three points of the triangle
     std::array<Vector2f, 3> GetPoints() const override;

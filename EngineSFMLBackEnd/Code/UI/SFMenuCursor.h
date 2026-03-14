@@ -3,7 +3,7 @@
 #include "../Drawables/SFSprite.h"
 #include <Engine/Interface/UI/IMenuCursor.h>
 #include <Engine/UI/MenuNavigation.h>
-#include <Utilities/Vector.h>
+#include <Utilities/Vector2.h>
 
 class SFMenuCursor : public IMenuCursor
 {

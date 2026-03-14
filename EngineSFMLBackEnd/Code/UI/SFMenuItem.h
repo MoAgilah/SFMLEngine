@@ -3,7 +3,7 @@
 #include "../Drawables/SFSprite.h"
 #include "../Drawables/SFText.h"
 #include <Engine/Interface/UI/IMenuItem.h>
-#include <Utilities/Vector.h>
+#include <Utilities/Vector2.h>
 
 class SFMenuItem : public IMenuItem
 {

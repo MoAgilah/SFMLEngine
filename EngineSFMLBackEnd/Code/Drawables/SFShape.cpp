@@ -105,9 +105,9 @@ Vector2f SFTriangle::GetPoint(int idx)
     return Vector2f(GetTriangle()->getPoint(idx));
 }
 
-Linef SFTriangle::GetLine(int start, int end)
+Line2f SFTriangle::GetLine(int start, int end)
 {
-    return Linef(GetPoint(start), GetPoint(end));
+    return Line2f(GetPoint(start), GetPoint(end));
 }
 
 std::array<Vector2f, 3> SFTriangle::GetPoints() const
@@ -299,8 +299,8 @@ void SFCapsule::Update(const Vector2f& pos)
    CalculateRotatedRectangleCorners(corners, pos, size, m_angle);
 
    // Compute endpoints for circles
-   Vector2f end1 = Line(corners[3], corners[2]).GetMidPoint(); // top
-   Vector2f end2 = Line(corners[1], corners[0]).GetMidPoint(); // bottom
+   Vector2f end1 = Line2f(corners[3], corners[2]).GetMidPoint(); // top
+   Vector2f end2 = Line2f(corners[1], corners[0]).GetMidPoint(); // bottom
 
    auto* cap1 = GetEndCap1();
    if (cap1)

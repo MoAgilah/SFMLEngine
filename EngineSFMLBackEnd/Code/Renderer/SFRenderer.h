@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Engine/Interface/Renderer/IRenderer.h>
-#include <Utilities/Vector.h>
+#include <Utilities/Vector2.h>
 #include <string>
 
 class IRenderable; // fwd-declare

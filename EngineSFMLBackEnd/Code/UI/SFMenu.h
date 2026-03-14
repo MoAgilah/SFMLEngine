@@ -2,7 +2,7 @@
 
 #include "../Drawables/SFSprite.h"
 #include <Engine/Interface/UI/IMenu.h>
-#include <Utilities/Vector.h>
+#include <Utilities/Vector2.h>
 
 class SFMenu : public IMenu
 {

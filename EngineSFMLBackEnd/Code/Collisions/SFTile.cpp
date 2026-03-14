@@ -70,7 +70,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 	ENSURE_VALID(m_aabb);
 
 	Direction dir = obj->GetFacingDirection();
-	Line tileTopEdge = m_aabb->GetSide(Side::Top);
+	Line2f tileTopEdge = m_aabb->GetSide(Side::Top);
 	Vector2f objBottomPoint = obj->GetVolume()->GetPoint(Side::Bottom);
 
 	switch (GetType())
@@ -290,7 +290,7 @@ bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float /*tFirst*/, 
 
 	// 1) Use the correct slope orientation (flip for DIAGD if you used to)
 	const bool isDiagD = (GetType() == Types::DIAGD); // or whatever your enum/type check is
-	Line line = isDiagD ? GetSlope(1, 0) : GetSlope(0, 1);
+	Line2f line = isDiagD ? GetSlope(1, 0) : GetSlope(0, 1);
 
 	// 2) Center circle on the OBJECT, not the tile
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
@@ -322,7 +322,7 @@ bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int
 {
 	ENSURE_VALID_RET(obj, false);
 
-	Line line = GetSlope(start, end);
+	Line2f line = GetSlope(start, end);
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
 	BoundingCapsule<SFCapsule> capsule(6, line);
 
@@ -357,7 +357,7 @@ bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int
 {
 	ENSURE_VALID_RET(obj, false);
 
-	Line line = GetSlope(start, end);
+	Line2f line = GetSlope(start, end);
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
 	BoundingCapsule<SFCapsule> capsule(6, line);
 
@@ -398,7 +398,7 @@ void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 	else
 		side = obj->GetVolume()->GetPoint(Side::Left);
 
-	Line edge = GetEdge();
+	Line2f edge = GetEdge();
 
 	// Inline “moving towards” check:
 	// true when dot( side - edge.start, velocity ) > 0
