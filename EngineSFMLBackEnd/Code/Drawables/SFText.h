@@ -2,7 +2,7 @@
 
 #include "SFDrawables.h"
 #include <Engine/Interface/UI/IText.h>
-#include <Engine/Core/Timer.h>
+#include <Engine/Core/CountdownTimer.h>
 #include <Utilities/Vector2.h>
 #include <optional>
 #include <string>
@@ -67,7 +67,7 @@ public:
 	void SetUpdateFunc(UpdateFunc func);
 	void SetRenderFunc(RenderFunc func);
 
-	Timer& GetTimer() { return m_timer; }
+	CountdownTimer& GetTimer() { return m_timer; }
 
 protected:
 
@@ -82,7 +82,7 @@ private:
 
 private:
 
-	Timer m_timer;
+	CountdownTimer m_timer;
 	bool m_paused = false;
 	bool m_looping = true;
 	bool m_reduceAlpha = true;
