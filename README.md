@@ -1,82 +1,104 @@
 # SFMLEngine
 
-A lightweight, backend-agnostic C++ game engine core designed around clean separation between **engine logic** and **rendering backends** — with the first implementation built using **SFML**.
+A lightweight, modular **C++ 2D game engine core** designed around clean separation between engine logic and rendering backends. The first implementation uses **SFML**, with the architecture structured to support future backend expansion.
 
-This repository provides the **shared engine architecture** used across:
-- 🎮 [**Pong**](https://github.com/MoAgilah/Pong) — a minimal, practical example showcasing engine usage  
-- 🧠 [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller) — the experimental origin project that inspired this engine  
-- 🍄 [**SuperMarioWorldClone**](https://github.com/MoAgilah/SuperMarioWorldClone) — the ongoing rebuild and next step, expanding AI integration and gameplay complexity using this engine
+The project focuses on scalable architecture, reusable systems, backend abstraction, and maintainable gameplay frameworks.
 
-> **Status:** Work in progress — interfaces and systems are evolving as the ecosystem matures.
+> **Status:** Work in progress — interfaces and systems are evolving as the engine ecosystem matures.
 
 ---
 
 ## 🧩 Overview
 
-**SFMLEngine** defines the structure, interfaces, and backend connectors that let you write gameplay systems independent of rendering or platform APIs.  
-The goal is to **write once**, then **plug in any backend** (currently SFML, with SDL/DirectX/Vulkan support planned).
+SFMLEngine defines the structure, interfaces, and backend connectors needed to write gameplay systems independently from rendering or platform APIs.
 
-### Key Principles
-- **Backend-agnostic:** Engine logic talks to interfaces, not implementations.
-- **Interface segregation:** Each system (graphics, input, audio, etc.) remains modular.
-- **Code reuse:** The same game logic can be reused across multiple rendering backends.
-- **Ease of extension:** Designed to plug in new backends without code duplication.
+The goal is to allow game logic to communicate with generic engine interfaces rather than directly depending on SFML-specific classes. This improves maintainability, portability, and long-term extensibility.
 
 ---
 
-## 📁 Repository Structure
-```
+## ⚙️ Key Features
+
+- Modular engine systems
+- Backend abstraction architecture
+- SFML graphics and input backend
+- Interface-based engine design
+- Scene and state management
+- Entity and gameplay systems
+- Audio support
+- Collision handling framework
+- Expandable engine structure
+- Reusable gameplay framework
+
+---
+
+## 🧱 Architecture
+
+The engine separates platform-specific backend implementations from gameplay-facing systems through interfaces and abstraction layers.
+
+Gameplay logic uses the `EngineInterface` layer, while backend-specific functionality is implemented separately inside the SFML backend.
+
+```text
 SFMLEngine/
-├── EngineInterface/ # Core abstract interfaces (Git submodule)
-├── EngineSFMLBackEnd/ # SFML implementation of the interfaces
-├── SFMLEngine.sln # Visual Studio solution (for Windows builds)
-├── Directory.Build.props # Shared build settings
-└── .gitmodules # Submodule configuration
+├── EngineInterface/       → Core abstract interfaces
+├── EngineSFMLBackEnd/     → SFML implementation of the interfaces
+├── SFMLEngine.sln         → Visual Studio solution
+├── Directory.Build.props  → Shared build settings
+└── .gitmodules            → Submodule configuration
 ```
 
-## ⚙️ Getting Started
+This structure allows the same gameplay systems to be reused across multiple backends with reduced code duplication.
 
-### 1. Clone with submodules
-```
+---
+
+## 🛠 Technologies
+
+- C++
+- SFML
+- Visual Studio
+- CMake
+- Game engine architecture
+- Backend abstraction
+
+---
+
+## 🚀 Getting Started
+
+### Clone with Submodules
+
+```bash
 git clone https://github.com/MoAgilah/SFMLEngine.git
 cd SFMLEngine
 git submodule update --init --recursive
 ```
 
-### 2. Build
+### Build
 
-#### 🧰 Using Visual Studio
-Simply open `SFMLEngine.sln` and build your desired configuration (**Debug** or **Release**).
+1. Open `SFMLEngine.sln` in Visual Studio.
+2. Select **Debug** or **Release**.
+3. Build the solution.
 
-### 3. Link in your project
+---
 
-To use **SFMLEngine**:
+## 🔗 Example Projects
 
-1. Add it as a **submodule** or dependency in your project.  
-2. Include the **EngineInterface** headers.  
-3. Link against the **EngineSFMLBackEnd** library (or another backend once available).  
-4. Instantiate your engine via the backend’s **factory method** and use only the **interface layer** in your gameplay code.
+SFMLEngine is used or referenced across related projects:
 
-## 🚀 Example Projects
+| Project | Purpose |
+|---------|---------|
+| [Pong](https://github.com/MoAgilah/Pong) | Minimal gameplay example using the engine |
+| [AI-Game-Controller](https://github.com/MoAgilah/AI-Game-Controller) | Original AI/gameplay prototype that inspired the architecture |
+| [SuperMarioWorldClone](https://github.com/MoAgilah/SuperMarioWorldClone) | Ongoing rebuild using the engine for modularity and scalability |
 
-| Project | Purpose | Description |
-|----------|----------|-------------|
-| [**Pong**](https://github.com/MoAgilah/Pong) | Demonstration | Simple gameplay showcase built on **SFMLEngine**. |
-| [**AI-Game-Controller**](https://github.com/MoAgilah/AI-Game-Controller) | Prototype | Original project where the engine architecture was first conceptualized. |
-| [**SuperMarioWorldClone**](https://github.com/MoAgilah/SuperMarioWorldClone) | Next Phase | Rebuild of the AI-Game-Controller project using **SFMLEngine** for modularity and scalability. |
+---
 
-## 🏗️ Roadmap
+## 🔭 Future Work
 
-- [ ] Complete SFML backend coverage (rendering, input, audio)  
-- [ ] Add example scenes and test harness  
-- [ ] Add alternative backends (i.e. DirectX)  
-- [ ] Integrate AI controller utilities  
-- [ ] Create documentation site and wiki  
+- Complete SFML backend coverage
+- Add alternative rendering backends
+- Improve ECS implementation
+- Add physics integration
+- Improve resource management
+- Add editor or debugging tools
+- Expand multi-platform support
 
-## 👤 Author
-**Mohamed Agilah**  
-🎓 Games Programmer & AI Developer  
-🌐 [Portfolio Website](https://moagilah.com/)  
-📧 Contact: agilahmohamed@gmail.com  
-
-
+---
