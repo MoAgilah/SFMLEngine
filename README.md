@@ -1,104 +1,95 @@
-# SFMLEngine
+# EngineSFMLBackend
 
-A lightweight, modular **C++ 2D game engine core** designed around clean separation between engine logic and rendering backends. The first implementation uses **SFML**, with the architecture structured to support future backend expansion.
+A modern C++ backend implementation that demonstrates interface-driven architecture, backend encapsulation and modular system integration.
 
-The project focuses on scalable architecture, reusable systems, backend abstraction, and maintainable gameplay frameworks.
+EngineSFMLBackend provides the concrete SFML implementation of the abstractions defined by EngineInterface. Rather than exposing SFML directly throughout an application, the project encapsulates rendering, input, resources, audio and window management behind stable interface contracts, allowing higher-level systems to remain independent of the underlying multimedia framework.
 
-> **Status:** Work in progress — interfaces and systems are evolving as the engine ecosystem matures.
-
----
-
-## 🧩 Overview
-
-SFMLEngine defines the structure, interfaces, and backend connectors needed to write gameplay systems independently from rendering or platform APIs.
-
-The goal is to allow game logic to communicate with generic engine interfaces rather than directly depending on SFML-specific classes. This improves maintainability, portability, and long-term extensibility.
+The project focuses on software engineering rather than graphics features, demonstrating how a third-party framework can be integrated into a reusable backend while maintaining clean architecture, extensibility and long-term maintainability.
 
 ---
 
-## ⚙️ Key Features
+## The Engineering Problem
 
-- Modular engine systems
-- Backend abstraction architecture
-- SFML graphics and input backend
-- Interface-based engine design
-- Scene and state management
-- Entity and gameplay systems
-- Audio support
-- Collision handling framework
-- Expandable engine structure
-- Reusable gameplay framework
+While EngineInterface defines stable abstractions for engine systems, applications still require concrete implementations that interact with platform and graphics libraries. Directly exposing SFML throughout an application would introduce framework dependencies into higher-level code, increasing coupling and reducing flexibility.
+
+EngineSFMLBackend addresses this challenge by implementing the EngineInterface contracts using SFML while containing all framework-specific functionality within the backend. Applications communicate exclusively through abstract interfaces, allowing backend technologies to be replaced without affecting engine or application logic.
 
 ---
 
-## 🧱 Architecture
+## Framework Architecture
 
-The engine separates platform-specific backend implementations from gameplay-facing systems through interfaces and abstraction layers.
+<p align="center">
+  <img width="447" height="558" alt="sfml-engine-diagram" src="https://github.com/user-attachments/assets/a8979395-f40e-42f7-aa99-36ae3a946fa5" width="600"/>
+</p>
 
-Gameplay logic uses the `EngineInterface` layer, while backend-specific functionality is implemented separately inside the SFML backend.
-
-```text
-SFMLEngine/
-├── EngineInterface/       → Core abstract interfaces
-├── EngineSFMLBackEnd/     → SFML implementation of the interfaces
-├── SFMLEngine.sln         → Visual Studio solution
-├── Directory.Build.props  → Shared build settings
-└── .gitmodules            → Submodule configuration
-```
-
-This structure allows the same gameplay systems to be reused across multiple backends with reduced code duplication.
+The backend is organised into distinct implementation layers that mirror the abstractions defined by EngineInterface. Interface contracts are implemented through dedicated SFML components, while backend services remain modular and isolated from higher-level engine systems. This separation provides a reusable implementation that can evolve independently of the interface layer.
 
 ---
 
-## 🛠 Technologies
+## Architecture Goals
 
-- C++
-- SFML
-- Visual Studio
-- CMake
-- Game engine architecture
+The project was designed to demonstrate:
+
+- Backend implementation
+- Interface-driven architecture
 - Backend abstraction
+- Dependency inversion
+- Modular backend design
+- Layered architecture
+- Reusable engine services
+
+Although demonstrated using SFML, these engineering principles are transferable to alternative rendering APIs, multimedia frameworks, simulation software and other modular C++ applications.
 
 ---
 
-## 🚀 Getting Started
+## Key Features
 
-### Clone with Submodules
-
-```bash
-git clone https://github.com/MoAgilah/SFMLEngine.git
-cd SFMLEngine
-git submodule update --init --recursive
-```
-
-### Build
-
-1. Open `SFMLEngine.sln` in Visual Studio.
-2. Select **Debug** or **Release**.
-3. Build the solution.
+- Complete SFML implementation of EngineInterface
+- Encapsulated rendering, input, audio and resource systems
+- Clear separation between interface contracts and backend implementation
+- Modular backend services organised by responsibility
+- Git submodule integration with EngineInterface
+- Reusable architecture designed for extension and future backend replacement
 
 ---
 
-## 🔗 Example Projects
+## Technologies & Engineering Practices
 
-SFMLEngine is used or referenced across related projects:
+### Development
 
-| Project | Purpose |
-|---------|---------|
-| [Pong](https://github.com/MoAgilah/Pong) | Minimal gameplay example using the engine |
-| [AI-Game-Controller](https://github.com/MoAgilah/AI-Game-Controller) | Original AI/gameplay prototype that inspired the architecture |
-| [SuperMarioWorldClone](https://github.com/MoAgilah/SuperMarioWorldClone) | Ongoing rebuild using the engine for modularity and scalability |
+- C++20
+- SFML 3
+- Visual Studio 2022
+- Git
+- Git Submodules
+
+### Engineering Practices
+
+- Backend Implementation
+- Interface-Driven Architecture
+- Dependency Inversion
+- Backend Abstraction
+- Modular Architecture
+- Layered Architecture
+- RAII
+- Resource Encapsulation
 
 ---
 
-## 🔭 Future Work
+## Architecture Highlights
 
-- Complete SFML backend coverage
-- Add alternative rendering backends
-- Improve ECS implementation
-- Add physics integration
-- Improve resource management
-- Add editor or debugging tools
-- Expand multi-platform support
+- Concrete implementation of EngineInterface contracts
+- Backend encapsulation of SFML functionality
+- Modular subsystem organisation
+- Reusable backend implementation
+- Clean separation between interfaces and framework code
+
+---
+
+## Engineering Outcome
+
+EngineSFMLBackend demonstrates how a modern C++ backend can integrate a third-party multimedia framework without compromising architectural separation.
+
+By implementing the contracts defined by EngineInterface, the backend provides rendering, input, resources and platform services through stable abstractions while isolating SFML from higher-level engine systems. This approach improves maintainability, supports future backend replacement and provides a reusable implementation that can be shared across multiple projects.
 
 ---
