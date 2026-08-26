@@ -1,8 +1,5 @@
 #pragma once
 
-#include <Utilities/Defines.h>
-
-#if USE_SFML
 
 #include "../Resources/SFFont.h"
 #include "../Resources/SFMusic.h"
@@ -16,5 +13,3 @@ using ActiveMusic = SFMusic;
 using ActiveSound = SFSound;
 using ActiveShader = SFShader;
 using ActiveTexture = SFTexture;
-
-#endif

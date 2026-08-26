@@ -28,7 +28,7 @@ void SFTile::Render(IRenderer* renderer)
 	ENSURE_VALID(renderer);
 	if (GameConstants::DRender)
 	{
-		if (m_type == Types::DIAGU || m_type == Types::DIAGD)
+		if (m_type == TileTypes::DIAGU || m_type == TileTypes::DIAGD)
 		{
 			if (m_slope)
 			{
@@ -38,7 +38,7 @@ void SFTile::Render(IRenderer* renderer)
 			}
 		}
 
-		if (m_type == Types::LCRN || m_type == Types::RCRN)
+		if (m_type == TileTypes::LCRN || m_type == TileTypes::RCRN)
 		{
 			auto* window = static_cast<sf::RenderWindow*>(
 				renderer->GetWindow()->GetNativeHandle());
@@ -75,7 +75,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 
 	switch (GetType())
 	{
-	case Types::OWAY:
+	case TileTypes::OWAY:
 	{
 		if (dir == Direction::DDIR || dir == Direction::LDIR || dir == Direction::RDIR)
 		{
@@ -89,16 +89,16 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		}
 		return;
 	}
-	case Types::GRND:
+	case TileTypes::GRND:
 		if (dir == Direction::DDIR || dir == Direction::LDIR || dir == Direction::RDIR)
 		{
 			if (tileTopEdge.IsPointAboveLine(objBottomPoint))
 				ResolveObjectToBoxTop(obj, tFirst, tLast);
 		}
 		return;
-	case Types::LCRN:
+	case TileTypes::LCRN:
 		[[fallthrough]];
-	case Types::RCRN:
+	case TileTypes::RCRN:
 	{
 		Vector2f seperationVector = obj->GetVolume()->GetSeparationVector(static_cast<IBoundingVolume*>(m_aabb.get()));
 		Direction colDir = ICollisionManager::GetCollisionDirection(seperationVector, obj->GetVelocity(), Vector2f());
@@ -135,10 +135,10 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		}
 		return;
 	}
-	case Types::WALL:
+	case TileTypes::WALL:
 		ResolveObjectToBoxHorizontally(obj, tFirst, tLast);
 		return;
-	case Types::DIAGU:
+	case TileTypes::DIAGU:
 	{
 		switch (dir)
 		{
@@ -166,7 +166,7 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		}
 		return;
 	}
-	case Types::DIAGD:
+	case TileTypes::DIAGD:
 	{
 		switch (dir)
 		{
@@ -205,7 +205,7 @@ void SFTile::SetPosition(const Vector2f& pos)
 
 	switch (m_type)
 	{
-	case Types::DIAGU:
+	case TileTypes::DIAGU:
 	{
 		const Vector2f c = m_aabb->GetPosition(); // center
 		const Vector2f mn = m_aabb->GetMin();      // min corner  (x-, y-)
@@ -229,7 +229,7 @@ void SFTile::SetPosition(const Vector2f& pos)
 	}
 	break;
 
-	case Types::DIAGD:
+	case TileTypes::DIAGD:
 	{
 		const Vector2f c = m_aabb->GetPosition(); // center
 		const Vector2f mn = m_aabb->GetMin();      // min corner
@@ -256,11 +256,11 @@ void SFTile::SetPosition(const Vector2f& pos)
 
 
 		break;
-	case Types::LCRN:
+	case TileTypes::LCRN:
 		m_edge.start = m_aabb->GetMin() + Vector2f(m_aabb->GetExtents().x * 2, 0);
 		m_edge.end = m_edge.start - Vector2f(0, GetTileHeight());
 		break;
-	case Types::RCRN:
+	case TileTypes::RCRN:
 		m_edge.start = m_aabb->GetMin();
 		m_edge.end = m_edge.start - Vector2f(0, GetTileHeight());
 		break;
@@ -289,7 +289,7 @@ bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float /*tFirst*/, 
 	ENSURE_VALID_RET(obj, false);
 
 	// 1) Use the correct slope orientation (flip for DIAGD if you used to)
-	const bool isDiagD = (GetType() == Types::DIAGD); // or whatever your enum/type check is
+	const bool isDiagD = (GetType() == TileTypes::DIAGD); // or whatever your enum/type check is
 	Line2f line = isDiagD ? GetSlope(1, 0) : GetSlope(0, 1);
 
 	// 2) Center circle on the OBJECT, not the tile
@@ -393,7 +393,7 @@ void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 		return;*/
 
 	Vector2f side;
-	if (m_type == Types::LCRN)
+	if (m_type == TileTypes::LCRN)
 		side = obj->GetVolume()->GetPoint(Side::Right);
 	else
 		side = obj->GetVolume()->GetPoint(Side::Left);
