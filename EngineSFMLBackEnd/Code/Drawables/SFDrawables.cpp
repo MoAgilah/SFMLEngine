@@ -1,7 +1,7 @@
 #include "SFDrawables.h"
 
 #include "../Resources/SFShader.h"
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/Shape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
@@ -14,19 +14,20 @@
 template <typename T>
 void SFDrawables<T>::Render(IRenderer* renderer)
 {
-    ENSURE_VALID(renderer);
+    if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
+        return;
 
     auto* drawable = this->GetPrimaryDrawable();
-
-    ENSURE_VALID(drawable);
+    if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return;
 
     auto* win = renderer->GetWindow();
-
-    ENSURE_VALID(win);
+    if (!CheckNotNull(win, "Invalid Pointer 'win'"))
+        return;
 
     auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
-
-    ENSURE_VALID(sfw);
+    if (!CheckNotNull(sfw, "Invalid Pointer 'sfw'"))
+        return;
 
     sfw->draw(*drawable);
 }
@@ -34,23 +35,24 @@ void SFDrawables<T>::Render(IRenderer* renderer)
 template<typename T>
 void SFDrawables<T>::Render(IRenderer* renderer, IShader* shader)
 {
-    ENSURE_VALID(renderer);
+    if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
+        return;
 
     auto* drawable = this->GetPrimaryDrawable();
-
-    ENSURE_VALID(drawable);
+    if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return;
 
     auto* win = renderer->GetWindow();
-
-    ENSURE_VALID(win);
+    if (!CheckNotNull(win, "Invalid Pointer 'win'"))
+        return;
 
     auto* sfw = static_cast<sf::RenderWindow*>(win->GetNativeHandle());
-
-    ENSURE_VALID(sfw);
+    if (!CheckNotNull(sfw, "Invalid Pointer 'sfw'"))
+        return;
 
     auto* sfShader = dynamic_cast<SFShader*>(shader);
-
-    ENSURE_VALID(sfShader);
+    if (!CheckNotNull(sfShader, "Invalid Pointer 'sfShader'"))
+        return;
 
     sf::RenderStates states;
     states.shader = &sfShader->GetNativeShader();
@@ -61,31 +63,43 @@ void SFDrawables<T>::Render(IRenderer* renderer, IShader* shader)
 template <typename T>
 void SFDrawables<T>::SetPosition(const Vector2f& pos)
 {
-    if (auto* d = this->GetPrimaryDrawable())
-        d->setPosition(pos);
+    auto* drawable = this->GetPrimaryDrawable();
+    if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return;
+
+    drawable->setPosition(pos);
 }
 
 template <typename T>
 Vector2f SFDrawables<T>::GetPosition()
 {
-    if (auto* d = this->GetPrimaryDrawable())
-        return Vector2f(d->getPosition());
+    auto* drawable = this->GetPrimaryDrawable();
+    if (CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return Vector2f(drawable->getPosition());
+
     return {};
 }
 
 template <typename T>
 void SFDrawables<T>::OffsetPosition(const Vector2f& delta)
 {
-    if (auto* d = this->GetPrimaryDrawable())
-        d->move(delta);
+    auto* drawable = this->GetPrimaryDrawable();
+    if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return;
+
+    drawable->move(delta);
 }
 
 template <typename T>
 void SFDrawables<T>::SetScale(const Vector2f& scl)
 {
     this->m_scale = scl;
-    if (auto* d = this->GetPrimaryDrawable())
-        d->setScale(scl);
+
+    auto* drawable = this->GetPrimaryDrawable();
+    if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return;
+
+    drawable->setScale(scl);
 }
 
 template <typename T>
@@ -97,16 +111,21 @@ Vector2f SFDrawables<T>::GetScale()
 template <typename T>
 Vector2f SFDrawables<T>::GetOrigin()
 {
-    if (auto* d = this->GetPrimaryDrawable())
-        return Vector2f(d->getOrigin());
+    auto* drawable = this->GetPrimaryDrawable();
+    if (CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return Vector2f(drawable->getOrigin());
+
     return {};
 }
 
 template <typename T>
 void SFDrawables<T>::SetOrigin(const Vector2f& ori)
 {
-    if (auto* d = this->GetPrimaryDrawable())
-        d->setOrigin(ori);
+    auto* drawable = this->GetPrimaryDrawable();
+    if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+        return;
+
+    drawable->setOrigin(ori);
 }
 
 template<typename T>
@@ -124,22 +143,26 @@ void SFDrawables<T>::SetSize(const Vector2f& size)
 template<typename T>
 Vector2f SFDrawables<T>::GetGlobalSize()
 {
-    if (auto* d = this->GetPrimaryDrawable())
+    auto* drawable = this->GetPrimaryDrawable();
+    if (CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
     {
-        auto bounds = d->getGlobalBounds();
+        auto bounds = drawable->getGlobalBounds();
         return Vector2f(bounds.size);
     }
+
     return {};
 }
 
 template<typename T>
 Vector2f SFDrawables<T>::GetLocalSize()
 {
-    if (auto* d = this->GetPrimaryDrawable())
+    auto* drawable = this->GetPrimaryDrawable();
+    if (CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
     {
-        auto bounds = d->getLocalBounds();
+        auto bounds = drawable->getLocalBounds();
         return Vector2f(bounds.size);
     }
+
     return {};
 }
 

@@ -1,19 +1,22 @@
 #include "SFFont.h"
 
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/Font.hpp>
 
 SFFont::SFFont()
     : m_font(std::make_unique<sf::Font>())
 {
-    ENSURE_VALID(m_font);
+    if (!CheckNotNull(m_font.get(), "Invalid Pointer 'm_font'"))
+        throw std::invalid_argument("SFFont requires a valid font");
 }
 
 SFFont::~SFFont() = default;
 
 bool SFFont::LoadFromFile(const std::string& filepath)
 {
-    ENSURE_VALID_RET(m_font, false);
+    if (!CheckNotNull(m_font.get(), "Invalid Pointer 'm_font'"))
+        return false;
+
     return m_font->openFromFile(filepath);
 }
 

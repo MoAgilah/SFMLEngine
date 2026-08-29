@@ -3,7 +3,7 @@
 #include "Resources/SFTexture.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -11,27 +11,30 @@
 
 SFSprite::SFSprite(const std::string& texId)
 {
-	THROW_IF_FALSE_MSG(SetTexture(texId), "SFSprite initialization failed");
+	ThrowIfFalse(SetTexture(texId), "SFSprite initialization failed");
 }
 
 bool SFSprite::SetTexture(const std::string& texId)
 {
-	GameManager* gameMgr = nullptr;
-	// Safely get the singleton (catch exceptions → set outError, log, return false)
-	ERR_TRY_ASSIGN_OR_RET(gameMgr, GameManager::Get(), false);
-	ENSURE_VALID_RET(gameMgr, false);
+	auto* gameMgr = GameManager::Get();
+	if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
+		return false;
 
-	ITexture* baseTex = nullptr;
-	// Safely fetch the texture (catch exceptions → set outError, log, return false)
-	ERR_TRY_ASSIGN_OR_RET(baseTex, gameMgr->GetTextureMgr().GetTexture(texId), false);
-	ENSURE_VALID_RET(baseTex, false);
+	auto* baseTex = gameMgr->GetTextureMgr().GetTexture(texId);
+	if (!CheckNotNull(gameMgr, std::format("Invalid Pointer 'baseTex' GetTextureMgr().GetTexture({})", texId)))
+		return false;
 
 	// Backend type check
 	auto* sfTex = dynamic_cast<SFTexture*>(baseTex);
-	ENSURE_VALID_RET(sfTex, false);
+	if (!CheckNotNull(sfTex, "Invalid Pointer 'sfTex'"))
+		return false;
+
+	auto sfSpr = std::make_shared<sf::Sprite>(sfTex->GetNativeTexture());
+	if (!CheckNotNull(sfSpr.get(), "Invalid Pointer 'sfSpr'"))
+		return false;
 
 	// Apply to drawable
-	SetDrawable(std::make_shared<sf::Sprite>(sfTex->GetNativeTexture()));
+	SetDrawable(std::move(sfSpr));
 
 	m_texID = texId;
 	SetScale(GameConstants::Scale);
@@ -43,15 +46,19 @@ bool SFSprite::SetTexture(const std::string& texId)
 
 void SFSprite::SetDirection(bool dir)
 {
+	auto* sfSpr = this->GetPrimaryDrawableAs<sf::Sprite>();
+	if (!CheckNotNull(sfSpr, "Invalid Pointer 'sfSpr'"))
+		return;
+
 	if (dir)
 	{
 		// flip X
-		this->GetPrimaryDrawableAs<sf::Sprite>()->setScale(GameConstants::Scale);
+		sfSpr->setScale(GameConstants::Scale);
 	}
 	else
 	{
 		//unflip x
-		this->GetPrimaryDrawableAs<sf::Sprite>()->setScale({ -GameConstants::Scale.x, GameConstants::Scale.y });
+		sfSpr->setScale({ -GameConstants::Scale.x, GameConstants::Scale.y });
 	}
 }
 
@@ -68,17 +75,29 @@ void SFSprite::Render(IRenderer* renderer)
 
 sf::Sprite* SFSprite::GetSprite()
 {
-	return this->GetPrimaryDrawableAs<sf::Sprite>();
+	auto* sfSpr = this->GetPrimaryDrawableAs<sf::Sprite>();
+	if (!CheckNotNull(sfSpr, "Invalid Pointer 'sfSpr'"))
+		return nullptr;
+
+	return sfSpr;
 }
 
 Vector2u SFSprite::GetTextureSize() const
 {
-	return this->GetPrimaryDrawableAs<sf::Sprite>()->getTexture().getSize();
+	auto* sfSpr = this->GetPrimaryDrawableAs<sf::Sprite>();
+	if (!CheckNotNull(sfSpr, "Invalid Pointer 'sfSpr'"))
+		return Vector2u();
+
+	return sfSpr->getTexture().getSize();
 }
 
 void SFSprite::SetTextureRect(const IntRect& rect)
 {
-	this->GetPrimaryDrawableAs<sf::Sprite>()->setTextureRect(rect);
+	auto* sfSpr = this->GetPrimaryDrawableAs<sf::Sprite>();
+	if (!CheckNotNull(sfSpr, "Invalid Pointer 'sfSpr'"))
+		return;
+
+	sfSpr->setTextureRect(rect);
 }
 
 SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float framesPerSec, bool symmetrical, float animSpeed)
@@ -182,18 +201,18 @@ void SFAnimatedSprite::UpdateAnimSpeed(float animSpd)
 
 SFSprite* GetSprite(IDrawable* drawable)
 {
-	auto spr = dynamic_cast<SFSprite*>(drawable);
-	if (spr)
-		return spr;
+	auto* spr = dynamic_cast<SFSprite*>(drawable);
+	if (!CheckNotNull(spr, "Invalid Pointer 'spr'"))
+		return nullptr;
 
-	return nullptr;
+	return spr;
 }
 
 SFAnimatedSprite* GetAnimatedSprite(IDrawable* drawable)
 {
-	auto spr = dynamic_cast<SFAnimatedSprite*>(drawable);
-	if (spr)
-		return spr;
+	auto* spr = dynamic_cast<SFAnimatedSprite*>(drawable);
+	if (!CheckNotNull(spr, "Invalid Pointer 'spr'"))
+		return nullptr;
 
-	return nullptr;
+	return spr;
 }

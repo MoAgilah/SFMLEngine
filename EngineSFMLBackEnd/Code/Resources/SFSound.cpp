@@ -1,6 +1,6 @@
 #include "SFSound.h"
 
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 
@@ -8,16 +8,22 @@ SFSound::SFSound()
     : m_buffer(std::make_unique<sf::SoundBuffer>())
     , m_sound(std::make_unique<sf::Sound>(*m_buffer.get()))
 {
-    ENSURE_VALID(m_buffer);
-    ENSURE_VALID(m_sound);
+    if (!CheckNotNull(m_buffer.get(), "Invalid Pointer 'm_buffer'"))
+        throw std::invalid_argument("SFSound requires a valid buffer");
+
+    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
+        throw std::invalid_argument("SFSound requires a valid sound");
 }
 
 SFSound::~SFSound() = default;
 
 bool SFSound::LoadFromFile(const std::string& filepath)
 {
-    ENSURE_VALID_RET(m_buffer, false);
-    ENSURE_VALID_RET(m_sound, false);
+    if (!CheckNotNull(m_buffer.get(), "Invalid Pointer 'm_buffer'"))
+        return false;
+
+    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
+        return false;
 
     if (!m_buffer->loadFromFile(filepath))
         return false;
@@ -29,25 +35,33 @@ bool SFSound::LoadFromFile(const std::string& filepath)
 
 void SFSound::Play()
 {
-    ENSURE_VALID(m_sound);
+    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
+        return;
+
     m_sound->play();
 }
 
 void SFSound::Pause()
 {
-    ENSURE_VALID(m_sound);
+    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
+        return;
+
     m_sound->pause();
 }
 
 void SFSound::Stop()
 {
-    ENSURE_VALID(m_sound);
+    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
+        return;
+
     m_sound->stop();
 }
 
 void SFSound::SetLoop(bool loop)
 {
-    ENSURE_VALID(m_sound);
+    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
+        return;
+
     m_sound->setLooping(loop);
 }
 

@@ -1,19 +1,22 @@
 #include "SFTexture.h"
 
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/Texture.hpp>
 
 SFTexture::SFTexture()
     : m_texture(std::make_unique<sf::Texture>())
 {
-    ENSURE_VALID(m_texture);
+    if (!CheckNotNull(m_texture.get(), "Invalid Pointer 'm_texture'"))
+        throw std::invalid_argument("SFTexture requires a valid texture");
 }
 
 SFTexture::~SFTexture() = default;
 
 bool SFTexture::LoadFromFile(const std::string& filepath)
 {
-    ENSURE_VALID_RET(m_texture, false);
+    if (!CheckNotNull(m_texture.get(), "Invalid Pointer 'm_texture'"))
+        return false;
+
     return m_texture->loadFromFile(filepath);
 }
 
