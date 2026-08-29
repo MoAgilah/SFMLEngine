@@ -1,13 +1,14 @@
 #include "SFShader.h"
 
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/Shader.hpp>
 #include <utility>
 
 SFShader::SFShader()
     : m_shader(std::make_unique<sf::Shader>())
 {
-    ENSURE_VALID(m_shader);
+    if (!CheckNotNull(m_shader.get(), "Invalid Pointer 'm_shader'"))
+        throw std::invalid_argument("SFShader requires a valid shader");
 }
 
 SFShader::~SFShader() = default;
@@ -26,7 +27,9 @@ bool SFShader::LoadFromFile(const std::string& filepath)
     // reinterpret_cast because we stored the enum underlying as int in GetNativeShaderType
     auto nativeType = static_cast<sf::Shader::Type>(*type);
 
-    ENSURE_VALID_RET(m_shader, false);
+    if (!CheckNotNull(m_shader.get(), "Invalid Pointer 'm_shader'"))
+        return false;
+
     return m_shader->loadFromFile(filepath, nativeType);
 }
 

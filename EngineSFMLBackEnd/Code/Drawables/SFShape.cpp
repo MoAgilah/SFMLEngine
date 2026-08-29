@@ -1,7 +1,7 @@
 #include "SFShape.h"
 
 #include <Engine/Core/Constants.h>
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/CircleShape.hpp>
 #include <SFML/Graphics/ConvexShape.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -316,14 +316,17 @@ void SFCapsule::Update(const Vector2f& pos)
 
 void SFCapsule::Render(IRenderer* renderer)
 {
-    ENSURE_VALID(renderer);
+    if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
+        return;
 
     SFDrawables<sf::Shape>::Render(renderer);
 
-    DECL_GET_OR_RETURN(windowHandle, renderer->GetWindow());
+    auto windowHandle = renderer->GetWindow();
+    if (!CheckNotNull(windowHandle, "Invalid Pointer 'windowHandle'"))
+        return;
 
     auto* sfWindow = static_cast<sf::RenderWindow*>(windowHandle->GetNativeHandle());
-    if (sfWindow)
+    if (CheckNotNull(sfWindow, "Invalid Pointer 'sfWindow'"))
     {
         auto endCap1 = GetEndCap1();
         if (endCap1)

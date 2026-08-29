@@ -6,7 +6,7 @@
 #include <Engine/Collisions/BoundingCapsule.h>
 #include <Engine/Collisions/BoundingCircle.h>
 #include <Engine/Core/Constants.h>
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 
 SFTile::SFTile(int gX, int gY)
@@ -17,7 +17,10 @@ SFTile::SFTile(int gX, int gY)
 SFTile::SFTile(int gX, int gY, const std::string& fontName)
 	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
 {
-	DECL_GET_OR_RETURN(sfTxt, dynamic_cast<SFText*>(m_text.get()));
+	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
+	if (!CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
+		throw std::invalid_argument("SFTile requires a valid text drawable");
+
 	sfTxt->SetCharSize(12);
 	sfTxt->SetOrigin({ 6.f,6.f });
 	sfTxt->SetText(std::format("{}\n{}", m_colNum, m_rowNum));
@@ -25,7 +28,9 @@ SFTile::SFTile(int gX, int gY, const std::string& fontName)
 
 void SFTile::Render(IRenderer* renderer)
 {
-	ENSURE_VALID(renderer);
+	if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
+		return;
+
 	if (GameConstants::DRender)
 	{
 		if (m_type == TileTypes::DIAGU || m_type == TileTypes::DIAGD)
@@ -33,7 +38,7 @@ void SFTile::Render(IRenderer* renderer)
 			if (m_slope)
 			{
 				auto triangle = dynamic_cast<SFTriangle*>(m_slope.get());
-				if (triangle)
+				if (CheckNotNull(triangle, "Invalid Pointer 'triangle'"))
 					triangle->Render(renderer);
 			}
 		}
@@ -42,8 +47,7 @@ void SFTile::Render(IRenderer* renderer)
 		{
 			auto* window = static_cast<sf::RenderWindow*>(
 				renderer->GetWindow()->GetNativeHandle());
-
-			if (window)
+			if (CheckNotNull(window, "Invalid Pointer 'window'"))
 			{
 				sf::Vertex line[2];
 				line[0].position = m_edge.start;
@@ -55,19 +59,24 @@ void SFTile::Render(IRenderer* renderer)
 			}
 		}
 
-		if (m_aabb)
+		if (CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
 			m_aabb->Render(renderer);
 
-		if (m_text)
+		if (CheckNotNull(m_text.get(), "Invalid Pointer 'm_text'"))
 			m_text->Render(renderer);
 	}
 }
 
 void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast)
 {
-	ENSURE_VALID(obj);
-	ENSURE_VALID(obj->GetVolume());
-	ENSURE_VALID(m_aabb);
+	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
+		return;
+
+	if (!CheckNotNull(obj->GetVolume(), "Invalid Pointer 'obj->GetVolume()'"))
+		return;
+
+	if (!CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
+		return;
 
 	Direction dir = obj->GetFacingDirection();
 	Line2f tileTopEdge = m_aabb->GetSide(Side::Top);
@@ -199,7 +208,8 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 
 void SFTile::SetPosition(const Vector2f& pos)
 {
-	ENSURE_VALID(m_aabb);
+	if (!CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
+		return;
 
 	m_aabb->Update(pos);
 
@@ -266,27 +276,29 @@ void SFTile::SetPosition(const Vector2f& pos)
 		break;
 	}
 
-	DECL_GET_OR_RETURN(sfTxt, dynamic_cast<SFText*>(m_text.get()));
-	sfTxt->SetPosition({ m_aabb->GetPosition().x - 10.f, m_aabb->GetPosition().y - 7.5f });
+	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
+	if (!CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
+		sfTxt->SetPosition({ m_aabb->GetPosition().x - 10.f, m_aabb->GetPosition().y - 7.5f });
 }
 
 void SFTile::SetFillColour(Colour col)
 {
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
-	if (sfAABB)
+	if (CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
 		sfAABB->GetShape()->SetFillColour(col);
 }
 
 void SFTile::SetOutlineColour(Colour col)
 {
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
-	if (sfAABB)
+	if (CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
 		sfAABB->GetShape()->SetOutlineColour(col);
 }
 
 bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float /*tFirst*/, float /*tLast*/)
 {
-	ENSURE_VALID_RET(obj, false);
+	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
+		return false;
 
 	// 1) Use the correct slope orientation (flip for DIAGD if you used to)
 	const bool isDiagD = (GetType() == TileTypes::DIAGD); // or whatever your enum/type check is
@@ -320,7 +332,8 @@ static float GetYOffSet(float pDistX, float lDistY, float slopeY, float currY, f
 bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int end,
 	float /*tFirst*/, float /*tLast*/)
 {
-	ENSURE_VALID_RET(obj, false);
+	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
+		return false;
 
 	Line2f line = GetSlope(start, end);
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
@@ -355,7 +368,8 @@ bool SFTile::ResolveObjectToSlopeIncline(IDynamicGameObject* obj, int start, int
 bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int end,
 	float /*tFirst*/, float /*tLast*/)
 {
-	ENSURE_VALID_RET(obj, false);
+	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
+		return false;
 
 	Line2f line = GetSlope(start, end);
 	BoundingCircle<SFCircle> circle(4, obj->GetVolume()->GetPoint(Side::Bottom));
@@ -387,7 +401,8 @@ bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int
 
 void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 {
-	ENSURE_VALID(obj);
+	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
+		return;
 
 	/*if (IsPlayerObject(obj->GetID()))
 		return;*/

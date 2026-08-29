@@ -1,44 +1,54 @@
 #include "SFMusic.h"
 
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Audio/Music.hpp>
 
 SFMusic::SFMusic()
     : m_music(std::make_unique<sf::Music>())
 {
-    ENSURE_VALID(m_music);
+    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        throw std::invalid_argument("SFMusic requires a valid music");
 }
 
 SFMusic::~SFMusic() = default;
 
 bool SFMusic::LoadFromFile(const std::string& filepath)
 {
-    ENSURE_VALID_RET(m_music, false);
-    // sf::Music streams from file
+    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        return false;
+
     return m_music->openFromFile(filepath);
 }
 
 void SFMusic::Play()
 {
-    ENSURE_VALID(m_music);
+    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        return;
+
     m_music->play();
 }
 
 void SFMusic::Pause()
 {
-    ENSURE_VALID(m_music);
+    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        return;
+
     m_music->pause();
 }
 
 void SFMusic::Stop()
 {
-    ENSURE_VALID(m_music);
+    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        return;
+
     m_music->stop();
 }
 
 void SFMusic::SetLoop(bool loop)
 {
-    ENSURE_VALID(m_music);
+    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        return;
+
     m_music->setLooping(loop);
 }
 

@@ -3,7 +3,7 @@
 #include "../Resources/SFFont.h"
 #include "../Resources/SFShader.h"
 #include <Engine/Core/GameManager.h>
-#include <Utilities/Utils.h>
+#include <Utilities/Guards.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 #include <SFML/Graphics/Shader.hpp>
@@ -12,7 +12,7 @@
 SFText::SFText(const TextConfig& config)
 	: IText(config)
 {
-	THROW_IF_FALSE_MSG(Init(), "SFText initialization failed");
+	ThrowIfFalse(Init(), "SFText initialization failed");
 }
 
 void SFText::Update(float deltaTime)
@@ -129,19 +129,17 @@ void SFText::SetOutlineThickness(float thickness)
 
 bool SFText::Init()
 {
-	GameManager* gameMgr = nullptr;
-	// Safely get the singleton (catch exceptions → set outError, log, return false)
-	ERR_TRY_ASSIGN_OR_RET(gameMgr, GameManager::Get(), false);
-	ENSURE_VALID_RET(gameMgr, false);
+	auto* gameMgr = GameManager::Get();
+	if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
+		return false;
 
-	IFont* baseFont = nullptr;
-	// Safely fetch the texture (catch exceptions → set outError, log, return false)
-	ERR_TRY_ASSIGN_OR_RET(baseFont, gameMgr->GetFontMgr().GetFont(m_config.m_fontName), false);
-	ENSURE_VALID_RET(baseFont, false);
+	auto* baseFont = gameMgr->GetFontMgr().GetFont(m_config.m_fontName);
+	if (!CheckNotNull(gameMgr, "Invalid Pointer 'baseFont' from GetFontMgr().GetFont"))
+		return false;
 
-	// Back end type check
 	auto* sfFont = dynamic_cast<SFFont*>(baseFont);
-	ENSURE_VALID_RET(sfFont, false);
+	if (!CheckNotNull(sfFont, "Invalid Pointer 'sfFont'"))
+		return false;
 
 	SetDrawable(std::make_shared<sf::Text>(sfFont->GetNativeFont()));
 
@@ -156,18 +154,18 @@ bool SFText::Init()
 SFAnimatedText::SFAnimatedText(const TextConfig& config)
 	: SFText(config), m_timer(1.f), m_textShader(nullptr), m_updateFunc(nullptr), m_renderFunc(nullptr)
 {
-	THROW_IF_FALSE_MSG(m_config.m_animType != TextAnimType::Custom, "TextConfig can't initialize TextAnimType::Custom");
-	THROW_IF_FALSE_MSG(Init(), "SFAnimatedText initialization failed");
+	ThrowIfFalse(m_config.m_animType != TextAnimType::Custom, "TextConfig can't initialize TextAnimType::Custom");
+	ThrowIfFalse(Init(), "SFAnimatedText initialization failed");
 }
 
 SFAnimatedText::SFAnimatedText(const CustomTextConfig& ctc)
 	: SFText(ctc.m_config), m_timer(1.f), m_textShader(nullptr), m_updateFunc(ctc.m_updateFunc), m_renderFunc(ctc.m_renderFunc)
 {
-	THROW_IF_FALSE_MSG(m_config.m_animType == TextAnimType::Custom, "CustomTextConfig can't initialize TextAnimType types other than TextAnimType::Custom");
-	THROW_IF_FALSE_MSG(Init(), "SFAnimatedText initialization failed");
+	ThrowIfFalse(m_config.m_animType == TextAnimType::Custom, "CustomTextConfig can't initialize TextAnimType types other than TextAnimType::Custom");
+	ThrowIfFalse(Init(), "SFAnimatedText initialization failed");
 
 	if (!ctc.m_shaderName.empty())
-		THROW_IF_FALSE_MSG(LoadShader(ctc.m_shaderName), "LoadShader failed: id-{}", ctc.m_shaderName);
+		ThrowIfFalse(LoadShader(ctc.m_shaderName), std::format("LoadShader failed: id-{}", ctc.m_shaderName));
 }
 
 void SFAnimatedText::Update(float deltaTime)
@@ -187,7 +185,8 @@ void SFAnimatedText::Update(float deltaTime)
 
 void SFAnimatedText::Render(IRenderer* renderer)
 {
-	ENSURE_VALID(renderer);
+	if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
+		return;
 
 	switch (m_config.m_animType)
 	{
@@ -235,13 +234,13 @@ void SFAnimatedText::SetRenderFunc(RenderFunc func)
 
 bool SFAnimatedText::LoadShader(const std::string& shaderID)
 {
-	GameManager* gameMgr = nullptr;
-	ERR_TRY_ASSIGN_OR_RET(gameMgr, GameManager::Get(), false);
-	ENSURE_VALID_RET(gameMgr, false);
+	auto* gameMgr = GameManager::Get();
+	if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
+		return false;
 
-	IShader* shader = nullptr;
-	ERR_TRY_ASSIGN_OR_RET(shader, gameMgr->GetShaderMgr().GetShader(shaderID), false);
-	ENSURE_VALID_RET(shader, false);
+	auto* shader = gameMgr->GetShaderMgr().GetShader(shaderID);
+	if (!CheckNotNull(shader, std::format("Invalid Pointer 'shader' from GetShaderMgr().GetShader({})", shaderID)))
+		return false;
 
 	m_textShader = shader;
 
@@ -321,12 +320,19 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 
 void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
 {
-	ENSURE_VALID(renderer);
-	ENSURE_VALID(m_textShader);
-	DECL_GET_OR_RETURN(drawable, this->GetPrimaryDrawable());
+	if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
+		return;
 
-	auto shader = dynamic_cast<SFShader*>(m_textShader);
-	ENSURE_VALID(shader);
+	if (!CheckNotNull(m_textShader, "Invalid Pointer 'm_textShader'"))
+		return;
+
+	auto* drawable = this->GetPrimaryDrawable();
+	if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
+		return;
+
+	auto* shader = dynamic_cast<SFShader*>(m_textShader);
+	if (!CheckNotNull(shader, "Invalid Pointer 'shader'"))
+		return;
 
 	shader->GetNativeShader().setUniform("time", m_timer.GetCurrTime());
 
@@ -335,22 +341,22 @@ void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
 
 bool SFAnimatedText::Init()
 {
-	THROW_IF_FALSE_MSG(SFText::Init(), "SFText parent initialization failed");
+	ThrowIfFalse(SFText::Init(), "SFText parent initialization failed");
 
 	switch (m_config.m_animType)
 	{
 	case TextAnimType::Flashing:
 	{
-		THROW_IF_FALSE_MSG(LoadShader("FadeInOutShader"),
-			"LoadShader failed: id-{}",
-			"FadeInOutShader");
+		ThrowIfFalse(LoadShader("FadeInOutShader"),
+			std::format("LoadShader failed: id-{}",
+			"FadeInOutShader"));
 	}
 		break;
 	case TextAnimType::Countdown:
 	{
-		THROW_IF_FALSE_MSG(LoadShader("FadeInOutShader"),
-			"LoadShader failed: id-{}",
-			"FadeInOutShader");
+		ThrowIfFalse(LoadShader("FadeInOutShader"),
+			std::format("LoadShader failed: id-{}",
+			"FadeInOutShader"));
 	}
 		break;
 	default:
