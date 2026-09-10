@@ -11,9 +11,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineInterface.NativeTests
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineInterface.TestSupport", "EngineInterface\EngineInterface.TestSupport\EngineInterface.TestSupport.vcxproj", "{EBE1B96B-8DC1-43DF-98DC-12B48DC7870A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineSFMLBackend.NativeTests", "EngineSFMLBackend.NativeTests\EngineSFMLBackend.NativeTests.vcxproj", "{C1E1503A-86A5-AA60-7634-BBEF73BE0511}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineSFMLBackend.NativeTests", "EngineSFMLBackEnd\EngineSFMLBackend.NativeTests\EngineSFMLBackend.NativeTests.vcxproj", "{C1E1503A-86A5-AA60-7634-BBEF73BE0511}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineSFMLBackend.TestSupport", "EngineSFMLBackend.TestSupport\EngineSFMLBackend.TestSupport.vcxproj", "{B086CAD7-A23B-409F-A9BA-C137E4B7EFED}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EngineSFMLBackend.TestSupport", "EngineSFMLBackEnd\EngineSFMLBackend.TestSupport\EngineSFMLBackend.TestSupport.vcxproj", "{B086CAD7-A23B-409F-A9BA-C137E4B7EFED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
