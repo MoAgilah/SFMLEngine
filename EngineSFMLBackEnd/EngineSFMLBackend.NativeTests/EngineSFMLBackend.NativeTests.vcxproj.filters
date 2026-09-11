@@ -27,5 +27,8 @@
     <ClCompile Include="Code\Utilities\SFColourTests.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Utilities\SFResourceLoaderTests.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
