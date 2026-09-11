@@ -16,10 +16,16 @@
     <Filter Include="Source Files\Input">
       <UniqueIdentifier>{f5f2473e-5a01-43a1-acdc-c42bffa9c478}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{41fecc49-b21c-411e-a1a1-097c29c4b49d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp">
       <Filter>Source Files\Input</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Utilities\SFColourTests.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
