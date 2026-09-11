@@ -221,7 +221,9 @@
       <AdditionalDependencies>EngineInterface.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;sfml-audio-d.lib;sfml-network-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>if "$(IsSubmoduleBuild)"=="true" xcopy /Y /D /I "$(SolutionDir)SFMLEngine\EngineSFMLBackEnd\bin\$(Configuration)\*.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /Y /D /I "$(ProjectDir)bin\$(Configuration)\*.dll" "$(TargetDir)"
+xcopy /E /Y /D /I "$(ProjectDir)..\EngineInterface\Resources" "$(TargetDir)Resources"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -249,7 +251,9 @@
       <AdditionalDependencies>EngineInterface.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;sfml-network.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
     <PostBuildEvent>
-      <Command>if "$(IsSubmoduleBuild)"=="true" xcopy /Y /D /I "$(SolutionDir)SFMLEngine\EngineSFMLBackEnd\bin\$(Configuration)\*.dll" "$(TargetDir)"</Command>
+      <Command>xcopy /Y /D /I "$(ProjectDir)bin\$(Configuration)\*.dll" "$(TargetDir)"
+xcopy /E /Y /D /I "$(ProjectDir)..\EngineInterface\Resources" "$(TargetDir)Resources"
+</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
