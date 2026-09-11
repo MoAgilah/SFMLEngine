@@ -19,12 +19,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EngineSFMLBackEnd\EngineSFMLBackEnd.vcxproj">
-      <Project>{acc466dc-f0ab-4e8f-88e4-4859fabba6e3}</Project>
-    </ProjectReference>
+    <ClCompile Include="Code\TestSupport\TestSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Code\TestSupport\TestSupport.cpp" />
+    <ProjectReference Include="..\..\EngineInterface\EngineInterface.vcxproj">
+      <Project>{0bfb223a-c0af-49a4-9582-a690efb0921b}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\EngineSFMLBackEnd.vcxproj">
+      <Project>{acc466dc-f0ab-4e8f-88e4-4859fabba6e3}</Project>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -120,6 +123,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Code;$(ProjectDir)..\..\EngineInterface\Code; %(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -139,6 +143,7 @@
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
       <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Code;$(ProjectDir)..\..\EngineInterface\Code; %(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>

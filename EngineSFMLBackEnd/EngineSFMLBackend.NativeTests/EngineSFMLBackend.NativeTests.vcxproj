@@ -19,16 +19,16 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source.cpp" />
+    <ClCompile Include="Code\Input\SFKeyConverterTests.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\EngineInterface\EngineInterface.TestSupport\EngineInterface.TestSupport.vcxproj">
-      <Project>{ebe1b96b-8dc1-43df-98dc-12b48dc7870a}</Project>
-    </ProjectReference>
-    <ProjectReference Include="..\EngineInterface\EngineInterface.vcxproj">
+    <ProjectReference Include="..\..\EngineInterface\EngineInterface.vcxproj">
       <Project>{0bfb223a-c0af-49a4-9582-a690efb0921b}</Project>
     </ProjectReference>
-    <ProjectReference Include="..\EngineSFMLBackEnd\EngineSFMLBackEnd.vcxproj">
+    <ProjectReference Include="..\EngineSFMLBackend.TestSupport\EngineSFMLBackend.TestSupport.vcxproj">
+      <Project>{b086cad7-a23b-409f-a9ba-c137e4b7efed}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\EngineSFMLBackEnd.vcxproj">
       <Project>{acc466dc-f0ab-4e8f-88e4-4859fabba6e3}</Project>
     </ProjectReference>
   </ItemGroup>
@@ -106,11 +106,16 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Code;$(VCInstallDir)UnitTest\include;$(ProjectDir)..\EngineInterface.TestSupport\Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Code;
+$(ProjectDir)..\..\EngineInterface\Code;
+$(ProjectDir)..\EngineSFMLBackend.TestSupport\Code;
+$(VCInstallDir)UnitTest\include;
+%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -158,11 +163,16 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\Code;$(VCInstallDir)UnitTest\include;$(ProjectDir)..\EngineInterface.TestSupport\Code;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\Code;
+$(ProjectDir)..\..\EngineInterface\Code;
+$(ProjectDir)..\EngineSFMLBackend.TestSupport\Code;
+$(VCInstallDir)UnitTest\include;
+%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <UseFullPaths>true</UseFullPaths>
       <PrecompiledHeaderFile>
       </PrecompiledHeaderFile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
