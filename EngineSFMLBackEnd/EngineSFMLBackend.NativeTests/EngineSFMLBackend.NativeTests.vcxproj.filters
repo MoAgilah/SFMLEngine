@@ -36,5 +36,8 @@
     <ClCompile Include="Code\Resources\SFTextureTests.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Resources\SFFontTests.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
