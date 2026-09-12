@@ -17,9 +17,9 @@ namespace Resources
 		{
 			SFFont font;
 
-			sf::Font& nativeTexture = font.GetNativeFont();
+			sf::Font& nativeFont = font.GetNativeFont();
 
-			Assert::IsNotNull(&nativeTexture);
+			Assert::IsNotNull(&nativeFont);
 		}
 
 		TEST_METHOD(SFFont_LoadFromFile_FailsWhenInvalidPath)

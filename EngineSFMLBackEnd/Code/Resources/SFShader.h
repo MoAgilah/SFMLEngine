@@ -23,7 +23,7 @@ public:
     sf::Shader& GetNativeShader();
     const sf::Shader& GetNativeShader() const;
 
-private:
+protected:
     // Helper that maps engine ShaderType -> sf::Shader::Type
     std::optional<int> GetNativeShaderType(std::optional<ShaderType> shaderType);
 
