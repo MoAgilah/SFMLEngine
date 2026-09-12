@@ -5,10 +5,7 @@
 
 SFMusic::SFMusic()
     : m_music(std::make_unique<sf::Music>())
-{
-    if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
-        throw std::invalid_argument("SFMusic requires a valid music");
-}
+{}
 
 SFMusic::~SFMusic() = default;
 
@@ -17,12 +14,17 @@ bool SFMusic::LoadFromFile(const std::string& filepath)
     if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
         return false;
 
-    return m_music->openFromFile(filepath);
+    m_isLoaded = m_music->openFromFile(filepath);
+
+    return m_isLoaded;
 }
 
 void SFMusic::Play()
 {
     if (!CheckNotNull(m_music.get(), "Invalid Pointer 'm_music'"))
+        return;
+
+    if (!m_isLoaded)
         return;
 
     m_music->play();
