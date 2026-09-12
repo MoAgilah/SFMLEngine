@@ -7,13 +7,7 @@
 SFSound::SFSound()
     : m_buffer(std::make_unique<sf::SoundBuffer>())
     , m_sound(std::make_unique<sf::Sound>(*m_buffer.get()))
-{
-    if (!CheckNotNull(m_buffer.get(), "Invalid Pointer 'm_buffer'"))
-        throw std::invalid_argument("SFSound requires a valid buffer");
-
-    if (!CheckNotNull(m_sound.get(), "Invalid Pointer 'm_sound'"))
-        throw std::invalid_argument("SFSound requires a valid sound");
-}
+{}
 
 SFSound::~SFSound() = default;
 

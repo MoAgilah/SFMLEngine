@@ -42,5 +42,8 @@
     <ClCompile Include="Code\Resources\SFShaderTests.cpp">
       <Filter>Source Files\Resources</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Resources\SFSoundTests.cpp">
+      <Filter>Source Files\Resources</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
