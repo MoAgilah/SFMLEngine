@@ -19,7 +19,7 @@ public:
     sf::Texture& GetNativeTexture();
     const sf::Texture& GetNativeTexture() const;
 
-private:
+protected:
 
     std::unique_ptr<sf::Texture> m_texture;
 };

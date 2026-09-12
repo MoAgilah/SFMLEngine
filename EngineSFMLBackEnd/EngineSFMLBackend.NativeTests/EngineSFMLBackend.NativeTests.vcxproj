@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp" />
+    <ClCompile Include="Code\Resources\SFTextureTests.cpp" />
     <ClCompile Include="Code\Utilities\SFColourTests.cpp" />
     <ClCompile Include="Code\Utilities\SFResourceLoaderTests.cpp" />
   </ItemGroup>

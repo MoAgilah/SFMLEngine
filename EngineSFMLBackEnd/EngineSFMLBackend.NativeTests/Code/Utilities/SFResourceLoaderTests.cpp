@@ -1,6 +1,5 @@
 #include "CppUnitTest.h"
 
-
 #include <Resources/SFFont.h>
 #include <Resources/SFMusic.h>
 #include <Resources/SFShader.h>
@@ -8,11 +7,6 @@
 #include <Resources/SFTexture.h>
 #include <Engine/Core/Constants.h>
 #include <Utilities/ResourceLoader.h>
-#include <filesystem>
-#include <fstream>
-#include <memory>
-#include <string>
-#include <vector>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
