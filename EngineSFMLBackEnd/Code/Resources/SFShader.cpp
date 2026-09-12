@@ -6,10 +6,7 @@
 
 SFShader::SFShader()
     : m_shader(std::make_unique<sf::Shader>())
-{
-    if (!CheckNotNull(m_shader.get(), "Invalid Pointer 'm_shader'"))
-        throw std::invalid_argument("SFShader requires a valid shader");
-}
+{}
 
 SFShader::~SFShader() = default;
 
@@ -17,8 +14,14 @@ bool SFShader::LoadFromFile(const std::string& filepath)
 {
     fs::path entry = fs::path(filepath);
 
-    auto type = GetNativeShaderType(
-        ShaderTypeFromExtension(entry.extension().string().substr(1))
+    auto extension = entry.extension().string();
+
+    if (extension.empty())
+        return false;
+
+    auto type = GetNativeShaderType
+    (
+        ShaderTypeFromExtension(extension.substr(1))
     );
 
     if (!type)

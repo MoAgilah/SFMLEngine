@@ -5,10 +5,7 @@
 
 SFTexture::SFTexture()
     : m_texture(std::make_unique<sf::Texture>())
-{
-    if (!CheckNotNull(m_texture.get(), "Invalid Pointer 'm_texture'"))
-        throw std::invalid_argument("SFTexture requires a valid texture");
-}
+{}
 
 SFTexture::~SFTexture() = default;
 

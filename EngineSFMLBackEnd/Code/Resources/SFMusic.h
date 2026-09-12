@@ -26,5 +26,6 @@ public:
 
 private:
 
+    bool m_isLoaded = false;
     std::unique_ptr<sf::Music> m_music;
 };
