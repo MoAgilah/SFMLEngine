@@ -45,17 +45,23 @@ void SFTile::Render(IRenderer* renderer)
 
 		if (m_type == TileTypes::LCRN || m_type == TileTypes::RCRN)
 		{
-			auto* window = static_cast<sf::RenderWindow*>(
-				renderer->GetWindow()->GetNativeHandle());
+			auto* window = renderer->GetWindow();
 			if (CheckNotNull(window, "Invalid Pointer 'window'"))
 			{
-				sf::Vertex line[2];
-				line[0].position = m_edge.start;
-				line[0].color = Colour::Red;
-				line[1].position = m_edge.end;
-				line[1].color = Colour::Red;
 
-				window->draw(line, 2, sf::PrimitiveType::Lines);
+				auto* sfWindow = static_cast<sf::RenderWindow*>(
+					window->GetNativeHandle());
+
+				if (CheckNotNull(sfWindow, "Invalid Pointer 'sfWindow'"))
+				{
+					sf::Vertex line[2];
+					line[0].position = m_edge.start;
+					line[0].color = Colour::Red;
+					line[1].position = m_edge.end;
+					line[1].color = Colour::Red;
+
+					sfWindow->draw(line, 2, sf::PrimitiveType::Lines);
+				}
 			}
 		}
 
@@ -277,7 +283,7 @@ void SFTile::SetPosition(const Vector2f& pos)
 	}
 
 	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
-	if (!CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
+	if (CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
 		sfTxt->SetPosition({ m_aabb->GetPosition().x - 10.f, m_aabb->GetPosition().y - 7.5f });
 }
 
@@ -404,14 +410,19 @@ void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
 		return;
 
+	auto* volume = obj->GetVolume();
+
+	if (!CheckNotNull(volume, "Invalid Pointer 'volume'"))
+		return;
+
 	/*if (IsPlayerObject(obj->GetID()))
 		return;*/
 
 	Vector2f side;
 	if (m_type == TileTypes::LCRN)
-		side = obj->GetVolume()->GetPoint(Side::Right);
+		side = volume->GetPoint(Side::Right);
 	else
-		side = obj->GetVolume()->GetPoint(Side::Left);
+		side = volume->GetPoint(Side::Left);
 
 	Line2f edge = GetEdge();
 
