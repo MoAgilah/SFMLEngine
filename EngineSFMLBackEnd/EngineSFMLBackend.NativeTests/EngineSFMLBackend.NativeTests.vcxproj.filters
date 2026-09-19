@@ -22,6 +22,9 @@
     <Filter Include="Source Files\Resources">
       <UniqueIdentifier>{f2d4eb2e-7382-40c1-94d2-e8d66e8c594b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Collisions">
+      <UniqueIdentifier>{630ef212-c4aa-415e-a578-e2706b73e9f4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp">
@@ -47,6 +50,9 @@
     </ClCompile>
     <ClCompile Include="Code\Resources\SFMusicTests.cpp">
       <Filter>Source Files\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Collisions\SFTileTests.cpp">
+      <Filter>Source Files\Collisions</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

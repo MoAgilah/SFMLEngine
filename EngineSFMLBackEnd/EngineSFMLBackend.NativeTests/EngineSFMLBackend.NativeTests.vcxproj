@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Collisions\SFTileTests.cpp" />
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp" />
     <ClCompile Include="Code\Resources\SFFontTests.cpp" />
     <ClCompile Include="Code\Resources\SFMusicTests.cpp" />
