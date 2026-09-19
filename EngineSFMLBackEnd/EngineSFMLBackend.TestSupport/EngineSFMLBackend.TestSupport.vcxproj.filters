@@ -16,15 +16,42 @@
     <Filter Include="Header Files\Resources">
       <UniqueIdentifier>{8bc827ff-82f1-4f66-8ede-06586acebc31}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Collisions">
+      <UniqueIdentifier>{dd1ef23b-5476-42e5-949a-371969d72e0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Collisions">
+      <UniqueIdentifier>{a20ce0bd-8105-430b-95af-83cd83577ceb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\GameObjects">
+      <UniqueIdentifier>{b8d956ab-278b-465d-a134-39d5200f5551}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Drawables">
+      <UniqueIdentifier>{8903f9e6-2e1b-4e7f-bc67-632894772b4b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\TestSupport\TestSupport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Testables\Collisions\TestableSFTile.cpp">
+      <Filter>Source Files\Collisions</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Testables\Resources\TestableSFShader.h">
       <Filter>Header Files\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Testables\Collisions\TestableSFTile.h">
+      <Filter>Header Files\Collisions</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Fakes\GameObjects\FakeDynamicObject.h">
+      <Filter>Header Files\GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Fakes\Drawables\FakeDrawable.h">
+      <Filter>Header Files\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Fakes\Drawables\FakeSprite.h">
+      <Filter>Header Files\Drawables</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
