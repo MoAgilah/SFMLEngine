@@ -13,15 +13,19 @@ void SFGrid::Init(const std::string& fontName, const std::string& tileFilePaths)
 {
 	m_grid.reserve(m_rows * m_columns);
 
+	const bool hasFont = !fontName.empty();
+
 	for (int y = 0; y < m_rows; ++y)
 	{
 		for (int x = 0; x < m_columns; ++x)
-			m_grid.emplace_back(std::make_shared<SFTile>(x, y, fontName));
+		{
+			if (hasFont)
+				m_grid.emplace_back(std::make_shared<SFTile>(x, y, fontName));
+			else
+				m_grid.emplace_back(std::make_shared<SFTile>(x, y));
+		}
 	}
 
-	if (!m_grid.empty())
-	{
-		LoadTileTypes(tileFilePaths);
-		ArrangeTilePositions();
-	}
+	LoadTileTypes(tileFilePaths);
+	ArrangeTilePositions();
 }

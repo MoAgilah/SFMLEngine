@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Code\Testables\Collisions\TestableSFTile.cpp" />
     <ClCompile Include="Code\TestSupport\TestSupport.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -30,6 +31,10 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Code\Fakes\Drawables\FakeDrawable.h" />
+    <ClInclude Include="Code\Fakes\Drawables\FakeSprite.h" />
+    <ClInclude Include="Code\Fakes\GameObjects\FakeDynamicObject.h" />
+    <ClInclude Include="Code\Testables\Collisions\TestableSFTile.h" />
     <ClInclude Include="Code\Testables\Resources\TestableSFShader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

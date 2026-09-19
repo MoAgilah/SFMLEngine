@@ -12,14 +12,18 @@
 SFTile::SFTile(int gX, int gY)
 	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16,16)), nullptr, nullptr)
 {
+	m_hasFont = false;
 }
 
 SFTile::SFTile(int gX, int gY, const std::string& fontName)
 	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
 {
+
 	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
 	if (!CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
 		throw std::invalid_argument("SFTile requires a valid text drawable");
+
+	m_hasFont = true;
 
 	sfTxt->SetCharSize(12);
 	sfTxt->SetOrigin({ 6.f,6.f });
@@ -45,17 +49,23 @@ void SFTile::Render(IRenderer* renderer)
 
 		if (m_type == TileTypes::LCRN || m_type == TileTypes::RCRN)
 		{
-			auto* window = static_cast<sf::RenderWindow*>(
-				renderer->GetWindow()->GetNativeHandle());
+			auto* window = renderer->GetWindow();
 			if (CheckNotNull(window, "Invalid Pointer 'window'"))
 			{
-				sf::Vertex line[2];
-				line[0].position = m_edge.start;
-				line[0].color = Colour::Red;
-				line[1].position = m_edge.end;
-				line[1].color = Colour::Red;
 
-				window->draw(line, 2, sf::PrimitiveType::Lines);
+				auto* sfWindow = static_cast<sf::RenderWindow*>(
+					window->GetNativeHandle());
+
+				if (CheckNotNull(sfWindow, "Invalid Pointer 'sfWindow'"))
+				{
+					sf::Vertex line[2];
+					line[0].position = m_edge.start;
+					line[0].color = Colour::Red;
+					line[1].position = m_edge.end;
+					line[1].color = Colour::Red;
+
+					sfWindow->draw(line, 2, sf::PrimitiveType::Lines);
+				}
 			}
 		}
 
@@ -134,7 +144,13 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		{
 			if (dir == Direction::LDIR || dir == Direction::RDIR)
 			{
-				if (tileTopEdge.IsPointAboveLine(objBottomPoint))
+				const Vector2f displacement =
+					obj->GetPosition() - obj->GetPrevPosition();
+
+				const Vector2f previousBottom =
+					obj->GetVolume()->GetPoint(Side::Bottom) - displacement;
+
+				if (!tileTopEdge.IsPointAboveLine(previousBottom))
 				{
 					ResolveObjectToBoxTop(obj, tFirst, tLast);
 				}
@@ -149,58 +165,50 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		return;
 	case TileTypes::DIAGU:
 	{
+		bool slopeResolved = false;
+
 		switch (dir)
 		{
 		case Direction::DDIR:
-			if (ResolveObjectToSlopeTop(obj, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideLeft())
-					obj->SetShouldSlideLeft(true);
-			}
+			slopeResolved = ResolveObjectToSlopeTop(obj, tFirst, tLast);
 			break;
 		case Direction::RDIR:
-			if (ResolveObjectToSlopeIncline(obj, 0, 1, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideLeft())
-					obj->SetShouldSlideLeft(true);
-			}
+			slopeResolved = ResolveObjectToSlopeIncline(obj, 0, 1, tFirst, tLast);
 			break;
 		case Direction::LDIR:
-			if (ResolveObjectToSlopeDecline(obj, 1, 0, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideLeft())
-					obj->SetShouldSlideLeft(true);
-			}
+			slopeResolved = ResolveObjectToSlopeDecline(obj, 1, 0, tFirst, tLast);
 			break;
+		default:
+			return;
 		}
+
+		if (slopeResolved && !obj->GetShouldSlideLeft())
+			obj->SetShouldSlideLeft(true);
+
 		return;
 	}
 	case TileTypes::DIAGD:
 	{
+		bool slopeResolved = false;
+
 		switch (dir)
 		{
 		case Direction::DDIR:
-			if (ResolveObjectToSlopeTop(obj, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideRight())
-					obj->SetShouldSlideRight(true);
-			}
+			slopeResolved = ResolveObjectToSlopeTop(obj, tFirst, tLast);
 			break;
 		case Direction::LDIR:
-			if (ResolveObjectToSlopeIncline(obj, 1, 0, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideRight())
-					obj->SetShouldSlideRight(true);
-			}
+			slopeResolved = ResolveObjectToSlopeIncline(obj, 1, 0, tFirst, tLast);
 			break;
 		case Direction::RDIR:
-			if (ResolveObjectToSlopeDecline(obj, 0, 1, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideRight())
-					obj->SetShouldSlideRight(true);
-			}
+			slopeResolved = ResolveObjectToSlopeDecline(obj, 0, 1, tFirst, tLast);
 			break;
+		default:
+			return;
 		}
+
+		if (slopeResolved && !obj->GetShouldSlideRight())
+			obj->SetShouldSlideRight(true);
+
 		return;
 	}
 	}
@@ -277,22 +285,40 @@ void SFTile::SetPosition(const Vector2f& pos)
 	}
 
 	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
-	if (!CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
+	if (sfTxt)
 		sfTxt->SetPosition({ m_aabb->GetPosition().x - 10.f, m_aabb->GetPosition().y - 7.5f });
 }
 
 void SFTile::SetFillColour(Colour col)
 {
+	if(!CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
+		return;
+
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
-	if (CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
-		sfAABB->GetShape()->SetFillColour(col);
+	if (!CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
+		return;
+
+	auto shape = sfAABB->GetShape();
+	if (!CheckNotNull(shape, "Invalid Pointer 'shape'"))
+		return;
+
+	shape->SetFillColour(col);
 }
 
 void SFTile::SetOutlineColour(Colour col)
 {
+	if (!CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
+		return;
+
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
-	if (CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
-		sfAABB->GetShape()->SetOutlineColour(col);
+	if (!CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
+		return;
+
+	auto shape = sfAABB->GetShape();
+	if (!CheckNotNull(shape, "Invalid Pointer 'shape'"))
+		return;
+
+	shape->SetOutlineColour(col);
 }
 
 bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float /*tFirst*/, float /*tLast*/)
@@ -398,10 +424,14 @@ bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int
 	return false;
 }
 
-
 void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 {
 	if (!CheckNotNull(obj, "Invalid Pointer 'obj'"))
+		return;
+
+	auto* volume = obj->GetVolume();
+
+	if (!CheckNotNull(volume, "Invalid Pointer 'volume'"))
 		return;
 
 	/*if (IsPlayerObject(obj->GetID()))
@@ -409,9 +439,9 @@ void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 
 	Vector2f side;
 	if (m_type == TileTypes::LCRN)
-		side = obj->GetVolume()->GetPoint(Side::Right);
+		side = volume->GetPoint(Side::Right);
 	else
-		side = obj->GetVolume()->GetPoint(Side::Left);
+		side = volume->GetPoint(Side::Left);
 
 	Line2f edge = GetEdge();
 
