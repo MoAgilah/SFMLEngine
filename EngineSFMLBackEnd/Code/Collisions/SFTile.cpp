@@ -140,7 +140,13 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		{
 			if (dir == Direction::LDIR || dir == Direction::RDIR)
 			{
-				if (tileTopEdge.IsPointAboveLine(objBottomPoint))
+				const Vector2f displacement =
+					obj->GetPosition() - obj->GetPrevPosition();
+
+				const Vector2f previousBottom =
+					obj->GetVolume()->GetPoint(Side::Bottom) - displacement;
+
+				if (!tileTopEdge.IsPointAboveLine(previousBottom))
 				{
 					ResolveObjectToBoxTop(obj, tFirst, tLast);
 				}
@@ -155,58 +161,50 @@ void SFTile::ResolveCollision(IDynamicGameObject* obj, float tFirst, float tLast
 		return;
 	case TileTypes::DIAGU:
 	{
+		bool slopeResolved = false;
+
 		switch (dir)
 		{
 		case Direction::DDIR:
-			if (ResolveObjectToSlopeTop(obj, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideLeft())
-					obj->SetShouldSlideLeft(true);
-			}
+			slopeResolved = ResolveObjectToSlopeTop(obj, tFirst, tLast);
 			break;
 		case Direction::RDIR:
-			if (ResolveObjectToSlopeIncline(obj, 0, 1, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideLeft())
-					obj->SetShouldSlideLeft(true);
-			}
+			slopeResolved = ResolveObjectToSlopeIncline(obj, 0, 1, tFirst, tLast);
 			break;
 		case Direction::LDIR:
-			if (ResolveObjectToSlopeDecline(obj, 1, 0, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideLeft())
-					obj->SetShouldSlideLeft(true);
-			}
+			slopeResolved = ResolveObjectToSlopeDecline(obj, 1, 0, tFirst, tLast);
 			break;
+		default:
+			return;
 		}
+
+		if (slopeResolved && !obj->GetShouldSlideLeft())
+			obj->SetShouldSlideLeft(true);
+
 		return;
 	}
 	case TileTypes::DIAGD:
 	{
+		bool slopeResolved = false;
+
 		switch (dir)
 		{
 		case Direction::DDIR:
-			if (ResolveObjectToSlopeTop(obj, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideRight())
-					obj->SetShouldSlideRight(true);
-			}
+			slopeResolved = ResolveObjectToSlopeTop(obj, tFirst, tLast);
 			break;
 		case Direction::LDIR:
-			if (ResolveObjectToSlopeIncline(obj, 1, 0, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideRight())
-					obj->SetShouldSlideRight(true);
-			}
+			slopeResolved = ResolveObjectToSlopeIncline(obj, 1, 0, tFirst, tLast);
 			break;
 		case Direction::RDIR:
-			if (ResolveObjectToSlopeDecline(obj, 0, 1, tFirst, tLast))
-			{
-				if (!obj->GetShouldSlideRight())
-					obj->SetShouldSlideRight(true);
-			}
+			slopeResolved = ResolveObjectToSlopeDecline(obj, 0, 1, tFirst, tLast);
 			break;
+		default:
+			return;
 		}
+
+		if (slopeResolved && !obj->GetShouldSlideRight())
+			obj->SetShouldSlideRight(true);
+
 		return;
 	}
 	}
@@ -283,22 +281,40 @@ void SFTile::SetPosition(const Vector2f& pos)
 	}
 
 	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
-	if (CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
+	if (sfTxt)
 		sfTxt->SetPosition({ m_aabb->GetPosition().x - 10.f, m_aabb->GetPosition().y - 7.5f });
 }
 
 void SFTile::SetFillColour(Colour col)
 {
+	if(!CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
+		return;
+
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
-	if (CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
-		sfAABB->GetShape()->SetFillColour(col);
+	if (!CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
+		return;
+
+	auto shape = sfAABB->GetShape();
+	if (!CheckNotNull(shape, "Invalid Pointer 'shape'"))
+		return;
+
+	shape->SetFillColour(col);
 }
 
 void SFTile::SetOutlineColour(Colour col)
 {
+	if (!CheckNotNull(m_aabb.get(), "Invalid Pointer 'm_aabb'"))
+		return;
+
 	auto sfAABB = dynamic_cast<BoundingBox<SFRect>*>(m_aabb.get());
-	if (CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
-		sfAABB->GetShape()->SetOutlineColour(col);
+	if (!CheckNotNull(sfAABB, "Invalid Pointer 'sfAABB'"))
+		return;
+
+	auto shape = sfAABB->GetShape();
+	if (!CheckNotNull(shape, "Invalid Pointer 'shape'"))
+		return;
+
+	shape->SetOutlineColour(col);
 }
 
 bool SFTile::ResolveObjectToSlopeTop(IDynamicGameObject* obj, float /*tFirst*/, float /*tLast*/)
@@ -403,7 +419,6 @@ bool SFTile::ResolveObjectToSlopeDecline(IDynamicGameObject* obj, int start, int
 	}
 	return false;
 }
-
 
 void SFTile::ResolveObjectToEdgeBounds(IDynamicGameObject* obj)
 {
