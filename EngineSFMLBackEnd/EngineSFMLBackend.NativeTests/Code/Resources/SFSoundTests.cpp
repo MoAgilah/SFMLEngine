@@ -75,7 +75,7 @@ namespace Resources
 
 			sound.Play();
 
-			std::this_thread::sleep_for(std::chrono::milliseconds(5));
+			std::this_thread::sleep_for(std::chrono::milliseconds(7));
 
 			Assert::AreEqual(
 				static_cast<int>(sf::Sound::Status::Stopped),

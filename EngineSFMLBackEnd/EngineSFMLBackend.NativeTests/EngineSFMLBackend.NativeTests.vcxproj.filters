@@ -54,5 +54,8 @@
     <ClCompile Include="Code\Collisions\SFTileTests.cpp">
       <Filter>Source Files\Collisions</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Collisions\SFGridTests.cpp">
+      <Filter>Source Files\Collisions</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

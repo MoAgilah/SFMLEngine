@@ -12,14 +12,18 @@
 SFTile::SFTile(int gX, int gY)
 	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16,16)), nullptr, nullptr)
 {
+	m_hasFont = false;
 }
 
 SFTile::SFTile(int gX, int gY, const std::string& fontName)
 	: ITile(gX, gY, std::make_shared<BoundingBox<SFRect>>(Vector2f(16, 16)), std::make_shared<SFText>(TextConfig(fontName)), nullptr)
 {
+
 	auto sfTxt = dynamic_cast<SFText*>(m_text.get());
 	if (!CheckNotNull(sfTxt, "Invalid Pointer 'sfTxt'"))
 		throw std::invalid_argument("SFTile requires a valid text drawable");
+
+	m_hasFont = true;
 
 	sfTxt->SetCharSize(12);
 	sfTxt->SetOrigin({ 6.f,6.f });
