@@ -186,7 +186,7 @@ sf::RectangleShape* SFRect::GetRect()
 
 Vector2f SFRect::GetSize()
 {
-    return SFDrawables<sf::RectangleShape>::GetSize();
+    return GetRect()->getSize();
 }
 
 void SFRect::SetSize(const Vector2f& size)
