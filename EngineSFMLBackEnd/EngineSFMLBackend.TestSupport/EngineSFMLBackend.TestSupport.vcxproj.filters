@@ -71,5 +71,8 @@
     <ClInclude Include="Code\Fakes\Resources\FakeShader.h">
       <Filter>Header Files\Fakes\Resources</Filter>
     </ClInclude>
+    <ClInclude Include="Code\Testables\Drawables\TestableSFShape.h">
+      <Filter>Header Files\Fakes\Drawables</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

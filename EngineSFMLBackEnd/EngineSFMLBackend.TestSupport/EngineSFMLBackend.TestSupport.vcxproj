@@ -38,6 +38,7 @@
     <ClInclude Include="Code\Fakes\Resources\FakeShader.h" />
     <ClInclude Include="Code\Testables\Collisions\TestableSFTile.h" />
     <ClInclude Include="Code\Testables\Drawables\TestableSFDrawable.h" />
+    <ClInclude Include="Code\Testables\Drawables\TestableSFShape.h" />
     <ClInclude Include="Code\Testables\Resources\TestableSFShader.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
