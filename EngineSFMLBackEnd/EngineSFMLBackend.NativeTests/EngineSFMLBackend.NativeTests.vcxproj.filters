@@ -25,6 +25,9 @@
     <Filter Include="Source Files\Collisions">
       <UniqueIdentifier>{630ef212-c4aa-415e-a578-e2706b73e9f4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Drawables">
+      <UniqueIdentifier>{c90055fe-f26c-4bc8-8181-9b4c326d5ae5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp">
@@ -56,6 +59,9 @@
     </ClCompile>
     <ClCompile Include="Code\Collisions\SFGridTests.cpp">
       <Filter>Source Files\Collisions</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Drawables\SFDrawableTests.cpp">
+      <Filter>Source Files\Drawables</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
