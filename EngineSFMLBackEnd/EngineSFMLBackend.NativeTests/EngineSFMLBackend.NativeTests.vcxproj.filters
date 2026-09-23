@@ -63,5 +63,8 @@
     <ClCompile Include="Code\Drawables\SFDrawableTests.cpp">
       <Filter>Source Files\Drawables</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Drawables\SFShapeTests.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
