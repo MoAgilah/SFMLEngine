@@ -23,6 +23,7 @@
     <ClCompile Include="Code\Collisions\SFTileTests.cpp" />
     <ClCompile Include="Code\Drawables\SFDrawableTests.cpp" />
     <ClCompile Include="Code\Drawables\SFShapeTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFTriangleTests.cpp" />
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp" />
     <ClCompile Include="Code\Resources\SFFontTests.cpp" />
     <ClCompile Include="Code\Resources\SFMusicTests.cpp" />
