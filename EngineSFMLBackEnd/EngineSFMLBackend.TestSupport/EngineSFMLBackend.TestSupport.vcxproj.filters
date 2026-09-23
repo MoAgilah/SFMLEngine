@@ -13,20 +13,29 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Resources">
-      <UniqueIdentifier>{8bc827ff-82f1-4f66-8ede-06586acebc31}</UniqueIdentifier>
+    <Filter Include="Header Files\Fakes">
+      <UniqueIdentifier>{61cccab9-403a-421a-8294-105ddd77d6b3}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Collisions">
+    <Filter Include="Header Files\Fakes\Collisions">
       <UniqueIdentifier>{dd1ef23b-5476-42e5-949a-371969d72e0e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Collisions">
-      <UniqueIdentifier>{a20ce0bd-8105-430b-95af-83cd83577ceb}</UniqueIdentifier>
+    <Filter Include="Header Files\Fakes\Drawables">
+      <UniqueIdentifier>{8903f9e6-2e1b-4e7f-bc67-632894772b4b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\GameObjects">
+    <Filter Include="Header Files\Fakes\GameObjects">
       <UniqueIdentifier>{b8d956ab-278b-465d-a134-39d5200f5551}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Drawables">
-      <UniqueIdentifier>{8903f9e6-2e1b-4e7f-bc67-632894772b4b}</UniqueIdentifier>
+    <Filter Include="Header Files\Fakes\Resources">
+      <UniqueIdentifier>{8bc827ff-82f1-4f66-8ede-06586acebc31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fakes">
+      <UniqueIdentifier>{0e141cc5-7739-43c0-a811-d43098c416f4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Fakes\Collisions">
+      <UniqueIdentifier>{a20ce0bd-8105-430b-95af-83cd83577ceb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Fakes\Renderer">
+      <UniqueIdentifier>{ac877b05-156d-496f-bce3-013e8eab4708}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -34,24 +43,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\Testables\Collisions\TestableSFTile.cpp">
-      <Filter>Source Files\Collisions</Filter>
+      <Filter>Source Files\Fakes\Collisions</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Code\Testables\Resources\TestableSFShader.h">
-      <Filter>Header Files\Resources</Filter>
+      <Filter>Header Files\Fakes\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Code\Testables\Collisions\TestableSFTile.h">
-      <Filter>Header Files\Collisions</Filter>
+      <Filter>Header Files\Fakes\Collisions</Filter>
     </ClInclude>
     <ClInclude Include="Code\Fakes\GameObjects\FakeDynamicObject.h">
-      <Filter>Header Files\GameObjects</Filter>
+      <Filter>Header Files\Fakes\GameObjects</Filter>
     </ClInclude>
     <ClInclude Include="Code\Fakes\Drawables\FakeDrawable.h">
-      <Filter>Header Files\Drawables</Filter>
+      <Filter>Header Files\Fakes\Drawables</Filter>
     </ClInclude>
     <ClInclude Include="Code\Fakes\Drawables\FakeSprite.h">
-      <Filter>Header Files\Drawables</Filter>
+      <Filter>Header Files\Fakes\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Testables\Drawables\TestableSFDrawable.h">
+      <Filter>Header Files\Fakes\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Fakes\Renderer\FakeRenderer.h">
+      <Filter>Header Files\Fakes\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Fakes\Resources\FakeShader.h">
+      <Filter>Header Files\Fakes\Resources</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
