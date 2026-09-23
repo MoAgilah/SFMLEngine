@@ -82,7 +82,8 @@ SFTriangle::SFTriangle(const std::array<Vector2f, 3>& points, const Vector2f& po
 
 void SFTriangle::Update(const Vector2f& pos)
 {
-    // unsure as of yet
+    SetPosition(pos);
+    this->SetCenter(GetPosition());
 }
 
 void SFTriangle::Render(IRenderer* renderer)
@@ -93,6 +94,7 @@ void SFTriangle::Render(IRenderer* renderer)
 void SFTriangle::Reset(const std::array<Vector2f, 3>& points)
 {
     SetPoints(points);
+    // need to decide how origin factors in here
 }
 
 sf::ConvexShape* SFTriangle::GetTriangle()
@@ -102,18 +104,33 @@ sf::ConvexShape* SFTriangle::GetTriangle()
 
 Vector2f SFTriangle::GetPoint(int idx)
 {
+    ThrowIfFalse(
+        idx >= 0 && idx <= 2,
+        std::format("Index {} is out of bounds. Valid range is [0, 2].", idx)
+    );
+
     return Vector2f(GetTriangle()->getPoint(idx));
 }
 
 Line2f SFTriangle::GetLine(int start, int end)
 {
+    ThrowIfFalse(
+        start != end,
+        std::format(
+            "A line cannot start({}) and end({}) at the same triangle point.",
+            start, end
+                    )
+    );
+
     return Line2f(GetPoint(start), GetPoint(end));
 }
 
 std::array<Vector2f, 3> SFTriangle::GetPoints() const
 {
-    auto* tri = const_cast<SFTriangle*>(this)->GetTriangle();
-    return { tri->getPoint(0), tri->getPoint(1), tri->getPoint(2) };
+    if (auto* tri = const_cast<SFTriangle*>(this)->GetTriangle())
+        return { tri->getPoint(0), tri->getPoint(1), tri->getPoint(2) };
+
+    return std::array<Vector2f, 3>{ Vector2f(), Vector2f(), Vector2f() };
 }
 
 void SFTriangle::SetPoints(const std::array<Vector2f, 3>& pts)
