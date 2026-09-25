@@ -43,7 +43,6 @@ class SFAnimatedSprite : public SFSprite
 {
 public:
 	SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, bool symmetrical, float animationSpeed);
-	SFAnimatedSprite(const std::string& texId, float framesPerSec, bool symmetrical, float animationSpeed);
 
 	void Update(float dt) override;
 

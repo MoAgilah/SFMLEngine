@@ -101,11 +101,6 @@ SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int colum
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 }
 
-SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, float framesPerSec, bool symmetrical, float animSpeed)
-	: SFSprite(texId), m_animSpeed(animSpeed), m_framesPerSecond(framesPerSec / 1000.0f), m_symmetrical(symmetrical)
-{
-}
-
 void SFAnimatedSprite::Update(float dt)
 {
 	if (!m_loop)
