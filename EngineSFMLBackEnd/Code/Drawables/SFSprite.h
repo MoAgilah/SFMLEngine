@@ -49,7 +49,7 @@ public:
 	Vector2f GetSize() override;
 
 	Vector2u GetFrameSize() const { return m_frameSize; }
-	void SetFrameSize(const Vector2u& size, int currentFrame = 0, int currentAnim = 0);
+	void SetFrameSize(const Vector2u& size);
 
 	void ChangeAnim(int animNum);
 	int GetCurrentAnim() const { return m_animation.m_current; }

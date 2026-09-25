@@ -153,14 +153,11 @@ Vector2f SFAnimatedSprite::GetSize()
 	return Vector2f(static_cast<float>(size.x), static_cast<float>(size.y));
 }
 
-void SFAnimatedSprite::SetFrameSize(const Vector2u& size, int currentFrame, int currentAnim)
+void SFAnimatedSprite::SetFrameSize(const Vector2u& size)
 {
 	m_frameSize = size;
 
-	int left = currentFrame * size.x;
-	int top = currentAnim * size.y;
-
-	SetTextureRect({left, top, static_cast<int>(size.x), static_cast<int>(size.y)});
+	SetTextureRect({0, 0, static_cast<int>(size.x), static_cast<int>(size.y)});
 	SetOrigin(Vector2f(static_cast<float>(size.x), static_cast<float>(size.y)) * 0.5f);
 }
 
