@@ -140,6 +140,20 @@ namespace Drawables
         }
 
         // ======================================================
+        // GetSize
+        // ======================================================
+
+        TEST_METHOD(SFRect_GetSize_ReturnsDefaultSize)
+        {
+            SFRect rect;
+
+            auto size = rect.GetSize();
+
+            Assert::AreEqual(0.0f, size.x);
+            Assert::AreEqual(0.0f, size.y);
+        }
+
+        // ======================================================
         // SetSize
         // ======================================================
 
