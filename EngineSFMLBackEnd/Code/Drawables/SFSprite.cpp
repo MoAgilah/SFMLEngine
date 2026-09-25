@@ -155,6 +155,16 @@ Vector2f SFAnimatedSprite::GetSize()
 
 void SFAnimatedSprite::SetFrameSize(const Vector2u& size)
 {
+	ThrowIfFalse(
+		size.x > 0,
+		"Animation frame width must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		size.y > 0,
+		"Animation frame height must be greater than zero."
+	);
+
 	m_frameSize = size;
 
 	SetTextureRect({0, 0, static_cast<int>(size.x), static_cast<int>(size.y)});
