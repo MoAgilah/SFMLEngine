@@ -316,8 +316,8 @@ void SFCapsule::Update(const Vector2f& pos)
    CalculateRotatedRectangleCorners(corners, pos, size, m_angle);
 
    // Compute endpoints for circles
-   Vector2f end1 = Line2f(corners[3], corners[2]).GetMidPoint(); // top
-   Vector2f end2 = Line2f(corners[1], corners[0]).GetMidPoint(); // bottom
+   Vector2f end1 = Line2f(corners[3], corners[2]).GetMidPoint();
+   Vector2f end2 = Line2f(corners[1], corners[0]).GetMidPoint();
 
    auto* cap1 = GetEndCap1();
    if (cap1)
@@ -397,6 +397,11 @@ sf::CircleShape* SFCapsule::GetEndCap2()
     if (this->GetDrawables().size() > 2)
         return dynamic_cast<sf::CircleShape*>(this->GetDrawables()[2].get());
     return nullptr;
+}
+
+Vector2f SFCapsule::GetSize()
+{
+    return GetBody()->getSize();;
 }
 
 void SFCapsule::SetSize(const Vector2f& size)

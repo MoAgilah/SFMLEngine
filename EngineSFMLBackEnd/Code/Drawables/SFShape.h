@@ -111,6 +111,7 @@ public:
     sf::CircleShape* GetEndCap1();
     sf::CircleShape* GetEndCap2();
 
+    Vector2f GetSize() override;
     void SetSize(const Vector2f& size) override;
 };
 
