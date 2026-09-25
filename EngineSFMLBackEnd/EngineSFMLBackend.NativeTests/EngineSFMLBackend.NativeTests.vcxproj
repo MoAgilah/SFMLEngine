@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClCompile Include="Code\Collisions\SFGridTests.cpp" />
     <ClCompile Include="Code\Collisions\SFTileTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFCircleTests.cpp" />
     <ClCompile Include="Code\Drawables\SFDrawableTests.cpp" />
     <ClCompile Include="Code\Drawables\SFRectTests.cpp" />
     <ClCompile Include="Code\Drawables\SFShapeTests.cpp" />

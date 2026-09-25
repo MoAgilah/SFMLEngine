@@ -12,6 +12,7 @@ namespace Drawables
         // ======================================================
         // Constructors
         // ======================================================
+
         TEST_METHOD(TestableSFShape_DefaultConstructor_CreatesRectangleShape)
         {
             TestableSFShape shape;

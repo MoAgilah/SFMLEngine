@@ -13,6 +13,7 @@ namespace Drawables
         // ======================================================
         // Constructors
         // ======================================================
+
         TEST_METHOD(SFRect_DefaultConstructor_SetsDefaults)
         {
             SFRect rect;
