@@ -81,5 +81,8 @@
     <ClCompile Include="Code\Drawables\SFSpriteTests.cpp">
       <Filter>Source Files\Drawables</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Drawables\SFAnimatedSpriteTests.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

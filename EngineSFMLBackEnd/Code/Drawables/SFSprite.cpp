@@ -94,8 +94,8 @@ void SFSprite::SetTextureRect(const IntRect& rect)
 	sfSpr->setTextureRect(rect);
 }
 
-SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float framesPerSec, bool symmetrical, float animSpeed)
-	: SFSprite(texId), m_animSpeed(animSpeed), m_framesPerSecond(framesPerSec / 1000.0f), m_symmetrical(symmetrical)
+SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, bool symmetrical, float animSpeed)
+	: SFSprite(texId), m_animSpeed(animSpeed), m_frameDuration(frameDurationMs / 1000.0f), m_symmetrical(symmetrical)
 {
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
@@ -116,7 +116,7 @@ void SFAnimatedSprite::Update(float dt)
 
 	m_currentTime += m_animSpeed * dt;
 
-	if (m_currentTime >= m_framesPerSecond)
+	if (m_currentTime >= m_frameDuration)
 	{
 		m_currentTime = 0.0f;
 
