@@ -97,17 +97,24 @@ void SFSprite::SetTextureRect(const IntRect& rect)
 SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, bool symmetrical, float animSpeed)
 	: SFSprite(texId), m_animSpeed(animSpeed), m_frameDuration(frameDurationMs / 1000.0f), m_symmetrical(symmetrical)
 {
+	ThrowIfFalse(
+		rows > 0,
+		"Animation rows must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		columns > 0,
+		"Animation columns must be greater than zero."
+	);
+
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 }
 
 void SFAnimatedSprite::Update(float dt)
 {
-	if (!m_loop)
-	{
-		if (m_frame.m_current == m_numFrames[m_animation.m_current])
-			return;
-	}
+	if (!m_loop && m_animCycles > 0)
+		return;
 
 	m_currentTime += m_animSpeed * dt;
 
@@ -124,7 +131,7 @@ void SFAnimatedSprite::Update(float dt)
 		}
 		else
 		{
-			if (m_frame.m_current >= m_numFrames[m_animation.m_current])
+			if (m_frame.m_current >= m_frame.m_max)
 			{
 				if (m_loop)
 					m_frame.m_current = 0;
@@ -159,8 +166,22 @@ void SFAnimatedSprite::SetFrameSize(const Vector2u& size, int currentFrame, int 
 
 void SFAnimatedSprite::ChangeAnim(int animNum)
 {
-	m_animCycles = 0;
+	ThrowIfFalse(
+		0 <= animNum && animNum < m_animation.m_max,
+		std::format(
+			"Animation index {} is out of range [0, {}).",
+			animNum,
+			m_animation.m_max
+		)
+	);
+
 	m_animation.m_current = animNum;
+
+	m_frame.m_current = 0;
+	m_frame.m_max = m_numFrames[m_animation.m_current];
+
+	m_currentTime = 0.0f;
+	m_animCycles = 0;
 }
 
 void SFAnimatedSprite::EnsureAnim(int anim)
@@ -171,12 +192,34 @@ void SFAnimatedSprite::EnsureAnim(int anim)
 
 void SFAnimatedSprite::SetFrames(const std::vector<int>& numFrames)
 {
+	ThrowIfFalse(
+		!numFrames.empty(),
+		"Animation frame data cannot be empty."
+	);
+
 	m_numFrames.assign(numFrames.begin(), numFrames.end());
-	m_animation.m_max = m_numFrames[m_animation.m_current];
+
+	m_currentTime = 0.0f;
+
+	m_animation.m_current = 0;
+	m_animation.m_max = static_cast<int>(m_numFrames.size());
+
+	m_frame.m_current = 0;
+	m_frame.m_max = m_numFrames[m_animation.m_current];
 }
 
 void SFAnimatedSprite::SetFrameData(int rows, int columns, const std::vector<int>& numFrames)
 {
+	ThrowIfFalse(
+		rows > 0,
+		"Animation rows must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		columns > 0,
+		"Animation columns must be greater than zero."
+	);
+
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 	SetFrames(numFrames);

@@ -73,7 +73,6 @@ private:
 	Range m_animation;
 	bool m_symmetrical;
 	bool m_loop = true;
-	int m_frameTime = 0;
 	int m_animCycles = 0;
 	float m_animSpeed = 0;
 	float m_currentTime = 0;
