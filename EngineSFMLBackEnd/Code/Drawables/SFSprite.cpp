@@ -21,19 +21,13 @@ bool SFSprite::SetTexture(const std::string& texId)
 		return false;
 
 	auto* baseTex = gameMgr->GetTextureMgr().GetTexture(texId);
-	if (!CheckNotNull(gameMgr, std::format("Invalid Pointer 'baseTex' GetTextureMgr().GetTexture({})", texId)))
+	if (!CheckNotNull(baseTex, std::format("Invalid Pointer 'baseTex' GetTextureMgr().GetTexture({})", texId)))
 		return false;
 
-	// Backend type check
-	auto* sfTex = dynamic_cast<SFTexture*>(baseTex);
-	if (!CheckNotNull(sfTex, "Invalid Pointer 'sfTex'"))
-		return false;
+	auto* sfTex = static_cast<SFTexture*>(baseTex);
 
 	auto sfSpr = std::make_shared<sf::Sprite>(sfTex->GetNativeTexture());
-	if (!CheckNotNull(sfSpr.get(), "Invalid Pointer 'sfSpr'"))
-		return false;
 
-	// Apply to drawable
 	SetDrawable(std::move(sfSpr));
 
 	m_texID = texId;
