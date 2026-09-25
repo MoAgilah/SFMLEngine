@@ -118,6 +118,11 @@ SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int colum
 
 void SFAnimatedSprite::Update(float dt)
 {
+	ThrowIfFalse(
+		m_frame.m_max > 0,
+		"Animation frames must be configured before updating."
+	);
+
 	if (!m_loop && m_animCycles > 0)
 		return;
 
