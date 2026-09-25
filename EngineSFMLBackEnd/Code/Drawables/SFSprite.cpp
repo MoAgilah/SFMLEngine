@@ -107,6 +107,11 @@ SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int colum
 		"Animation columns must be greater than zero."
 	);
 
+	ThrowIfFalse(
+		m_animSpeed >= 0.0f,
+		"Animation speed cannot be negative."
+	);
+
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 }
@@ -234,6 +239,11 @@ void SFAnimatedSprite::SetFrameData(int rows, int columns, const std::vector<int
 
 void SFAnimatedSprite::UpdateAnimSpeed(float animSpd)
 {
+	ThrowIfFalse(
+		animSpd >= 0.0f,
+		"Animation speed cannot be negative."
+	);
+
 	if (m_animSpeed != animSpd)
 		m_animSpeed = animSpd;
 }
