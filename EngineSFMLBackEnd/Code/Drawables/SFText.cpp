@@ -12,6 +12,11 @@
 SFText::SFText(const TextConfig& config)
 	: IText(config)
 {
+	ThrowIfFalse(
+		m_config.m_animType == TextAnimType::Static,
+		"SFText requires TextAnimType::Static."
+	);
+
 	ThrowIfFalse(Init(), "SFText initialization failed");
 }
 
