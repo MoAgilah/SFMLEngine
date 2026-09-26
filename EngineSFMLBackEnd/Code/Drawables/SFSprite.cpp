@@ -94,8 +94,8 @@ void SFSprite::SetTextureRect(const IntRect& rect)
 	sfSpr->setTextureRect(rect);
 }
 
-SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, bool symmetrical, float animSpeed)
-	: SFSprite(texId), m_animSpeed(animSpeed), m_frameDuration(frameDurationMs / 1000.0f), m_symmetrical(symmetrical)
+SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, float animSpeed)
+	: SFSprite(texId), m_animSpeed(animSpeed), m_frameDuration(frameDurationMs / 1000.0f)
 {
 	ThrowIfFalse(
 		rows > 0,
@@ -128,33 +128,31 @@ void SFAnimatedSprite::Update(float dt)
 
 	m_currentTime += m_animSpeed * dt;
 
-	if (m_currentTime >= m_frameDuration)
+	while(m_currentTime >= m_frameDuration)
 	{
-		m_currentTime = 0.0f;
+		m_currentTime -= m_frameDuration;
 
 		++m_frame.m_current;
 
-		if (m_symmetrical)
+		if (m_frame.m_current >= m_frame.m_max)
 		{
-			if (m_frame.m_current >= m_frame.m_max)
-				m_frame.m_current = 0;
-		}
-		else
-		{
-			if (m_frame.m_current >= m_frame.m_max)
+			++m_animCycles;
+
+			if (m_loop)
 			{
-				if (m_loop)
-					m_frame.m_current = 0;
-				else
-					--m_frame.m_current;
-				++m_animCycles;
+				m_frame.m_current = 0;
+			}
+			else
+			{
+				--m_frame.m_current;
+				break;
 			}
 		}
-
-		int left = m_frame.m_current * GetFrameSize().x;
-		int top = m_animation.m_current * GetFrameSize().y;
-		SetTextureRect({ left, top, static_cast<int>(GetFrameSize().x), static_cast<int>(GetFrameSize().y) });
 	}
+
+	int left = m_frame.m_current * GetFrameSize().x;
+	int top = m_animation.m_current * GetFrameSize().y;
+	SetTextureRect({ left, top, static_cast<int>(GetFrameSize().x), static_cast<int>(GetFrameSize().y) });
 }
 
 Vector2f SFAnimatedSprite::GetSize()

@@ -42,7 +42,7 @@ SFSprite* GetSprite(IDrawable* drawable);
 class SFAnimatedSprite : public SFSprite
 {
 public:
-	SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, bool symmetrical, float animationSpeed);
+	SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, float animationSpeed);
 
 	void Update(float dt) override;
 
@@ -71,7 +71,6 @@ private:
 
 	Range m_frame;
 	Range m_animation;
-	bool m_symmetrical;
 	bool m_loop = true;
 	int m_animCycles = 0;
 	float m_animSpeed = 0;
