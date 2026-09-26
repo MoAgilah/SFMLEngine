@@ -145,9 +145,7 @@ bool SFText::Init()
 	if (!CheckNotNull(baseFont, "Invalid Pointer 'baseFont' from GetFontMgr().GetFont"))
 		return false;
 
-	auto* sfFont = dynamic_cast<SFFont*>(baseFont);
-	if (!CheckNotNull(sfFont, "Invalid Pointer 'sfFont'"))
-		return false;
+	auto* sfFont = static_cast<SFFont*>(baseFont);
 
 	SetDrawable(std::make_shared<sf::Text>(sfFont->GetNativeFont()));
 
