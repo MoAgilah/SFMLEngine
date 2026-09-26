@@ -108,6 +108,11 @@ SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int colum
 	);
 
 	ThrowIfFalse(
+		frameDurationMs > 0.0f,
+		"Animation frame duration must be greater than zero."
+	);
+
+	ThrowIfFalse(
 		m_animSpeed >= 0.0f,
 		"Animation speed cannot be negative."
 	);
@@ -211,6 +216,17 @@ void SFAnimatedSprite::SetFrames(const std::vector<int>& numFrames)
 		!numFrames.empty(),
 		"Animation frame data cannot be empty."
 	);
+
+	for (size_t i = 0; i < numFrames.size(); ++i)
+	{
+		ThrowIfFalse(
+			numFrames[i] > 0,
+			std::format(
+				"Animation frame count at index {} must be greater than zero.",
+				i
+			)
+		);
+	}
 
 	m_numFrames.assign(numFrames.begin(), numFrames.end());
 
