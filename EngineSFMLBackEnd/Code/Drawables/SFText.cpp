@@ -33,35 +33,31 @@ void SFText::Render(IRenderer* renderer)
 void SFText::SetText(const std::string& text)
 {
 	auto txtObj = this->GetPrimaryDrawableAs<sf::Text>();
-	if (!txtObj) return;
-
-	const Vector2f oldPos = GetPosition();
 
 	txtObj->setString(text);
 
+	if (m_config.m_alignment == TextAlignment::None)
+		return;
+
 	const sf::FloatRect b = txtObj->getLocalBounds();
 
-	if (m_config.m_alignment != TextAlignment::None)
+	float xFactor = 0.5f;
+	switch (m_config.m_alignment)
 	{
-		float xFactor = 0.5f;
-		switch (m_config.m_alignment)
-		{
-		case TextAlignment::LeftHand:  xFactor = 0.f;   break;
-		case TextAlignment::Center:    xFactor = 0.5f;  break;
-		case TextAlignment::RightHand: xFactor = 1.f;   break;
-		default: /* None handled above */                break;
-		}
-
-		const float yFactor = 0.5f;
-
-		const sf::Vector2f origin{
-			b.position.x + b.size.x * xFactor,
-			b.position.y + b.size.y * yFactor
-		};
-		txtObj->setOrigin(origin);
+	case TextAlignment::LeftHand:  xFactor = 0.f;   break;
+	case TextAlignment::Center:    xFactor = 0.5f;  break;
+	case TextAlignment::RightHand: xFactor = 1.f;   break;
 	}
 
-	SetPosition(oldPos);
+	const float yFactor = 0.5f;
+
+	const sf::Vector2f origin
+	{
+		b.position.x + (b.size.x * xFactor),
+		b.position.y + (b.size.y * yFactor)
+	};
+
+	txtObj->setOrigin(origin);
 }
 
 

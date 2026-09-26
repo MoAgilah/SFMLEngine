@@ -12,7 +12,6 @@ namespace sf { class Text; }
 class SFText : public SFDrawables<sf::Text>, public IText
 {
 public:
-	SFText() = default;
 	SFText(const TextConfig& config);
 
 	void Update(float deltaTime) override;
