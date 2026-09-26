@@ -12,7 +12,7 @@ namespace sf { class Text; }
 class SFText : public SFDrawables<sf::Text>, public IText
 {
 public:
-	SFText() {}
+	SFText() = default;
 	SFText(const TextConfig& config);
 
 	void Update(float deltaTime) override;
@@ -37,6 +37,7 @@ public:
 	void ResetOutlineColour() { SetOutlineColour(m_config.m_colour); }
 
 protected:
+	SFText(const TextConfig& config, bool initialise);
 
 	bool Init() override;
 };
@@ -60,7 +61,7 @@ public:
 	void SetIsPaused(bool pause) { m_paused = pause; }
 
 	void SetMaxCount(int startFrom);
-	bool CountHasEnded() const { return m_count == -1; }
+	bool CountHasEnded() const { return m_countEnded; }
 
 	void SetCountDown(const std::string& msg) { m_countdownMsg = msg; }
 
@@ -88,6 +89,7 @@ private:
 	bool m_reduceAlpha = true;
 	int m_count = 0;
 	int m_maxCount = 0;
+	bool m_countEnded = false;
 	UpdateFunc m_updateFunc;
 	RenderFunc m_renderFunc;
 	std::string m_countdownMsg;
