@@ -42,15 +42,14 @@ SFSprite* GetSprite(IDrawable* drawable);
 class SFAnimatedSprite : public SFSprite
 {
 public:
-	SFAnimatedSprite(const std::string& texId, int rows, int columns, float framesPerSec, bool symmetrical, float animationSpeed);
-	SFAnimatedSprite(const std::string& texId, float framesPerSec, bool symmetrical, float animationSpeed);
+	SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, float animationSpeed);
 
 	void Update(float dt) override;
 
 	Vector2f GetSize() override;
 
 	Vector2u GetFrameSize() const { return m_frameSize; }
-	void SetFrameSize(const Vector2u& size, int currentFrame = 1, int currentAnim = 1);
+	void SetFrameSize(const Vector2u& size);
 
 	void ChangeAnim(int animNum);
 	int GetCurrentAnim() const { return m_animation.m_current; }
@@ -72,13 +71,11 @@ private:
 
 	Range m_frame;
 	Range m_animation;
-	bool m_symmetrical;
 	bool m_loop = true;
-	int m_frameTime = 0;
 	int m_animCycles = 0;
 	float m_animSpeed = 0;
 	float m_currentTime = 0;
-	float m_framesPerSecond = 0;
+	float m_frameDuration = 0;
 	Vector2u m_frameSize;
 	std::vector<int> m_numFrames;
 };

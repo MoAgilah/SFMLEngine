@@ -21,19 +21,13 @@ bool SFSprite::SetTexture(const std::string& texId)
 		return false;
 
 	auto* baseTex = gameMgr->GetTextureMgr().GetTexture(texId);
-	if (!CheckNotNull(gameMgr, std::format("Invalid Pointer 'baseTex' GetTextureMgr().GetTexture({})", texId)))
+	if (!CheckNotNull(baseTex, std::format("Invalid Pointer 'baseTex' GetTextureMgr().GetTexture({})", texId)))
 		return false;
 
-	// Backend type check
-	auto* sfTex = dynamic_cast<SFTexture*>(baseTex);
-	if (!CheckNotNull(sfTex, "Invalid Pointer 'sfTex'"))
-		return false;
+	auto* sfTex = static_cast<SFTexture*>(baseTex);
 
 	auto sfSpr = std::make_shared<sf::Sprite>(sfTex->GetNativeTexture());
-	if (!CheckNotNull(sfSpr.get(), "Invalid Pointer 'sfSpr'"))
-		return false;
 
-	// Apply to drawable
 	SetDrawable(std::move(sfSpr));
 
 	m_texID = texId;
@@ -100,55 +94,70 @@ void SFSprite::SetTextureRect(const IntRect& rect)
 	sfSpr->setTextureRect(rect);
 }
 
-SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float framesPerSec, bool symmetrical, float animSpeed)
-	: SFSprite(texId), m_animSpeed(animSpeed), m_framesPerSecond(framesPerSec / 1000.0f), m_symmetrical(symmetrical)
+SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, float animSpeed)
+	: SFSprite(texId), m_animSpeed(animSpeed), m_frameDuration(frameDurationMs / 1000.0f)
 {
+	ThrowIfFalse(
+		rows > 0,
+		"Animation rows must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		columns > 0,
+		"Animation columns must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		frameDurationMs > 0.0f,
+		"Animation frame duration must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		m_animSpeed >= 0.0f,
+		"Animation speed cannot be negative."
+	);
+
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 }
 
-SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, float framesPerSec, bool symmetrical, float animSpeed)
-	: SFSprite(texId), m_animSpeed(animSpeed), m_framesPerSecond(framesPerSec / 1000.0f), m_symmetrical(symmetrical)
-{
-}
-
 void SFAnimatedSprite::Update(float dt)
 {
-	if (!m_loop)
-	{
-		if (m_frame.m_current == m_numFrames[m_animation.m_current])
-			return;
-	}
+	ThrowIfFalse(
+		m_frame.m_max > 0,
+		"Animation frames must be configured before updating."
+	);
+
+	if (!m_loop && m_animCycles > 0)
+		return;
 
 	m_currentTime += m_animSpeed * dt;
 
-	if (m_currentTime >= m_framesPerSecond)
+	while(m_currentTime >= m_frameDuration)
 	{
-		m_currentTime = 0.0f;
+		m_currentTime -= m_frameDuration;
 
 		++m_frame.m_current;
 
-		if (m_symmetrical)
+		if (m_frame.m_current >= m_frame.m_max)
 		{
-			if (m_frame.m_current >= m_frame.m_max)
-				m_frame.m_current = 0;
-		}
-		else
-		{
-			if (m_frame.m_current >= m_numFrames[m_animation.m_current])
+			++m_animCycles;
+
+			if (m_loop)
 			{
-				if (m_loop)
-					m_frame.m_current = 0;
-				else
-					--m_frame.m_current;
-				++m_animCycles;
+				m_frame.m_current = 0;
+			}
+			else
+			{
+				--m_frame.m_current;
+				break;
 			}
 		}
-
-		int left = m_frame.m_current * GetFrameSize().x;
-		int top = m_animation.m_current * GetFrameSize().y;
-		SetTextureRect({ left, top, static_cast<int>(GetFrameSize().x), static_cast<int>(GetFrameSize().y) });
 	}
+
+	int left = m_frame.m_current * GetFrameSize().x;
+	int top = m_animation.m_current * GetFrameSize().y;
+	SetTextureRect({ left, top, static_cast<int>(GetFrameSize().x), static_cast<int>(GetFrameSize().y) });
 }
 
 Vector2f SFAnimatedSprite::GetSize()
@@ -157,21 +166,42 @@ Vector2f SFAnimatedSprite::GetSize()
 	return Vector2f(static_cast<float>(size.x), static_cast<float>(size.y));
 }
 
-void SFAnimatedSprite::SetFrameSize(const Vector2u& size, int currentFrame, int currentAnim)
+void SFAnimatedSprite::SetFrameSize(const Vector2u& size)
 {
+	ThrowIfFalse(
+		size.x > 0,
+		"Animation frame width must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		size.y > 0,
+		"Animation frame height must be greater than zero."
+	);
+
 	m_frameSize = size;
 
-	int left = currentFrame * size.x;
-	int top = currentAnim * size.y;
-
-	SetTextureRect({left, top, static_cast<int>(size.x), static_cast<int>(size.y)});
+	SetTextureRect({0, 0, static_cast<int>(size.x), static_cast<int>(size.y)});
 	SetOrigin(Vector2f(static_cast<float>(size.x), static_cast<float>(size.y)) * 0.5f);
 }
 
 void SFAnimatedSprite::ChangeAnim(int animNum)
 {
-	m_animCycles = 0;
+	ThrowIfFalse(
+		0 <= animNum && animNum < m_animation.m_max,
+		std::format(
+			"Animation index {} is out of range [0, {}).",
+			animNum,
+			m_animation.m_max
+		)
+	);
+
 	m_animation.m_current = animNum;
+
+	m_frame.m_current = 0;
+	m_frame.m_max = m_numFrames[m_animation.m_current];
+
+	m_currentTime = 0.0f;
+	m_animCycles = 0;
 }
 
 void SFAnimatedSprite::EnsureAnim(int anim)
@@ -182,12 +212,45 @@ void SFAnimatedSprite::EnsureAnim(int anim)
 
 void SFAnimatedSprite::SetFrames(const std::vector<int>& numFrames)
 {
+	ThrowIfFalse(
+		!numFrames.empty(),
+		"Animation frame data cannot be empty."
+	);
+
+	for (size_t i = 0; i < numFrames.size(); ++i)
+	{
+		ThrowIfFalse(
+			numFrames[i] > 0,
+			std::format(
+				"Animation frame count at index {} must be greater than zero.",
+				i
+			)
+		);
+	}
+
 	m_numFrames.assign(numFrames.begin(), numFrames.end());
-	m_animation.m_max = m_numFrames[m_animation.m_current];
+
+	m_currentTime = 0.0f;
+
+	m_animation.m_current = 0;
+	m_animation.m_max = static_cast<int>(m_numFrames.size());
+
+	m_frame.m_current = 0;
+	m_frame.m_max = m_numFrames[m_animation.m_current];
 }
 
 void SFAnimatedSprite::SetFrameData(int rows, int columns, const std::vector<int>& numFrames)
 {
+	ThrowIfFalse(
+		rows > 0,
+		"Animation rows must be greater than zero."
+	);
+
+	ThrowIfFalse(
+		columns > 0,
+		"Animation columns must be greater than zero."
+	);
+
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 	SetFrames(numFrames);
@@ -195,6 +258,11 @@ void SFAnimatedSprite::SetFrameData(int rows, int columns, const std::vector<int
 
 void SFAnimatedSprite::UpdateAnimSpeed(float animSpd)
 {
+	ThrowIfFalse(
+		animSpd >= 0.0f,
+		"Animation speed cannot be negative."
+	);
+
 	if (m_animSpeed != animSpd)
 		m_animSpeed = animSpd;
 }

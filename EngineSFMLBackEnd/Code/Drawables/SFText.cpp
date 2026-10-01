@@ -12,6 +12,11 @@
 SFText::SFText(const TextConfig& config)
 	: IText(config)
 {
+	ThrowIfFalse(
+		m_config.m_animType == TextAnimType::Static,
+		"SFText requires TextAnimType::Static."
+	);
+
 	ThrowIfFalse(Init(), "SFText initialization failed");
 }
 
@@ -28,35 +33,31 @@ void SFText::Render(IRenderer* renderer)
 void SFText::SetText(const std::string& text)
 {
 	auto txtObj = this->GetPrimaryDrawableAs<sf::Text>();
-	if (!txtObj) return;
-
-	const Vector2f oldPos = GetPosition();
 
 	txtObj->setString(text);
 
+	if (m_config.m_alignment == TextAlignment::None)
+		return;
+
 	const sf::FloatRect b = txtObj->getLocalBounds();
 
-	if (m_config.m_alignment != TextAlignment::None)
+	float xFactor = 0.5f;
+	switch (m_config.m_alignment)
 	{
-		float xFactor = 0.5f;
-		switch (m_config.m_alignment)
-		{
-		case TextAlignment::LeftHand:  xFactor = 0.f;   break;
-		case TextAlignment::Center:    xFactor = 0.5f;  break;
-		case TextAlignment::RightHand: xFactor = 1.f;   break;
-		default: /* None handled above */                break;
-		}
-
-		const float yFactor = 0.5f;
-
-		const sf::Vector2f origin{
-			b.position.x + b.size.x * xFactor,
-			b.position.y + b.size.y * yFactor
-		};
-		txtObj->setOrigin(origin);
+	case TextAlignment::LeftHand:  xFactor = 0.f;   break;
+	case TextAlignment::Center:    xFactor = 0.5f;  break;
+	case TextAlignment::RightHand: xFactor = 1.f;   break;
 	}
 
-	SetPosition(oldPos);
+	const float yFactor = 0.5f;
+
+	const sf::Vector2f origin
+	{
+		b.position.x + (b.size.x * xFactor),
+		b.position.y + (b.size.y * yFactor)
+	};
+
+	txtObj->setOrigin(origin);
 }
 
 
@@ -127,6 +128,14 @@ void SFText::SetOutlineThickness(float thickness)
 		return txt->setOutlineThickness(thickness);
 }
 
+SFText::SFText(const TextConfig& config, bool initialise)
+	: IText(config)
+{
+	if (initialise)
+		ThrowIfFalse(Init(), "SFText initialization failed");
+}
+
+
 bool SFText::Init()
 {
 	auto* gameMgr = GameManager::Get();
@@ -134,12 +143,10 @@ bool SFText::Init()
 		return false;
 
 	auto* baseFont = gameMgr->GetFontMgr().GetFont(m_config.m_fontName);
-	if (!CheckNotNull(gameMgr, "Invalid Pointer 'baseFont' from GetFontMgr().GetFont"))
+	if (!CheckNotNull(baseFont, "Invalid Pointer 'baseFont' from GetFontMgr().GetFont"))
 		return false;
 
-	auto* sfFont = dynamic_cast<SFFont*>(baseFont);
-	if (!CheckNotNull(sfFont, "Invalid Pointer 'sfFont'"))
-		return false;
+	auto* sfFont = static_cast<SFFont*>(baseFont);
 
 	SetDrawable(std::make_shared<sf::Text>(sfFont->GetNativeFont()));
 
@@ -152,14 +159,14 @@ bool SFText::Init()
 }
 
 SFAnimatedText::SFAnimatedText(const TextConfig& config)
-	: SFText(config), m_timer(1.f), m_textShader(nullptr), m_updateFunc(nullptr), m_renderFunc(nullptr)
+	: SFText(config, false), m_timer(1.f), m_textShader(nullptr), m_updateFunc(nullptr), m_renderFunc(nullptr)
 {
 	ThrowIfFalse(m_config.m_animType != TextAnimType::Custom, "TextConfig can't initialize TextAnimType::Custom");
 	ThrowIfFalse(Init(), "SFAnimatedText initialization failed");
 }
 
 SFAnimatedText::SFAnimatedText(const CustomTextConfig& ctc)
-	: SFText(ctc.m_config), m_timer(1.f), m_textShader(nullptr), m_updateFunc(ctc.m_updateFunc), m_renderFunc(ctc.m_renderFunc)
+	: SFText(ctc.m_config, false), m_timer(1.f), m_textShader(nullptr), m_updateFunc(ctc.m_updateFunc), m_renderFunc(ctc.m_renderFunc)
 {
 	ThrowIfFalse(m_config.m_animType == TextAnimType::Custom, "CustomTextConfig can't initialize TextAnimType types other than TextAnimType::Custom");
 	ThrowIfFalse(Init(), "SFAnimatedText initialization failed");
@@ -219,7 +226,13 @@ void SFAnimatedText::InitCountdownText(int startFrom, const std::string& countDo
 
 void SFAnimatedText::SetMaxCount(int startFrom)
 {
+	ThrowIfFalse(
+		startFrom > 0,
+		"Countdown start value must be greater than zero."
+	);
+
 	m_count = m_maxCount = startFrom;
+	m_countEnded = false;
 }
 
 void SFAnimatedText::SetUpdateFunc(UpdateFunc func)
@@ -255,66 +268,55 @@ void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
 		return;
 	}
 
-	float time;
-
 	if (m_reduceAlpha)
 	{
-		// FLASHING / LOOP fade logic (unchanged)
 		m_timer.Update(deltaTime);
-		time = m_timer.GetCurrTime() / m_timer.GetMaxTime();
 
 		if (m_timer.CheckEnd())
 		{
 			m_reduceAlpha = false;
-			if (time < 0.f)
+
+			if (m_timer.GetCurrTime() < 0.f)
 				m_timer.SetCurrTime(0.f);
 		}
+
+		return;
+	}
+
+	if (m_looping)
+	{
+		m_timer.Update(-deltaTime);
+
+		if (m_timer.GetCurrTime() >= m_timer.GetMaxTime())
+		{
+			m_reduceAlpha = true;
+			m_timer.RestartTimer();
+		}
+
+		return;
+	}
+
+	if (m_countEnded)
+	{
+		m_paused = true;
+		return;
+	}
+
+	m_timer.Update(deltaTime);
+
+	if (!m_timer.CheckEnd())
+		return;
+
+	if (m_count > 0)
+	{
+		--m_count;
+		SetText(std::to_string(m_count));
+		m_timer.RestartTimer();
 	}
 	else
 	{
-		if (m_looping)
-		{
-			// FLASHING / LOOP fade logic (unchanged)
-			m_timer.Update(-deltaTime);
-			time = m_timer.GetCurrTime() / m_timer.GetMaxTime();
-
-			if (m_timer.GetCurrTime() >= m_timer.GetMaxTime())
-			{
-				m_reduceAlpha = true;
-				m_timer.RestartTimer();
-			}
-		}
-		else
-		{
-			// COUNTDOWN: tick once per timer interval
-			if (!CountHasEnded())
-			{
-				// advance the timer forward
-				m_timer.Update(deltaTime);
-
-				// when interval completes, decrement and restart the timer
-				if (m_timer.CheckEnd())
-				{
-					--m_count;
-
-					if (m_count > 0)
-					{
-						SetText(std::to_string(m_count));
-					}
-					else
-					{
-						SetText(m_countdownMsg);
-						//m_paused = true;     // finished; stop updating
-					}
-
-					m_timer.RestartTimer();  // prepare for next tick
-				}
-			}
-			else
-			{
-				m_paused = true;
-			}
-		}
+		SetText(m_countdownMsg);
+		m_countEnded = true;
 	}
 }
 

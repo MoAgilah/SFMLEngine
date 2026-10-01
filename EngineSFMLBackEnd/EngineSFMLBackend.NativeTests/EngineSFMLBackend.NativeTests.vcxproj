@@ -21,6 +21,15 @@
   <ItemGroup>
     <ClCompile Include="Code\Collisions\SFGridTests.cpp" />
     <ClCompile Include="Code\Collisions\SFTileTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFAnimatedSpriteTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFCapsuleTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFCircleTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFDrawableTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFRectTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFShapeTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFSpriteTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFTextTests.cpp" />
+    <ClCompile Include="Code\Drawables\SFTriangleTests.cpp" />
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp" />
     <ClCompile Include="Code\Resources\SFFontTests.cpp" />
     <ClCompile Include="Code\Resources\SFMusicTests.cpp" />
