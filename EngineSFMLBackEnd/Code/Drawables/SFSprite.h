@@ -31,15 +31,9 @@ private:
 	std::string m_texID;
 };
 
-struct Range
-{
-	int m_current = 0;
-	int m_max = 0;
-};
-
 SFSprite* GetSprite(IDrawable* drawable);
 
-class SFAnimatedSprite : public SFSprite
+class SFAnimatedSprite : public SFSprite, public IAnimatedSprite
 {
 public:
 	SFAnimatedSprite(const std::string& texId, int rows, int columns, float frameDurationMs, float animationSpeed);
@@ -49,35 +43,9 @@ public:
 	Vector2f GetSize() override;
 
 	Vector2u GetFrameSize() const { return m_frameSize; }
-	void SetFrameSize(const Vector2u& size);
+	void SetFrameSize(const Vector2u& size) override;
 
-	void ChangeAnim(int animNum);
-	int GetCurrentAnim() const { return m_animation.m_current; }
-
-	void EnsureAnim(int anim);
-
-	void SetFrames(const std::vector<int>& numFrames);
-	void SetFrameData(int rows, int columns, const std::vector<int>& numFrames);
-
-	bool PlayedNumTimes(int val) const { return m_animCycles == val; }
-	bool PlayedOnce() const { return m_animCycles > 0; }
-
-	void SetShouldLoop(bool loop) { m_loop = loop; }
-
-	float GetCurrAnimSpeed() const { return m_animSpeed; }
-	void UpdateAnimSpeed(float animSpd);
-
-private:
-
-	Range m_frame;
-	Range m_animation;
-	bool m_loop = true;
-	int m_animCycles = 0;
-	float m_animSpeed = 0;
-	float m_currentTime = 0;
-	float m_frameDuration = 0;
-	Vector2u m_frameSize;
-	std::vector<int> m_numFrames;
+	void SetFrameData(int rows, int columns, const std::vector<int>& numFrames) override;
 };
 
 SFAnimatedSprite* GetAnimatedSprite(IDrawable* drawable);
