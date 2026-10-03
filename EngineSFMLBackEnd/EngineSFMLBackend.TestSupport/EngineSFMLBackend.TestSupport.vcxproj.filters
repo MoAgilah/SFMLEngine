@@ -37,6 +37,9 @@
     <Filter Include="Header Files\Fakes\Renderer">
       <UniqueIdentifier>{ac877b05-156d-496f-bce3-013e8eab4708}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Fakes\Effects">
+      <UniqueIdentifier>{411d9026-61b8-4323-a175-06951770f916}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\TestSupport\TestSupport.cpp">
@@ -73,6 +76,12 @@
     </ClInclude>
     <ClInclude Include="Code\Testables\Drawables\TestableSFShape.h">
       <Filter>Header Files\Fakes\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Testables\Drawables\TestableSFText.h">
+      <Filter>Header Files\Fakes\Drawables</Filter>
+    </ClInclude>
+    <ClInclude Include="Code\Fakes\Effects\FakeShaderEffect.h">
+      <Filter>Header Files\Fakes\Effects</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

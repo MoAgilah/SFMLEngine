@@ -1,10 +1,13 @@
 #include "CppUnitTest.h"
 
+#include <Fakes/Effects/FakeShaderEffect.h>
+#include <Fakes/Resources/FakeShader.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Drawables/SFText.h>
 #include <SFML/Graphics/Text.hpp>
 #include <string>
+#include <memory>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -296,6 +299,57 @@ namespace Drawables
 
             Assert::AreEqual(size.x, retSize.x);
             Assert::AreEqual(size.y, retSize.y);
+        }
+
+
+        // ======================================================
+        // Update
+        // ======================================================
+
+        TEST_METHOD(SFText_Update_WithoutEffect_UpdatesNormally)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            text.Update(0.1f);
+        }
+
+        TEST_METHOD(SFText_Update_WithEffect_UpdatesEffect)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            text.SetEffect(std::move(effect));
+
+            Assert::IsNotNull(effectPtr);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+
+            float dt = 0.1f;
+
+            text.Update(dt);
+
+            Assert::IsTrue(effectPtr->updateCalled);
+            Assert::AreEqual(dt, effectPtr->passedDeltaTime);
         }
     };
 }
