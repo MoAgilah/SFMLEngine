@@ -107,16 +107,6 @@ SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int colum
 		"Animation columns must be greater than zero."
 	);
 
-	ThrowIfFalse(
-		frameDurationMs > 0.0f,
-		"Animation frame duration must be greater than zero."
-	);
-
-	ThrowIfFalse(
-		m_animSpeed >= 0.0f,
-		"Animation speed cannot be negative."
-	);
-
 	auto texSize = GetTextureSize();
 	SetFrameSize({ texSize.x / static_cast<unsigned>(columns), texSize.y / static_cast<unsigned>(rows) });
 }

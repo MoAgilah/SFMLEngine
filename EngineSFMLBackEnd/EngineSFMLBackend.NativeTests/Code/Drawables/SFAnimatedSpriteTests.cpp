@@ -18,7 +18,7 @@ namespace Drawables
         // Constructors
         // ======================================================
 
-        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfRowsAreNotGreaterThanZero)
+        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfRowsAreNegative)
         {
             GameManager gm;
 
@@ -32,6 +32,11 @@ namespace Drawables
                         1.0f
                     );
                 });
+        }
+
+        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfRowsAreZero)
+        {
+            GameManager gm;
 
             Assert::ExpectException<std::runtime_error>([&]
                 {
@@ -45,7 +50,7 @@ namespace Drawables
                 });
         }
 
-        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfColumnsAreNotGreaterThanZero)
+        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfColumnsAreNegative)
         {
             GameManager gm;
 
@@ -59,6 +64,11 @@ namespace Drawables
                         1.0f
                     );
                 });
+        }
+
+        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfColumnsAreZero)
+        {
+            GameManager gm;
 
             Assert::ExpectException<std::runtime_error>([&]
                 {
@@ -68,49 +78,6 @@ namespace Drawables
                         0,
                         GameConstants::AnimationFrameDurationMS,
                         1.0f
-                    );
-                });
-        }
-
-        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfFrameDurationIsNotGreaterThanZero)
-        {
-            GameManager gm;
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    SFAnimatedSprite sprite(
-                        "DefaultTexture",
-                        4,
-                        4,
-                        -1,
-                        1.0f
-                    );
-                });
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    SFAnimatedSprite sprite(
-                        "DefaultTexture",
-                        4,
-                        4,
-                        0,
-                        1.0f
-                    );
-                });
-        }
-
-        TEST_METHOD(SFAnimatedSprite_Constructor_ThrowsIfAnimationSpeedIsNegative)
-        {
-            GameManager gm;
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    SFAnimatedSprite sprite(
-                        "DefaultTexture",
-                        4,
-                        4,
-                        GameConstants::AnimationFrameDurationMS,
-                        -1.0f
                     );
                 });
         }
@@ -136,21 +103,6 @@ namespace Drawables
 
             Assert::AreEqual(static_cast<float>(frameSize.x) * 0.5f, origin.x);
             Assert::AreEqual(static_cast<float>(frameSize.y) * 0.5f, origin.y);
-        }
-
-        TEST_METHOD(SFAnimatedSprite_ConstructorWithValidParameters_SetsAnimationSpeed)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            Assert::AreEqual(1.f, sprite.GetCurrAnimSpeed());
         }
 
         // ======================================================
@@ -206,7 +158,7 @@ namespace Drawables
         // SetFrameSize
         // ======================================================
 
-        TEST_METHOD(SFAnimatedSprite_SetFrameSize_ThrowsIfWidthIsNotGreaterThanZero)
+        TEST_METHOD(SFAnimatedSprite_SetFrameSize_ThrowsIfWidthIsZero)
         {
             GameManager gm;
 
@@ -224,7 +176,7 @@ namespace Drawables
                 });
         }
 
-        TEST_METHOD(SFAnimatedSprite_SetFrameSize_ThrowsIfHeightIsNotGreaterThanZero)
+        TEST_METHOD(SFAnimatedSprite_SetFrameSize_ThrowsIfHeightIsZero)
         {
             GameManager gm;
 
@@ -269,10 +221,10 @@ namespace Drawables
         }
 
         // ======================================================
-        // SetFrames
+        // Set Frame Data
         // ======================================================
 
-        TEST_METHOD(SFAnimatedSprite_SetFrames_ThrowsIfFrameDataIsEmpty)
+        TEST_METHOD(SFAnimatedSprite_SetFrameData_ThrowsIfRowsAreZero)
         {
             GameManager gm;
 
@@ -284,15 +236,15 @@ namespace Drawables
                 1.0f
             );
 
-            std::vector<int> numFrames;
+            std::vector<int> numFrames = { 5, 5 };
 
             Assert::ExpectException<std::runtime_error>([&]
                 {
-                    sprite.SetFrames(numFrames);
+                    sprite.SetFrameData(0, 5, numFrames);
                 });
         }
 
-        TEST_METHOD(SFAnimatedSprite_SetFrames_ThrowsIfFrameCountIsNotGreaterThanZero)
+        TEST_METHOD(SFAnimatedSprite_SetFrameData_ThrowsIfRowsAreNegative)
         {
             GameManager gm;
 
@@ -304,22 +256,35 @@ namespace Drawables
                 1.0f
             );
 
-            std::vector<int> numFrames = { 1, 2, -1, 3 };
+            std::vector<int> numFrames = { 5, 5 };
 
             Assert::ExpectException<std::runtime_error>([&]
                 {
-                    sprite.SetFrames(numFrames);
+                    sprite.SetFrameData(-2, 5, numFrames);
                 });
+        }
 
-            numFrames[2] = 0;
+        TEST_METHOD(SFAnimatedSprite_SetFrameData_ThrowsIfColumnsAreZero)
+        {
+            GameManager gm;
+
+            SFAnimatedSprite sprite(
+                "DefaultTexture",
+                4,
+                4,
+                GameConstants::AnimationFrameDurationMS,
+                1.0f
+            );
+
+            std::vector<int> numFrames = { 5, 5 };
 
             Assert::ExpectException<std::runtime_error>([&]
                 {
-                    sprite.SetFrames(numFrames);
+                    sprite.SetFrameData(2, 0, numFrames);
                 });
         }
 
-        TEST_METHOD(SFAnimatedSprite_SetFrames_SetsFrames)
+        TEST_METHOD(SFAnimatedSprite_SetFrameData_ThrowsIfColumnsAreNegative)
         {
             GameManager gm;
 
@@ -331,45 +296,15 @@ namespace Drawables
                 1.0f
             );
 
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            Assert::AreEqual(0, sprite.GetCurrentAnim());
-        }
-
-        // ======================================================
-        // ChangeAnim
-        // ======================================================
-
-        TEST_METHOD(SFAnimatedSprite_ChangeAnim_ThrowsIfOutOfAnimBounds)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
+            std::vector<int> numFrames = { 5, 5 };
 
             Assert::ExpectException<std::runtime_error>([&]
                 {
-                    sprite.ChangeAnim(-1);
-                });
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    sprite.ChangeAnim(4);
+                    sprite.SetFrameData(2, -5, numFrames);
                 });
         }
 
-        TEST_METHOD(SFAnimatedSprite_ChangeAnim_ChangesAnimation)
+        TEST_METHOD(SFAnimatedSprite_SetFrameData_SetsFrameSizeFromTextureDimensions)
         {
             GameManager gm;
 
@@ -381,112 +316,21 @@ namespace Drawables
                 1.0f
             );
 
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
+            std::vector<int> numFrames = { 5, 5 };
 
-            sprite.SetFrames(numFrames);
+            sprite.SetFrameData(2, 5, numFrames);
 
-            int newAnim = 2;
+            auto frameSize = sprite.GetFrameSize();
 
-            sprite.ChangeAnim(newAnim);
-
-            Assert::AreEqual(newAnim, sprite.GetCurrentAnim());
-        }
-
-        // ======================================================
-        // UpdateAnimSpeed
-        // ======================================================
-
-        TEST_METHOD(SFAnimatedSprite_UpdateAnimSpeed_ThrowsIfAnimationSpeedIsNegative)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    sprite.UpdateAnimSpeed(-1);
-                });
-        }
-
-        TEST_METHOD(SFAnimatedSprite_UpdateAnimSpeed_ChangesAnimationSpeed)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            float newSpd = 0.5f;
-
-            sprite.UpdateAnimSpeed(newSpd);
-
-            Assert::AreEqual(newSpd, sprite.GetCurrAnimSpeed());
+            Assert::AreEqual(100u, frameSize.x);
+            Assert::AreEqual(200u, frameSize.y);
         }
 
         // ======================================================
         // Update
         // ======================================================
 
-        TEST_METHOD(SFAnimatedSprite_Update_ThrowsIfFramesHaveNotBeenConfigured)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    sprite.Update(0.67f);
-                });
-        }
-
-        TEST_METHOD(SFAnimatedSprite_Update_DoesNotAdvanceFrameBeforeFrameDuration)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            auto spr = sprite.GetSprite();
-            Assert::IsNotNull(spr);
-
-            auto before = spr->getTextureRect();
-
-            sprite.Update(0.03f);
-
-            auto after = spr->getTextureRect();
-
-            Assert::AreEqual(before.position.x, after.position.x);
-            Assert::AreEqual(before.position.y, after.position.y);
-            Assert::AreEqual(before.size.x, after.size.x);
-            Assert::AreEqual(before.size.y, after.size.y);
-        }
-
-        TEST_METHOD(SFAnimatedSprite_Update_AdvancesFrameWhenFrameDurationReached)
+        TEST_METHOD(SFAnimatedSprite_Update_SetsTextureRectFromCurrentFrame)
         {
             GameManager gm;
 
@@ -519,182 +363,7 @@ namespace Drawables
             Assert::AreEqual(before.size.y, after.size.y);
         }
 
-        TEST_METHOD(SFAnimatedSprite_Update_AdvancesMultipleFramesWhenElapsedTimeAllows)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            auto spr = sprite.GetSprite();
-            Assert::IsNotNull(spr);
-
-            auto before = spr->getTextureRect();
-
-            sprite.Update(0.18f);
-
-            auto after = spr->getTextureRect();
-
-            Assert::AreEqual(0, before.position.x);
-            Assert::AreEqual(375, after.position.x);
-
-            Assert::AreEqual(before.position.y, after.position.y);
-            Assert::AreEqual(before.size.x, after.size.x);
-            Assert::AreEqual(before.size.y, after.size.y);
-        }
-
-        TEST_METHOD(SFAnimatedSprite_Update_PreservesRemainingFrameTime)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            auto spr = sprite.GetSprite();
-            Assert::IsNotNull(spr);
-
-            auto before = spr->getTextureRect();
-
-            sprite.Update(0.09f);
-
-            auto after = spr->getTextureRect();
-
-            Assert::AreEqual(0, before.position.x);
-            Assert::AreEqual(125, after.position.x);
-
-            Assert::AreEqual(before.position.y, after.position.y);
-            Assert::AreEqual(before.size.x, after.size.x);
-            Assert::AreEqual(before.size.y, after.size.y);
-
-            before = after;
-
-            sprite.Update(0.03f);
-
-            after = spr->getTextureRect();
-
-            Assert::AreEqual(125, before.position.x);
-            Assert::AreEqual(250, after.position.x);
-
-            Assert::AreEqual(before.position.y, after.position.y);
-            Assert::AreEqual(before.size.x, after.size.x);
-            Assert::AreEqual(before.size.y, after.size.y);
-        }
-
-        TEST_METHOD(SFAnimatedSprite_UpdateWithLooping_WrapsToFirstFrame)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            auto spr = sprite.GetSprite();
-            Assert::IsNotNull(spr);
-
-            auto before = spr->getTextureRect();
-
-            Assert::AreEqual(0, before.position.x);
-
-            sprite.Update(0.25f);
-
-            auto after = spr->getTextureRect();
-
-            Assert::AreEqual(0, after.position.x);
-            Assert::AreEqual(before.position.y, after.position.y);
-            Assert::AreEqual(before.size.x, after.size.x);
-            Assert::AreEqual(before.size.y, after.size.y);
-        }
-
-        TEST_METHOD(SFAnimatedSprite_UpdateWithoutLooping_StopsOnLastFrame)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            sprite.SetShouldLoop(false);
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            auto spr = sprite.GetSprite();
-            Assert::IsNotNull(spr);
-
-            auto before = spr->getTextureRect();
-
-            sprite.Update(0.25f);
-
-            auto after = spr->getTextureRect();
-
-            Assert::AreEqual(0, before.position.x);
-            Assert::AreEqual(375, after.position.x);
-
-            Assert::AreEqual(before.position.y, after.position.y);
-            Assert::AreEqual(before.size.x, after.size.x);
-            Assert::AreEqual(before.size.y, after.size.y);
-        }
-
-        TEST_METHOD(SFAnimatedSprite_UpdateWithoutLooping_SetsPlayedOnceAfterCompletion)
-        {
-            GameManager gm;
-
-            SFAnimatedSprite sprite(
-                "DefaultTexture",
-                4,
-                4,
-                GameConstants::AnimationFrameDurationMS,
-                1.0f
-            );
-
-            sprite.SetShouldLoop(false);
-
-            std::vector<int> numFrames = { 4, 2, 3, 1 };
-
-            sprite.SetFrames(numFrames);
-
-            auto spr = sprite.GetSprite();
-            Assert::IsNotNull(spr);
-
-            Assert::IsFalse(sprite.PlayedOnce());
-
-            sprite.Update(0.25f);
-
-            Assert::IsTrue(sprite.PlayedOnce());
-        }
-
-        TEST_METHOD(SFAnimatedSprite_UpdateAfterChangeAnim_UsesSelectedAnimation)
+        TEST_METHOD(SFAnimatedSprite_UpdateAfterChangeAnim_SetsTextureRectFromCurrentAnimation)
         {
             GameManager gm;
 
@@ -728,7 +397,5 @@ namespace Drawables
             Assert::AreEqual(before.size.x, after.size.x);
             Assert::AreEqual(before.size.y, after.size.y);
         }
-
-
     };
 }

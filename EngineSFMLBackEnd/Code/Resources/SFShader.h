@@ -19,6 +19,8 @@ public:
 
     bool LoadFromFile(const std::string& filepath) override;
 
+    void SetUniform(const std::string& name, float value) override;
+
     // Escape hatch: only leaks SFML where you *explicitly* include this header.
     sf::Shader& GetNativeShader();
     const sf::Shader& GetNativeShader() const;

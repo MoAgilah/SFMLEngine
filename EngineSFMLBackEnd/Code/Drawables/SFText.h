@@ -1,7 +1,7 @@
 #pragma once
 
 #include "SFDrawables.h"
-#include <Engine/Interface/UI/IText.h>
+#include <Engine/Interface/Drawables/IText.h>
 #include <Engine/Core/CountdownTimer.h>
 #include <Utilities/Vector2.h>
 #include <optional>
@@ -36,61 +36,14 @@ public:
 	void ResetOutlineColour() { SetOutlineColour(m_config.m_colour); }
 
 protected:
-	SFText(const TextConfig& config, bool initialise);
 
 	bool Init() override;
 };
 
-class SFAnimatedText : public SFText
+class SFCountDownText : public SFText, public ICountdownText
 {
 public:
-	SFAnimatedText(const TextConfig& config);
-	SFAnimatedText(const CustomTextConfig& config);
+	SFCountDownText(const TextConfig& config, float countdownInterval, int startFrom, const std::string& countDownMessage);
 
 	void Update(float deltaTime) override;
-	void Render(IRenderer* renderer) override;
-
-	void InitFlashingText(const std::string& text, bool loop = true);
-	void InitCountdownText(int startFrom, const std::string& countDownMessage);
-
-	bool GetIsLooping() const { return m_looping; }
-	void SetIsLooping(bool loop) { m_looping = loop; }
-
-	bool GetIsPaused() const { return m_paused; }
-	void SetIsPaused(bool pause) { m_paused = pause; }
-
-	void SetMaxCount(int startFrom);
-	bool CountHasEnded() const { return m_countEnded; }
-
-	void SetCountDown(const std::string& msg) { m_countdownMsg = msg; }
-
-	void SetUpdateFunc(UpdateFunc func);
-	void SetRenderFunc(RenderFunc func);
-
-	CountdownTimer& GetTimer() { return m_timer; }
-
-protected:
-
-	bool Init() override;
-
-private:
-
-	bool LoadShader(const std::string& shader);
-
-	void FadeInAndOutUpdate(float deltaTime);
-	void FadeInFadeOutRender(IRenderer* renderer);
-
-private:
-
-	CountdownTimer m_timer;
-	bool m_paused = false;
-	bool m_looping = true;
-	bool m_reduceAlpha = true;
-	int m_count = 0;
-	int m_maxCount = 0;
-	bool m_countEnded = false;
-	UpdateFunc m_updateFunc;
-	RenderFunc m_renderFunc;
-	std::string m_countdownMsg;
-	IShader* m_textShader;
 };

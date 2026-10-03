@@ -199,28 +199,28 @@ void SFMenu::SetActiveTextElement()
 
 		if (cell->GetMenuSlotNumber() == m_menuNavigation.GetCurrCursorPos())
 		{
-			if (text->IsAnimated())
+			/*if (text->IsAnimated())
 			{
 				auto sfText = dynamic_cast<SFAnimatedText*>(text);
 				if (!CheckNotNull(sfText, "Invalid Pointer 'sfText'"))
 					return;
 
 				sfText->SetIsPaused(false);
-			}
+			}*/
 
 			if (m_passiveColour)
 				text->SetOutlineColour(text->GetDefaultColour());
 		}
 		else
 		{
-			if (text->IsAnimated())
+			/*if (text->IsAnimated())
 			{
 				auto sfText = dynamic_cast<SFAnimatedText*>(text);
 				if (!CheckNotNull(sfText, "Invalid Pointer 'sfText'"))
 					return;
 
 				sfText->SetIsPaused(true);
-			}
+			}*/
 
 			if (m_passiveColour)
 				text->SetOutlineColour(*m_passiveColour);

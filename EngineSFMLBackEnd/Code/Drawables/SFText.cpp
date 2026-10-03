@@ -12,21 +12,24 @@
 SFText::SFText(const TextConfig& config)
 	: IText(config)
 {
-	ThrowIfFalse(
-		m_config.m_animType == TextAnimType::Static,
-		"SFText requires TextAnimType::Static."
-	);
-
 	ThrowIfFalse(Init(), "SFText initialization failed");
 }
 
 void SFText::Update(float deltaTime)
 {
+	UpdateEffect(deltaTime);
+
 	SFDrawables<sf::Text>::Update(deltaTime);
 }
 
 void SFText::Render(IRenderer* renderer)
 {
+	if (auto* effect = GetEffect())
+	{
+		SFDrawables<sf::Text>::Render(renderer, effect->GetShader());
+		return;
+	}
+
 	SFDrawables<sf::Text>::Render(renderer);
 }
 
@@ -128,14 +131,6 @@ void SFText::SetOutlineThickness(float thickness)
 		return txt->setOutlineThickness(thickness);
 }
 
-SFText::SFText(const TextConfig& config, bool initialise)
-	: IText(config)
-{
-	if (initialise)
-		ThrowIfFalse(Init(), "SFText initialization failed");
-}
-
-
 bool SFText::Init()
 {
 	auto* gameMgr = GameManager::Get();
@@ -158,213 +153,24 @@ bool SFText::Init()
 	return true;
 }
 
-SFAnimatedText::SFAnimatedText(const TextConfig& config)
-	: SFText(config, false), m_timer(1.f), m_textShader(nullptr), m_updateFunc(nullptr), m_renderFunc(nullptr)
+SFCountDownText::SFCountDownText(const TextConfig& config, float countdownInterval, int startFrom, const std::string& countDownMessage)
+	: SFText(config), ICountdownText(countdownInterval, startFrom, countDownMessage)
 {
-	ThrowIfFalse(m_config.m_animType != TextAnimType::Custom, "TextConfig can't initialize TextAnimType::Custom");
-	ThrowIfFalse(Init(), "SFAnimatedText initialization failed");
+	SetText(std::to_string(GetCount()));
 }
 
-SFAnimatedText::SFAnimatedText(const CustomTextConfig& ctc)
-	: SFText(ctc.m_config, false), m_timer(1.f), m_textShader(nullptr), m_updateFunc(ctc.m_updateFunc), m_renderFunc(ctc.m_renderFunc)
+void SFCountDownText::Update(float deltaTime)
 {
-	ThrowIfFalse(m_config.m_animType == TextAnimType::Custom, "CustomTextConfig can't initialize TextAnimType types other than TextAnimType::Custom");
-	ThrowIfFalse(Init(), "SFAnimatedText initialization failed");
+	ICountdownText::Update(deltaTime);
 
-	if (!ctc.m_shaderName.empty())
-		ThrowIfFalse(LoadShader(ctc.m_shaderName), std::format("LoadShader failed: id-{}", ctc.m_shaderName));
-}
-
-void SFAnimatedText::Update(float deltaTime)
-{
-	switch (m_config.m_animType)
+	if (CountHasEnded())
 	{
-	case TextAnimType::Flashing:
-	case TextAnimType::Countdown:
-		FadeInAndOutUpdate(deltaTime);
-		break;
-	case TextAnimType::Custom:
-		if (m_updateFunc)
-			m_updateFunc(deltaTime);
-		break;
-	}
-}
-
-void SFAnimatedText::Render(IRenderer* renderer)
-{
-	if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
-		return;
-
-	switch (m_config.m_animType)
-	{
-	case TextAnimType::Flashing:
-	case TextAnimType::Countdown:
-		FadeInFadeOutRender(renderer);
-		break;
-	case TextAnimType::Custom:
-		if (m_renderFunc)
-			m_renderFunc(renderer);
-		break;
-	}
-}
-
-void SFAnimatedText::InitFlashingText(const std::string& text, bool loop)
-{
-	SetIsLooping(loop);
-	SetText(text);
-}
-
-void SFAnimatedText::InitCountdownText(int startFrom, const std::string& countDownMessage)
-{
-	SetMaxCount(startFrom);
-	SetIsLooping(false);
-	SetCountDown(countDownMessage);
-	SetText(std::to_string(startFrom));
-	m_timer.SetMaxTime(1.f);
-	m_timer.RestartTimer(); // start ticking immediately
-}
-
-void SFAnimatedText::SetMaxCount(int startFrom)
-{
-	ThrowIfFalse(
-		startFrom > 0,
-		"Countdown start value must be greater than zero."
-	);
-
-	m_count = m_maxCount = startFrom;
-	m_countEnded = false;
-}
-
-void SFAnimatedText::SetUpdateFunc(UpdateFunc func)
-{
-	m_updateFunc = func;
-}
-
-void SFAnimatedText::SetRenderFunc(RenderFunc func)
-{
-	m_renderFunc = func;
-}
-
-bool SFAnimatedText::LoadShader(const std::string& shaderID)
-{
-	auto* gameMgr = GameManager::Get();
-	if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
-		return false;
-
-	auto* shader = gameMgr->GetShaderMgr().GetShader(shaderID);
-	if (!CheckNotNull(shader, std::format("Invalid Pointer 'shader' from GetShaderMgr().GetShader({})", shaderID)))
-		return false;
-
-	m_textShader = shader;
-
-	return true;
-}
-
-void SFAnimatedText::FadeInAndOutUpdate(float deltaTime)
-{
-	if (m_paused)
-	{
-		m_timer.SetCurrTime(m_looping ? 1.f : 0.f);
-		return;
-	}
-
-	if (m_reduceAlpha)
-	{
-		m_timer.Update(deltaTime);
-
-		if (m_timer.CheckEnd())
-		{
-			m_reduceAlpha = false;
-
-			if (m_timer.GetCurrTime() < 0.f)
-				m_timer.SetCurrTime(0.f);
-		}
-
-		return;
-	}
-
-	if (m_looping)
-	{
-		m_timer.Update(-deltaTime);
-
-		if (m_timer.GetCurrTime() >= m_timer.GetMaxTime())
-		{
-			m_reduceAlpha = true;
-			m_timer.RestartTimer();
-		}
-
-		return;
-	}
-
-	if (m_countEnded)
-	{
-		m_paused = true;
-		return;
-	}
-
-	m_timer.Update(deltaTime);
-
-	if (!m_timer.CheckEnd())
-		return;
-
-	if (m_count > 0)
-	{
-		--m_count;
-		SetText(std::to_string(m_count));
-		m_timer.RestartTimer();
+		SetText(m_countdownMsg);
 	}
 	else
 	{
-		SetText(m_countdownMsg);
-		m_countEnded = true;
-	}
-}
-
-void SFAnimatedText::FadeInFadeOutRender(IRenderer* renderer)
-{
-	if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
-		return;
-
-	if (!CheckNotNull(m_textShader, "Invalid Pointer 'm_textShader'"))
-		return;
-
-	auto* drawable = this->GetPrimaryDrawable();
-	if (!CheckNotNull(drawable, "Invalid Pointer 'drawable'"))
-		return;
-
-	auto* shader = dynamic_cast<SFShader*>(m_textShader);
-	if (!CheckNotNull(shader, "Invalid Pointer 'shader'"))
-		return;
-
-	shader->GetNativeShader().setUniform("time", m_timer.GetCurrTime());
-
-	renderer->Draw(this, m_textShader);
-}
-
-bool SFAnimatedText::Init()
-{
-	ThrowIfFalse(SFText::Init(), "SFText parent initialization failed");
-
-	switch (m_config.m_animType)
-	{
-	case TextAnimType::Flashing:
-	{
-		ThrowIfFalse(LoadShader("FadeInOutShader"),
-			std::format("LoadShader failed: id-{}",
-			"FadeInOutShader"));
-	}
-		break;
-	case TextAnimType::Countdown:
-	{
-		ThrowIfFalse(LoadShader("FadeInOutShader"),
-			std::format("LoadShader failed: id-{}",
-			"FadeInOutShader"));
-	}
-		break;
-	default:
-		// no special resources needed; keep going
-		break;
+		SetText(std::to_string(GetCount()));
 	}
 
-	return true;
+	SFText::Update(deltaTime);
 }

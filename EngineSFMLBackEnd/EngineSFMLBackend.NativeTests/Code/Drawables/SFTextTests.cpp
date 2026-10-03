@@ -1,10 +1,13 @@
 #include "CppUnitTest.h"
 
+#include <Fakes/Effects/FakeShaderEffect.h>
+#include <Fakes/Resources/FakeShader.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Drawables/SFText.h>
 #include <SFML/Graphics/Text.hpp>
 #include <string>
+#include <memory>
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -16,21 +19,6 @@ namespace Drawables
         // ======================================================
         // Constructors
         // ======================================================
-
-        TEST_METHOD(SFText_Constructor_ThrowsIfTextAnimIsNotStatic)
-        {
-            TextConfig config(
-                "Arial",
-                24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Flashing
-            );
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    SFText text(config);
-                });
-        }
 
         TEST_METHOD(SFText_Constructor_ThrowsIfGameManagerIsNull)
         {
@@ -73,8 +61,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -108,8 +95,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -130,8 +116,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -171,8 +156,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -197,7 +181,6 @@ namespace Drawables
                 "Arial",
                 24u,
                 Vector2f(100.f, 200.f),
-                TextAnimType::Static,
                 Colour::Black,
                 TextAlignment::LeftHand
             );
@@ -231,7 +214,6 @@ namespace Drawables
                 "Arial",
                 24u,
                 Vector2f(100.f, 200.f),
-                TextAnimType::Static,
                 Colour::Black,
                 TextAlignment::Center
             );
@@ -265,7 +247,6 @@ namespace Drawables
                 "Arial",
                 24u,
                 Vector2f(100.f, 200.f),
-                TextAnimType::Static,
                 Colour::Black,
                 TextAlignment::RightHand
             );
@@ -302,8 +283,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -319,6 +299,57 @@ namespace Drawables
 
             Assert::AreEqual(size.x, retSize.x);
             Assert::AreEqual(size.y, retSize.y);
+        }
+
+
+        // ======================================================
+        // Update
+        // ======================================================
+
+        TEST_METHOD(SFText_Update_WithoutEffect_UpdatesNormally)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            text.Update(0.1f);
+        }
+
+        TEST_METHOD(SFText_Update_WithEffect_UpdatesEffect)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            text.SetEffect(std::move(effect));
+
+            Assert::IsNotNull(effectPtr);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+
+            float dt = 0.1f;
+
+            text.Update(dt);
+
+            Assert::IsTrue(effectPtr->updateCalled);
+            Assert::AreEqual(dt, effectPtr->passedDeltaTime);
         }
     };
 }

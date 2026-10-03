@@ -87,5 +87,8 @@
     <ClCompile Include="Code\Drawables\SFTextTests.cpp">
       <Filter>Source Files\Drawables</Filter>
     </ClCompile>
+    <ClCompile Include="Code\Drawables\SFCountDownTextTests.cpp">
+      <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

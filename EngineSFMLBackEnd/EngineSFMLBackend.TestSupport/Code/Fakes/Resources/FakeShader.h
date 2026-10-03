@@ -11,4 +11,9 @@ public:
 	{
 		return true;
 	}
+
+	void SetUniform(
+		const std::string& name,
+		float value) override
+	{ }
 };
