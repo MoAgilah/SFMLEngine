@@ -36,6 +36,11 @@ bool SFShader::LoadFromFile(const std::string& filepath)
     return m_shader->loadFromFile(filepath, nativeType);
 }
 
+void SFShader::SetUniform(const std::string& name, float value)
+{
+    GetNativeShader().setUniform(name, value);
+}
+
 sf::Shader& SFShader::GetNativeShader()
 {
     return *m_shader.get();

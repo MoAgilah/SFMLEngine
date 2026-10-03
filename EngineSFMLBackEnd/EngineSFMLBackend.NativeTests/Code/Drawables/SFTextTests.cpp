@@ -17,21 +17,6 @@ namespace Drawables
         // Constructors
         // ======================================================
 
-        TEST_METHOD(SFText_Constructor_ThrowsIfTextAnimIsNotStatic)
-        {
-            TextConfig config(
-                "Arial",
-                24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Flashing
-            );
-
-            Assert::ExpectException<std::runtime_error>([&]
-                {
-                    SFText text(config);
-                });
-        }
-
         TEST_METHOD(SFText_Constructor_ThrowsIfGameManagerIsNull)
         {
             TextConfig config("Arial");
@@ -73,8 +58,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -108,8 +92,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -130,8 +113,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -171,8 +153,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
@@ -197,7 +178,6 @@ namespace Drawables
                 "Arial",
                 24u,
                 Vector2f(100.f, 200.f),
-                TextAnimType::Static,
                 Colour::Black,
                 TextAlignment::LeftHand
             );
@@ -231,7 +211,6 @@ namespace Drawables
                 "Arial",
                 24u,
                 Vector2f(100.f, 200.f),
-                TextAnimType::Static,
                 Colour::Black,
                 TextAlignment::Center
             );
@@ -265,7 +244,6 @@ namespace Drawables
                 "Arial",
                 24u,
                 Vector2f(100.f, 200.f),
-                TextAnimType::Static,
                 Colour::Black,
                 TextAlignment::RightHand
             );
@@ -302,8 +280,7 @@ namespace Drawables
             TextConfig config(
                 "Arial",
                 24u,
-                Vector2f(100.f, 200.f),
-                TextAnimType::Static
+                Vector2f(100.f, 200.f)
             );
 
             SFText text(config);
