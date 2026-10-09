@@ -5,23 +5,17 @@
 #include <Utilities/Guards.h>
 #include <SFML/Graphics.hpp>
 
-bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
+bool SFWindow::Create(const Vector2u& screenDims, const std::string& title)
 {
 	m_window = std::make_shared<sf::RenderWindow>();
 
-	if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
-		return false;
-
-	m_window->create(sf::VideoMode(sf::Vector2u(static_cast<int>(screemDims.x), static_cast<int>(screemDims.y))), title);
+	m_window->create(sf::VideoMode(sf::Vector2u(screenDims.x, screenDims.y)), title);
 	m_window->setFramerateLimit(static_cast<int>(GameConstants::FPS));
 	return m_window->isOpen();
 }
 
 void SFWindow::PollEvents()
 {
-	if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
-		return;
-
 	auto* gameMgr = GameManager::Get();
 	if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
 		return;

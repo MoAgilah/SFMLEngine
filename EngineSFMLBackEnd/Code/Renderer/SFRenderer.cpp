@@ -14,12 +14,10 @@ namespace
     }
 }
 
-bool SFRenderer::Initialise(const Vector2f& screenDims, const std::string& title)
+bool SFRenderer::Initialise(const Vector2u& screenDims, const std::string& title)
 {
     // Create a concrete window (still type-erased in the interface)
     m_window = std::make_shared<SFWindow>();
-    if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
-        return false;
 
     if (m_window->Create(screenDims, title))
     {
@@ -48,9 +46,6 @@ void SFRenderer::Draw(IRenderable* object)
     if (!CheckNotNull(object, "Invalid Pointer 'object'"))
         return;
 
-    if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
-        return;
-
     object->Render(this);
 }
 
@@ -60,9 +55,6 @@ void SFRenderer::Draw(IRenderable* object, IShader* shader)
         return;
 
     if (!CheckNotNull(shader, "Invalid Pointer 'shader'"))
-        return;
-
-    if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
         return;
 
     object->Render(this, shader);

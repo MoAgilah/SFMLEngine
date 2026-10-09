@@ -15,15 +15,10 @@ public:
 
     void Update() override;
     void Reset(IRenderer* renderer) override;
-    void RenderDebug(IRenderer* renderer) override;
-
-    bool IsInView(IBoundingVolume* volume) override;
-    bool CheckVerticalBounds(IBoundingVolume* volume) override;
 
     sf::View* GetView();
 
 private:
 
     std::unique_ptr<sf::View> m_camera;
-    std::shared_ptr<BoundingBox<SFRect>> m_viewBox;
 };

@@ -8,26 +8,22 @@
 #include <SFML/Graphics/View.hpp>
 
 SFCamera::SFCamera()
+    : ICamera(std::make_unique<BoundingBox<SFRect>>())
 {
     const auto& screenDim = GameConstants::ScreenDim;
     const Vector2f center = screenDim * 0.5f;
 
     m_camera = std::make_unique<sf::View>();
-    if (!CheckNotNull(m_camera.get(), "Invalid Pointer 'm_camera'"))
-        throw std::invalid_argument("SFCamera requires a valid camera");
 
     m_camera->setSize(screenDim);
     m_camera->setCenter(center);
     m_camera->setViewport({ {0.f, 0.f}, {1.f, 1.f} });
 
+    auto sfBBox = static_cast<BoundingBox<SFRect>*>(m_viewBox.get());
 
-
-    m_viewBox = std::make_shared<BoundingBox<SFRect>>(screenDim, center);
-    if (!CheckNotNull(m_viewBox.get(), "Invalid Pointer 'm_viewBox'"))
-        throw std::invalid_argument("SFCamera requires a valid BoundingBox<SFRect>");
-
-    m_viewBox->Update(center);
-    m_viewBox->GetShape()->SetFillColour(Colour(255, 0, 0, 128));
+    sfBBox->Reset(screenDim);
+    sfBBox->Update(center);
+    sfBBox->GetShape()->SetFillColour(Colour(255, 0, 0, 128));
 }
 
 SFCamera::~SFCamera() = default;
@@ -66,46 +62,6 @@ void SFCamera::Reset(IRenderer* renderer)
     auto* sfmlWindow = static_cast<sf::RenderWindow*>(renderer->GetWindow()->GetNativeHandle());
     if (sfmlWindow && m_camera)
         sfmlWindow->setView(*m_camera);
-}
-
-void SFCamera::RenderDebug(IRenderer* renderer)
-{
-    if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
-        return;
-
-    if (!CheckNotNull(m_viewBox.get(), "Invalid Pointer 'm_viewBox'"))
-        return;
-
-    m_viewBox->Render(renderer);
-}
-
-bool SFCamera::IsInView(IBoundingVolume* volume)
-{
-    if (!CheckNotNull(volume, "Invalid Pointer 'volume'"))
-        return false;
-
-    if (!CheckNotNull(m_viewBox.get(), "Invalid Pointer 'm_viewBox'"))
-        return false;
-
-    return m_viewBox->Intersects(volume);
-}
-
-bool SFCamera::CheckVerticalBounds(IBoundingVolume* volume)
-{
-    if (!CheckNotNull(volume, "Invalid Pointer 'volume'"))
-        return false;
-
-    if (!CheckNotNull(m_viewBox.get(), "Invalid Pointer 'm_viewBox'"))
-        return false;
-
-    auto box = dynamic_cast<BoundingBox<SFRect>*>(volume);
-    if (box)
-    {
-        const float cameraBottom = m_camera->getCenter().y + (GameConstants::ScreenDim.y * 0.5f);
-        return box->GetPosition().y > (cameraBottom - (box->GetExtents().y * 2.f));
-    }
-
-    return false;
 }
 
 sf::View* SFCamera::GetView()
