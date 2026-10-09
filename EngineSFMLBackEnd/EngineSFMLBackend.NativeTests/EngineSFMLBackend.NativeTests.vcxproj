@@ -32,6 +32,9 @@
     <ClCompile Include="Code\Drawables\SFTextTests.cpp" />
     <ClCompile Include="Code\Drawables\SFTriangleTests.cpp" />
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp" />
+    <ClCompile Include="Code\Renderer\SFCameraTests.cpp" />
+    <ClCompile Include="Code\Renderer\SFRendererTests.cpp" />
+    <ClCompile Include="Code\Renderer\SFWindowTests.cpp" />
     <ClCompile Include="Code\Resources\SFFontTests.cpp" />
     <ClCompile Include="Code\Resources\SFMusicTests.cpp" />
     <ClCompile Include="Code\Resources\SFShaderTests.cpp" />

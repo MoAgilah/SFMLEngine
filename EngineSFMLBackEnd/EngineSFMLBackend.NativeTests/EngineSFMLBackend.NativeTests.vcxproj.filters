@@ -28,6 +28,9 @@
     <Filter Include="Source Files\Drawables">
       <UniqueIdentifier>{c90055fe-f26c-4bc8-8181-9b4c326d5ae5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Renderer">
+      <UniqueIdentifier>{6b237c48-533b-49df-964a-4a9f4c354c8a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Code\Input\SFKeyConverterTests.cpp">
@@ -89,6 +92,15 @@
     </ClCompile>
     <ClCompile Include="Code\Drawables\SFCountDownTextTests.cpp">
       <Filter>Source Files\Drawables</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Renderer\SFCameraTests.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Renderer\SFRendererTests.cpp">
+      <Filter>Source Files\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Renderer\SFWindowTests.cpp">
+      <Filter>Source Files\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
