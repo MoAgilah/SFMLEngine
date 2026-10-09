@@ -4,11 +4,12 @@
 #include <Engine/Interface/UI/IMenuCursor.h>
 #include <Engine/UI/MenuNavigation.h>
 #include <Utilities/Vector2.h>
+#include <memory>
 
 class SFMenuCursor : public IMenuCursor
 {
 public:
-	SFMenuCursor(SFSprite* sprite, const MenuNav& menuNav);
+	SFMenuCursor(std::shared_ptr<SFSprite> spr, const MenuNav& menuNav);
 	~SFMenuCursor() = default;
 
 	void SetPosition(const Vector2f& pos);

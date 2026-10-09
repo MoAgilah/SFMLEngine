@@ -108,9 +108,6 @@
     <ClCompile Include="Code\UI\SFMenuItem.cpp">
       <Filter>Source Files\UI</Filter>
     </ClCompile>
-    <ClCompile Include="Code\UI\SFPaginatedMenu.cpp">
-      <Filter>Source Files\UI</Filter>
-    </ClCompile>
     <ClCompile Include="Code\Utilities\SFColour.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
@@ -195,9 +192,6 @@
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="Code\UI\SFMenuItem.h">
-      <Filter>Header Files\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\UI\SFPaginatedMenu.h">
       <Filter>Header Files\UI</Filter>
     </ClInclude>
     <ClInclude Include="Code\Utilities\ActiveTypes.h">

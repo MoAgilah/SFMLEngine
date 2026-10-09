@@ -2,16 +2,19 @@
 
 #include <Utilities/Guards.h>
 
-SFMenuCursor::SFMenuCursor(SFSprite* sprite, const MenuNav& menuNav)
-	: IMenuCursor(std::move(static_cast<ISprite*>(sprite)), menuNav)
-{}
+SFMenuCursor::SFMenuCursor(std::shared_ptr<SFSprite> spr, const MenuNav& menuNav)
+    : IMenuCursor(std::move(spr), menuNav)
+{
+}
 
 void SFMenuCursor::SetPosition(const Vector2f& pos)
 {
     if (!CheckNotNull(m_cursor.get(), "Invalid Pointer 'm_cursor'"))
         return;
 
-	static_cast<SFSprite*>(m_cursor.get())->SetPosition(pos);
+    auto spr = static_cast<SFSprite*>(m_cursor.get());
+
+	spr->SetPosition(pos);
 }
 
 void SFMenuCursor::SetScale(const Vector2f& cellSize)
@@ -20,8 +23,6 @@ void SFMenuCursor::SetScale(const Vector2f& cellSize)
         return;
 
     auto spr = static_cast<SFSprite*>(m_cursor.get());
-    if (!CheckNotNull(spr, "Invalid Pointer 'spr'"))
-        return;
 
     spr->SetScale({ 1.f, 1.f });
 
