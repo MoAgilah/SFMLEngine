@@ -5,7 +5,6 @@
 #include <memory>
 #include <string>
 
-// Forward declare instead of including SFML headers
 namespace sf { class RenderWindow; }
 
 class SFWindow : public INativeWindow

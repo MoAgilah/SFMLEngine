@@ -30,23 +30,17 @@ SFCamera::~SFCamera() = default;
 
 void SFCamera::Update()
 {
-    if (!CheckNotNull(m_camera.get(), "Invalid Pointer 'm_camera'"))
+    if (!m_toFollow)
         return;
 
-    if (!CheckNotNull(m_viewBox.get(), "Invalid Pointer 'm_viewBox'"))
-        return;
+    const float halfWidth = m_camera->getSize().x * 0.5f;
 
-    float posX = 0.f;
+    float posX = m_toFollow->GetPosition().x - halfWidth;
 
-    if (m_toFollow)
-    {
-        posX = m_toFollow->GetPosition().x - GameConstants::ScreenDim.x * 0.5f;
+    if (posX < 0.f)
+        posX = 0.f;
 
-        if (posX < 0)
-            posX = 0;
-    }
-
-    m_camera->setCenter({ posX + (GameConstants::ScreenDim.x * 0.5f), m_camera->getCenter().y });
+    m_camera->setCenter({ posX + halfWidth, m_camera->getCenter().y });
     m_viewBox->Update(m_camera->getCenter());
 }
 
@@ -55,19 +49,18 @@ void SFCamera::Reset(IRenderer* renderer)
     if (!CheckNotNull(renderer, "Invalid Pointer 'renderer'"))
         return;
 
-    if (!CheckNotNull(m_camera.get(), "Invalid Pointer 'm_camera'"))
+    auto* window = renderer->GetWindow();
+    if (!CheckNotNull(window, "Invalid Pointer 'window'"))
         return;
 
-    // Downcast to SFML window implementation (safe only if this camera is used with SFML)
-    auto* sfmlWindow = static_cast<sf::RenderWindow*>(renderer->GetWindow()->GetNativeHandle());
-    if (sfmlWindow && m_camera)
-        sfmlWindow->setView(*m_camera);
+    auto* sfWindow = static_cast<sf::RenderWindow*>(window->GetNativeHandle());
+    if (!CheckNotNull(sfWindow, "Invalid Pointer 'sfWindow'"))
+        return;
+
+    sfWindow->setView(*m_camera);
 }
 
 sf::View* SFCamera::GetView()
 {
-    if (m_camera)
-        return m_camera.get();
-
-    return nullptr;
+    return m_camera.get();
 }
