@@ -11,9 +11,4 @@ public:
 	~SFMenu() = default;
 
 	void AddCursor(std::shared_ptr<ISprite> spr, const MenuNav& menuNav);
-
-protected:
-
-	void BuildMenuSpace() override;
-	void BuildCells() override;
 };
