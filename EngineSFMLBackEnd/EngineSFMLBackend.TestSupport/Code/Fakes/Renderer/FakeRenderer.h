@@ -10,7 +10,7 @@ public:
 		m_window = nullptr;
 	}
 
-	bool Initialise(const Vector2f& screenDims, const std::string& title) override { return true; }
+	bool Initialise(const Vector2u& screenDims, const std::string& title) override { return true; }
 	void PollWindowEvents() override {}
 	void Clear() override {}
 	void Draw(IRenderable* object) override {}

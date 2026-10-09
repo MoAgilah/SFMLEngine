@@ -14,33 +14,35 @@ namespace
     }
 }
 
-bool SFRenderer::Initialise(const Vector2f& screenDims, const std::string& title)
+bool SFRenderer::Initialise(const Vector2u& screenDims, const std::string& title)
 {
-    // Create a concrete window (still type-erased in the interface)
-    m_window = std::make_shared<SFWindow>();
-    if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
+    auto newWindow = std::make_shared<SFWindow>();
+
+    if (!newWindow->Create(screenDims, title))
         return false;
 
-    if (m_window->Create(screenDims, title))
-    {
-        // Cache the native handle once (type-erased in the renderer’s header)
-        m_nativeWindow = m_window->GetNativeHandle();
-        return true;
-    }
+    m_window = std::move(newWindow);
+    m_nativeWindow = m_window->GetNativeHandle();
 
-    return false;
+    return true;
 }
 
 void SFRenderer::PollWindowEvents()
 {
-    if (m_window)
-        m_window->PollEvents();
+    if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
+        return;
+
+    m_window->PollEvents();
 }
 
 void SFRenderer::Clear()
 {
-    if (auto* sfw = AsSF(m_nativeWindow))
-        sfw->clear(GameConstants::WindowColour);
+    auto* sfWindow = AsSF(m_nativeWindow);
+
+    if (!CheckNotNull(sfWindow, "Invalid Pointer 'sfWindow'"))
+        return;
+
+    sfWindow->clear(GameConstants::WindowColour);
 }
 
 void SFRenderer::Draw(IRenderable* object)
@@ -71,6 +73,7 @@ void SFRenderer::Draw(IRenderable* object, IShader* shader)
 void SFRenderer::Present()
 {
     auto* sfWindow = AsSF(m_nativeWindow);
+
     if (!CheckNotNull(sfWindow, "Invalid Pointer 'sfWindow'"))
         return;
 

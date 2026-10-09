@@ -5,16 +5,27 @@
 #include <Utilities/Guards.h>
 #include <SFML/Graphics.hpp>
 
-bool SFWindow::Create(const Vector2f& screemDims, const std::string& title)
+bool SFWindow::Create(const Vector2u& screenDims, const std::string& title)
 {
-	m_window = std::make_shared<sf::RenderWindow>();
-
-	if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
+	if (screenDims.x == 0 || screenDims.y == 0)
 		return false;
 
-	m_window->create(sf::VideoMode(sf::Vector2u(static_cast<int>(screemDims.x), static_cast<int>(screemDims.y))), title);
-	m_window->setFramerateLimit(static_cast<int>(GameConstants::FPS));
-	return m_window->isOpen();
+	auto newWindow = std::make_shared<sf::RenderWindow>();
+
+	newWindow->create(
+		sf::VideoMode(sf::Vector2u(screenDims.x, screenDims.y)),
+		title
+	);
+
+	if (!newWindow->isOpen())
+		return false;
+
+	newWindow->setFramerateLimit(static_cast<unsigned int>(GameConstants::FPS));
+
+	m_window = std::move(newWindow);
+	m_shouldClose = false;
+
+	return true;
 }
 
 void SFWindow::PollEvents()
@@ -22,27 +33,37 @@ void SFWindow::PollEvents()
 	if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
 		return;
 
-	auto* gameMgr = GameManager::Get();
-	if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
-		return;
-
-	auto* inputMgr = gameMgr->GetInputManager();
-	if (!CheckNotNull(inputMgr, "Invalid Pointer 'inputMgr' from gameMgr->GetInputManager()"))
-		return;
-
 	while (auto event = m_window->pollEvent())
 	{
-		if (event.has_value())
+		if (event->is<sf::Event::Closed>())
 		{
-			if (event->is<sf::Event::Closed>())
-			{
-				Close();
-			}
-			else if (auto keyPressed = event->getIf<sf::Event::KeyPressed>())
+			Close();
+			break;
+		}
+		else if (event->is<sf::Event::KeyPressed>() ||
+			event->is<sf::Event::KeyReleased>())
+		{
+			const auto keyPressed = event->getIf<sf::Event::KeyPressed>();
+
+			if (keyPressed)
 			{
 				if (keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+				{
 					Close();
+					break;
+				}
+			}
 
+			auto* gameMgr = GameManager::Get();
+			if (!CheckNotNull(gameMgr, "Invalid Pointer 'gameMgr' from GameManager::Get()"))
+				continue;
+
+			auto* inputMgr = gameMgr->GetInputManager();
+			if (!CheckNotNull(inputMgr, "Invalid Pointer 'inputMgr' from gameMgr->GetInputManager()"))
+				continue;
+
+			if (keyPressed)
+			{
 				inputMgr->ProcessPlatformKeyPress(
 					static_cast<int>(keyPressed->code));
 			}
@@ -65,9 +86,10 @@ bool SFWindow::ShouldClose() const
 
 void SFWindow::Close()
 {
-	if (m_window)
-		m_window->close();
+	if (!CheckNotNull(m_window.get(), "Invalid Pointer 'm_window'"))
+		return;
 
+	m_window->close();
 	m_shouldClose = true;
 }
 

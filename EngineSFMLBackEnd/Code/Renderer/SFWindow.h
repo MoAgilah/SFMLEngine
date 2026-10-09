@@ -5,13 +5,12 @@
 #include <memory>
 #include <string>
 
-// Forward declare instead of including SFML headers
 namespace sf { class RenderWindow; }
 
 class SFWindow : public INativeWindow
 {
 public:
-    bool Create(const Vector2f& screenDims, const std::string& title) override;
+    bool Create(const Vector2u& screenDims, const std::string& title) override;
     void PollEvents() override;
     bool ShouldClose() const override;
     void Close() override;
