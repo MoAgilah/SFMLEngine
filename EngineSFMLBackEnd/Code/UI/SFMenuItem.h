@@ -16,7 +16,4 @@ public:
 
 	Vector2f GetOrigin() const override;
 	Vector2f GetSize() const override;
-
-	IText* AddTextElement(std::shared_ptr<IText>  text) override;
-	ISprite* AddSpriteElement(std::shared_ptr<ISprite>  spr) override;
 };

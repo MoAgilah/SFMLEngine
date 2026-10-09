@@ -43,7 +43,6 @@
     <ClCompile Include="Code\UI\SFMenu.cpp" />
     <ClCompile Include="Code\UI\SFMenuCursor.cpp" />
     <ClCompile Include="Code\UI\SFMenuItem.cpp" />
-    <ClCompile Include="Code\UI\SFPaginatedMenu.cpp" />
     <ClCompile Include="Code\Utilities\ActiveTypes.cpp" />
     <ClCompile Include="Code\Utilities\SFColour.cpp" />
   </ItemGroup>
@@ -67,7 +66,6 @@
     <ClInclude Include="Code\UI\SFMenu.h" />
     <ClInclude Include="Code\UI\SFMenuCursor.h" />
     <ClInclude Include="Code\UI\SFMenuItem.h" />
-    <ClInclude Include="Code\UI\SFPaginatedMenu.h" />
     <ClInclude Include="Code\Utilities\ActiveTypes.h" />
   </ItemGroup>
   <ItemGroup>

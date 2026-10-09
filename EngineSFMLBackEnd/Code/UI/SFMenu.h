@@ -7,16 +7,13 @@
 class SFMenu : public IMenu
 {
 public:
-	SFMenu(const Vector2f& menuSize, float outlineThickness, const Vector2f& dimensions, const MenuPositionData& menuPositionData);
+	SFMenu(const Vector2f& menuSize, float outlineThickness, const Vector2u& dimensions, const MenuPositionData& menuPositionData);
 	~SFMenu() = default;
 
-	void AddCursor(ISprite* spr, const MenuNav& menuNav);
+	void AddCursor(std::shared_ptr<ISprite> spr, const MenuNav& menuNav);
 
 protected:
 
 	void BuildMenuSpace() override;
-	void BuildColumns() override;
-	void BuildRows() override;
-
-	void SetActiveTextElement() override;
+	void BuildCells() override;
 };
