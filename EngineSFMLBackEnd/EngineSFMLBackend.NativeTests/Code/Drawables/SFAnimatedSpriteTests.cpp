@@ -1,5 +1,7 @@
 #include "CppUnitTest.h"
 
+#include <Fakes/Effects/FakeShaderEffect.h>
+#include <Fakes/Resources/FakeShader.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Drawables/SFSprite.h>
@@ -396,6 +398,43 @@ namespace Drawables
 
             Assert::AreEqual(before.size.x, after.size.x);
             Assert::AreEqual(before.size.y, after.size.y);
+        }
+
+        TEST_METHOD(SFAnimatedSprite_Update_UpdatesActiveEffect)
+        {
+            GameManager gm;
+
+            SFAnimatedSprite sprite(
+                "DefaultTexture",
+                4,
+                4,
+                GameConstants::AnimationFrameDurationMS,
+                1.0f
+            );
+
+            std::vector<int> numFrames = { 4, 2, 3, 1 };
+
+            sprite.SetFrames(numFrames);
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            Assert::IsTrue(sprite.AddEffect("Fake", std::move(effect)));
+
+            Assert::IsTrue(sprite.SetEffectActive("Fake", true));
+
+            Assert::IsNotNull(effectPtr);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+
+            float dt = 0.1f;
+
+            sprite.Update(dt);
+
+            Assert::IsTrue(effectPtr->updateCalled);
+            Assert::AreEqual(dt, effectPtr->passedDeltaTime);
         }
     };
 }
