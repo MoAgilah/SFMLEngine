@@ -3,6 +3,7 @@
 #include "../Resources/SFFont.h"
 #include "../Resources/SFShader.h"
 #include <Engine/Core/GameManager.h>
+#include <Engine/Interface/Effects/IShaderEffect.h>
 #include <Utilities/Guards.h>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -17,11 +18,22 @@ SFText::SFText(const TextConfig& config)
 
 void SFText::Update(float deltaTime)
 {
+	if (auto updatable = dynamic_cast<IUpdatable*>(GetActiveEffect()))
+	{
+		updatable->Update(deltaTime);
+	}
+
 	SFDrawables<sf::Text>::Update(deltaTime);
 }
 
 void SFText::Render(IRenderer* renderer)
 {
+	if (auto shaderEffect = dynamic_cast<IShaderEffect*>(GetActiveEffect()))
+	{
+		SFDrawables<sf::Text>::Render(renderer, shaderEffect->GetShader());
+		return;
+	}
+
 	SFDrawables<sf::Text>::Render(renderer);
 }
 

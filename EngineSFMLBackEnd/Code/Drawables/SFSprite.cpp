@@ -3,6 +3,7 @@
 #include "Resources/SFTexture.h"
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
+#include <Engine/Interface/Effects/IShaderEffect.h>
 #include <Utilities/Guards.h>
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -59,11 +60,20 @@ void SFSprite::SetDirection(bool dir)
 
 void SFSprite::Update(float dt)
 {
-	// does nothing
+	if (auto updatable = dynamic_cast<IUpdatable*>(GetActiveEffect()))
+	{
+		updatable->Update(dt);
+	}
 }
 
 void SFSprite::Render(IRenderer* renderer)
 {
+	if (auto shaderEffect = dynamic_cast<IShaderEffect*>(GetActiveEffect()))
+	{
+		SFDrawables<sf::Sprite>::Render(renderer, shaderEffect->GetShader());
+		return;
+	}
+
 	SFDrawables<sf::Sprite>::Render(renderer);
 }
 
@@ -113,6 +123,8 @@ SFAnimatedSprite::SFAnimatedSprite(const std::string& texId, int rows, int colum
 
 void SFAnimatedSprite::Update(float dt)
 {
+	SFSprite::Update(dt);
+
 	IAnimatedSprite::Update(dt);
 
 	int left = m_frame.m_current * GetFrameSize().x;
