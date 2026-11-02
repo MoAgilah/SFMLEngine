@@ -10,5 +10,5 @@ public:
 	SFMenu(const Vector2f& menuSize, float outlineThickness, const Vector2u& dimensions, const MenuPositionData& menuPositionData);
 	~SFMenu() = default;
 
-	void AddCursor(std::shared_ptr<ISprite> spr, const MenuNav& menuNav);
+	IMenuCursor* AddCursor(std::shared_ptr<ISprite> spr, const MenuNav& menuNav) override;
 };
