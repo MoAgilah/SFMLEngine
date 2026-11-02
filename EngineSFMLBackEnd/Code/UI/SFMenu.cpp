@@ -29,15 +29,15 @@ SFMenu::SFMenu(const Vector2f& menuSize, float outlineThickness, const Vector2u&
 		});
 }
 
-void SFMenu::AddCursor(std::shared_ptr<ISprite> spr,const MenuNav& menuNav)
+IMenuCursor* SFMenu::AddCursor(std::shared_ptr<ISprite> spr,const MenuNav& menuNav)
 {
 	if (!CheckNotNull(spr.get(), "Invalid Pointer 'spr'"))
-		return;
+		return nullptr;
 
 	auto sfSprite = std::dynamic_pointer_cast<SFSprite>(spr);
 
 	if (!CheckNotNull(sfSprite.get(), "Invalid Pointer 'sfSprite'"))
-		return;
+		return nullptr;
 
 	auto cursor = std::make_shared<SFMenuCursor>(
 		std::move(sfSprite),
@@ -45,4 +45,5 @@ void SFMenu::AddCursor(std::shared_ptr<ISprite> spr,const MenuNav& menuNav)
 	);
 
 	m_cursors.emplace_back(std::move(cursor));
+	return m_cursors.back().get();
 }
