@@ -320,36 +320,5 @@ namespace Drawables
 
             text.Update(0.1f);
         }
-
-        TEST_METHOD(SFText_Update_WithEffect_UpdatesEffect)
-        {
-            GameManager gm;
-
-            TextConfig config(
-                "Arial",
-                24u,
-                Vector2f(100.f, 200.f)
-            );
-
-            SFText text(config);
-
-            FakeShader shader;
-
-            auto effect = std::make_unique<FakeShaderEffect>(&shader);
-            auto* effectPtr = effect.get();
-
-            text.SetEffect(std::move(effect));
-
-            Assert::IsNotNull(effectPtr);
-
-            Assert::IsFalse(effectPtr->updateCalled);
-
-            float dt = 0.1f;
-
-            text.Update(dt);
-
-            Assert::IsTrue(effectPtr->updateCalled);
-            Assert::AreEqual(dt, effectPtr->passedDeltaTime);
-        }
     };
 }

@@ -17,19 +17,11 @@ SFText::SFText(const TextConfig& config)
 
 void SFText::Update(float deltaTime)
 {
-	UpdateEffect(deltaTime);
-
 	SFDrawables<sf::Text>::Update(deltaTime);
 }
 
 void SFText::Render(IRenderer* renderer)
 {
-	if (auto* effect = GetEffect())
-	{
-		SFDrawables<sf::Text>::Render(renderer, effect->GetShader());
-		return;
-	}
-
 	SFDrawables<sf::Text>::Render(renderer);
 }
 

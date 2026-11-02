@@ -199,7 +199,7 @@ namespace Drawables
 
             auto seg = capsule.GetSegment();
 
-            Vector2f expectedStart(157.574f, 192.426);
+            Vector2f expectedStart(157.574f, 192.426f);
 
             Assert::AreEqual(expectedStart.x, seg.start.x, 0.001f);
             Assert::AreEqual(expectedStart.y, seg.start.y, 0.001f);
@@ -254,7 +254,7 @@ namespace Drawables
             auto endCap1 = capsule.GetEndCap1();
             Assert::IsNotNull(endCap1);
 
-            Vector2f expectedPos(157.574f, 192.426);
+            Vector2f expectedPos(157.574f, 192.426f);
 
             auto retPos = endCap1->getPosition();
 
@@ -441,7 +441,7 @@ namespace Drawables
             auto endCap1 = capsule.GetEndCap1();
             Assert::IsNotNull(endCap1);
 
-            Vector2f expectedPos(157.574f, 192.426);
+            Vector2f expectedPos(157.574f, 192.426f);
 
             auto retPos = endCap1->getPosition();
 
@@ -490,7 +490,7 @@ namespace Drawables
 
             auto seg = capsule.GetSegment();
 
-            Vector2f expectedStart(157.574f, 192.426);
+            Vector2f expectedStart(157.574f, 192.426f);
 
             Assert::AreEqual(expectedStart.x, seg.start.x, 0.001f);
             Assert::AreEqual(expectedStart.y, seg.start.y, 0.001f);
