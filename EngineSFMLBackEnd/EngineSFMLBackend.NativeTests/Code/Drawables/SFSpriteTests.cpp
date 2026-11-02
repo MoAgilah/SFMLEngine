@@ -1,5 +1,7 @@
 #include "CppUnitTest.h"
 
+#include <Fakes/Effects/FakeShaderEffect.h>
+#include <Fakes/Resources/FakeShader.h>
 #include <Engine/Core/Constants.h>
 #include <Engine/Core/GameManager.h>
 #include <Drawables/SFSprite.h>
@@ -268,6 +270,84 @@ namespace Drawables
             Assert::AreEqual(rect.m_top, retRect.position.y);
             Assert::AreEqual(rect.m_width, retRect.size.x);
             Assert::AreEqual(rect.m_height, retRect.size.y);
+        }
+
+        // ======================================================
+        // Update
+        // ======================================================
+
+        TEST_METHOD(SFSprite_Update_WithoutEffect_UpdatesNormally)
+        {
+            GameManager gm;
+
+            SFSprite sprite("DefaultTexture");
+
+            sprite.Update(0.1f);
+        }
+
+        TEST_METHOD(SFSprite_Update_WithEffect_UpdatesEffect)
+        {
+            GameManager gm;
+
+            SFSprite sprite("DefaultTexture");
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            Assert::IsTrue(sprite.AddEffect("Fake", std::move(effect)));
+
+            Assert::IsTrue(sprite.SetEffectActive("Fake", true));
+
+            Assert::IsNotNull(effectPtr);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+
+            float dt = 0.1f;
+
+            sprite.Update(dt);
+
+            Assert::IsTrue(effectPtr->updateCalled);
+            Assert::AreEqual(dt, effectPtr->passedDeltaTime);
+        }
+
+        TEST_METHOD(SFSprite_Update_WithEffect_DoesNotUpdateInactiveEffect)
+        {
+            GameManager gm;
+
+            SFSprite sprite("DefaultTexture");
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            Assert::IsTrue(sprite.AddEffect("Fake", std::move(effect)));
+
+
+            Assert::IsNotNull(effectPtr);
+
+            float dt = 0.1f;
+
+            sprite.Update(dt);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+        }
+
+        TEST_METHOD(SFText_Update_WithEffect_SkipsNonUpdatableEffect)
+        {
+            GameManager gm;
+
+            SFSprite sprite("DefaultTexture");
+
+            Assert::IsTrue(sprite.AddEffect("Fake", std::make_unique<IEffect>()));
+
+            Assert::IsTrue(sprite.SetEffectActive("Fake", true));
+
+            float dt = 0.1f;
+
+            sprite.Update(dt);
         }
     };
 }

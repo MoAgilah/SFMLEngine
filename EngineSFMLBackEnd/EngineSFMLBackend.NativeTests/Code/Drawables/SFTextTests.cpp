@@ -320,5 +320,87 @@ namespace Drawables
 
             text.Update(0.1f);
         }
+
+        TEST_METHOD(SFText_Update_WithEffect_UpdatesActiveEffect)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            Assert::IsTrue(text.AddEffect("Fake", std::move(effect)));
+
+            Assert::IsTrue(text.SetEffectActive("Fake", true));
+
+            Assert::IsNotNull(effectPtr);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+
+            float dt = 0.1f;
+
+            text.Update(dt);
+
+            Assert::IsTrue(effectPtr->updateCalled);
+            Assert::AreEqual(dt, effectPtr->passedDeltaTime);
+        }
+
+        TEST_METHOD(SFText_Update_WithEffect_DoesNotUpdateInactiveEffect)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            FakeShader shader;
+
+            auto effect = std::make_unique<FakeShaderEffect>(&shader);
+            auto* effectPtr = effect.get();
+
+            Assert::IsTrue(text.AddEffect("Fake", std::move(effect)));
+
+            Assert::IsNotNull(effectPtr);
+
+            float dt = 0.1f;
+
+            text.Update(dt);
+
+            Assert::IsFalse(effectPtr->updateCalled);
+        }
+
+        TEST_METHOD(SFText_Update_WithEffect_SkipsNonUpdatableEffect)
+        {
+            GameManager gm;
+
+            TextConfig config(
+                "Arial",
+                24u,
+                Vector2f(100.f, 200.f)
+            );
+
+            SFText text(config);
+
+            Assert::IsTrue(text.AddEffect("Fake", std::make_unique<IEffect>()));
+
+            Assert::IsTrue(text.SetEffectActive("Fake", true));
+
+            float dt = 0.1f;
+
+            text.Update(dt);
+        }
     };
 }
